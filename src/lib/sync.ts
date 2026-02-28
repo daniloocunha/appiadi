@@ -157,7 +157,9 @@ export async function pushToSupabase(): Promise<void> {
       }
     } catch (error) {
       const newRetryCount = item.retry_count + 1
-      lastError = error?.message ?? `HTTP ${error?.httpStatus ?? 'unknown'}`
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = error as any
+      lastError = err?.message ?? `HTTP ${err?.httpStatus ?? 'unknown'}`
       console.error(
         `[sync] Erro ao sincronizar ${item.table_name}/${item.record_id} (tentativa ${newRetryCount}):`,
         error

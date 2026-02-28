@@ -22,7 +22,7 @@ interface NavItem {
   badge?: number
 }
 
-export function Sidebar({ pendingCount = 0, pendingRegistrationsCount = 0 }: { pendingCount?: number; pendingRegistrationsCount?: number }) {
+export function Sidebar({ pendingRegistrationsCount = 0 }: { pendingCount?: number; pendingRegistrationsCount?: number }) {
   const navigate = useNavigate()
   const { appUser } = useAuthStore()
   const { canManageUsers, canReviewRegistrations } = usePermission()
