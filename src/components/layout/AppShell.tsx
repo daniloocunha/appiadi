@@ -3,7 +3,6 @@ import { Sidebar } from './Sidebar'
 import { TopBar } from './TopBar'
 import { BottomNav } from './BottomNav'
 import { MobileSidebar } from './MobileSidebar'
-import { useSyncStore } from '@/store/syncStore'
 import { usePendingRegistrationsCount } from '@/hooks/usePendingRegistrationsCount'
 
 interface AppShellProps {
@@ -12,7 +11,6 @@ interface AppShellProps {
 }
 
 export function AppShell({ children, title }: AppShellProps) {
-  const pendingCount = useSyncStore((s) => s.pendingCount)
   const pendingRegistrationsCount = usePendingRegistrationsCount()
 
   return (
