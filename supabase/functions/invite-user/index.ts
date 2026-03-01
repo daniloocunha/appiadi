@@ -12,14 +12,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Cliente com service role — só disponível no servidor
-    const adminClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-      { auth: { autoRefreshToken: false, persistSession: false } }
-    )
-
-    // Valida o JWT do usuário que fez a requisição
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Não autorizado.' }), {
@@ -28,9 +20,17 @@ Deno.serve(async (req) => {
       })
     }
 
-    const { data: { user }, error: authError } = await adminClient.auth.getUser(
-      authHeader.replace('Bearer ', '')
+    // Padrão recomendado pelo Supabase: cliente com anon key + JWT do usuário no header global
+    const userClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: { headers: { Authorization: authHeader } },
+        auth: { autoRefreshToken: false, persistSession: false },
+      }
     )
+
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
 
     if (authError || !user) {
       return new Response(JSON.stringify({ error: 'Token inválido.' }), {
@@ -39,7 +39,14 @@ Deno.serve(async (req) => {
       })
     }
 
-    // Verifica se o usuário autenticado tem papel admin
+    // Cliente admin com service role — apenas para operações privilegiadas
+    const adminClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    )
+
+    // Verifica se o usuário autenticado tem papel admin ou secretário
     const { data: appUser, error: roleError } = await adminClient
       .from('app_users')
       .select('role')
@@ -66,7 +73,7 @@ Deno.serve(async (req) => {
 
     const origin = req.headers.get('origin') ?? Deno.env.get('SITE_URL') ?? ''
 
-    // Envia convite via Supabase Auth (requer service role key)
+    // Envia convite via Supabase Auth (requer service role key no servidor)
     const { data: inviteData, error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email, {
       data: { full_name: fullName },
       redirectTo: `${origin}/auth/reset-password`,

@@ -150,8 +150,8 @@ export function PublicRegistrationPage() {
       {/* Header */}
       <div className="bg-blue-900 text-white px-4 py-5 text-center">
         <img src="/logo.png" alt="IADI" className="w-14 h-14 rounded-full mx-auto mb-2 object-cover" />
-        <h1 className="text-base font-bold">Igreja Assembleia de Deus</h1>
-        <p className="text-xs text-blue-200">Iaçu — BA</p>
+        <h1 className="text-base font-bold">Igreja Assembleia de Deus em Iaçu</h1>
+        <p className="text-xs text-blue-200">Gestão de Membros</p>
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-6">

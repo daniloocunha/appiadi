@@ -48,9 +48,9 @@ export function LoginPage() {
               className="w-20 h-20 rounded-full object-cover mb-3 shadow-md"
             />
             <h1 className="text-xl font-bold text-blue-900 text-center leading-tight">
-              Igreja Assembleia de Deus
+              Igreja Assembleia de Deus em Iaçu
             </h1>
-            <p className="text-sm text-slate-500 text-center">em Iaçu — Gestão de Membros</p>
+            <p className="text-sm text-slate-500 text-center">Gestão de Membros</p>
           </div>
 
           {/* Formulário */}
