@@ -41,8 +41,11 @@ export function useAppUsers() {
 
   /** Convida novo usuário por e-mail via Edge Function (requer service role key no servidor) */
   async function inviteUser(email: string, fullName: string, role: UserRole): Promise<{ error: string | null }> {
+    const { data: { session } } = await supabase.auth.getSession()
+
     const { data, error } = await supabase.functions.invoke('invite-user', {
       body: { email, fullName, role },
+      headers: session ? { Authorization: `Bearer ${session.access_token}` } : {},
     })
 
     if (error) {
