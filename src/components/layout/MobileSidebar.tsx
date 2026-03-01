@@ -52,7 +52,7 @@ export function MobileSidebar() {
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="IADI" className="w-9 h-9 rounded-full bg-white object-cover" />
             <div>
-              <p className="text-sm font-bold">IADI</p>
+              <p className="text-sm font-bold leading-tight">Igreja Assembleia de Deus em Iaçu</p>
               <p className="text-xs text-blue-300">Gestão de Membros</p>
             </div>
           </div>

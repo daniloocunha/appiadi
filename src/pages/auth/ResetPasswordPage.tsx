@@ -140,7 +140,7 @@ export function ResetPasswordPage() {
               className="w-16 h-16 rounded-full object-cover mb-3 shadow-md"
             />
             <h1 className="text-xl font-bold text-blue-900 text-center">Definir sua senha</h1>
-            <p className="text-sm text-slate-500 text-center mt-1">IADI — Gestão de Membros</p>
+            <p className="text-sm text-slate-500 text-center mt-1">Igreja Assembleia de Deus em Iaçu — Gestão de Membros</p>
           </div>
 
           {success ? (
