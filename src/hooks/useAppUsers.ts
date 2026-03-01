@@ -39,34 +39,18 @@ export function useAppUsers() {
     loadUsers()
   }, [loadUsers])
 
-  /** Convida novo usuário por e-mail (envia e-mail de convite via Supabase) */
+  /** Convida novo usuário por e-mail via Edge Function (requer service role key no servidor) */
   async function inviteUser(email: string, fullName: string, role: UserRole): Promise<{ error: string | null }> {
-    // 1. Envia convite via Supabase Admin
-    // redirectTo garante que o link do e-mail aponte para /auth/reset-password
-    const { data: inviteData, error: inviteError } = await supabase.auth.admin.inviteUserByEmail(email, {
-      data: { full_name: fullName },
-      redirectTo: `${window.location.origin}/auth/reset-password`,
+    const { data, error } = await supabase.functions.invoke('invite-user', {
+      body: { email, fullName, role },
     })
 
-    if (inviteError) {
-      return { error: inviteError.message }
+    if (error) {
+      return { error: error.message }
     }
 
-    const userId = inviteData.user?.id
-    if (!userId) return { error: 'Falha ao obter ID do usuário convidado.' }
-
-    // 2. Cria o registro em app_users
-    const { error: insertError } = await supabase
-      .from('app_users')
-      .insert({
-        id: userId,
-        full_name: fullName,
-        role,
-        is_active: true,
-      })
-
-    if (insertError) {
-      return { error: insertError.message }
+    if (data?.error) {
+      return { error: data.error }
     }
 
     await loadUsers()
