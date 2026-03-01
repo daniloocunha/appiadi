@@ -18,7 +18,7 @@ export function AppShell({ children, title }: AppShellProps) {
   return (
     <div className="flex h-full min-h-screen bg-slate-50">
       {/* Sidebar desktop */}
-      <Sidebar pendingCount={pendingCount} pendingRegistrationsCount={pendingRegistrationsCount} />
+      <Sidebar pendingRegistrationsCount={pendingRegistrationsCount} />
 
       {/* Sidebar mobile (drawer) */}
       <MobileSidebar />
