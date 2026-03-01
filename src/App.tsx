@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, Component } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
@@ -22,6 +22,47 @@ import { LettersPage } from '@/pages/letters/LettersPage'
 import { SelfRegistrationsPage } from '@/pages/registrations/SelfRegistrationsPage'
 import { PublicRegistrationPage } from '@/pages/registrations/PublicRegistrationPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
+
+// ---- Error Boundary global ----
+class ErrorBoundary extends Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('[ErrorBoundary]', error, info)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
+          <div className="text-center max-w-sm">
+            <p className="text-slate-700 font-medium mb-2">Algo deu errado.</p>
+            <p className="text-slate-500 text-sm mb-4">
+              Recarregue a página para continuar.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-blue-700 text-white text-sm rounded-lg hover:bg-blue-800"
+            >
+              Recarregar
+            </button>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -100,10 +141,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AppContent />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <AppContent />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </ErrorBoundary>
   )
 }

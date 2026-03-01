@@ -53,17 +53,23 @@ function InviteModal({
     }
     setError(null)
     setIsLoading(true)
-    const result = await onInvite(email.trim(), fullName.trim(), role)
-    setIsLoading(false)
-    if (result.error) {
-      if (result.error.includes('already been registered') || result.error.includes('already exists')) {
-        setError('Este e-mail já está cadastrado no sistema.')
+    try {
+      const result = await onInvite(email.trim(), fullName.trim(), role)
+      if (result.error) {
+        const msg = String(result.error)
+        if (msg.includes('already been registered') || msg.includes('already exists')) {
+          setError('Este e-mail já está cadastrado no sistema.')
+        } else {
+          setError(msg)
+        }
       } else {
-        setError(result.error)
+        setSuccess(true)
+        setTimeout(onClose, 2500)
       }
-    } else {
-      setSuccess(true)
-      setTimeout(onClose, 2500)
+    } catch {
+      setError('Erro inesperado ao enviar o convite. Tente novamente.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -119,12 +125,11 @@ function InviteModal({
               <p className="text-xs text-slate-500 mt-1">{ROLE_DESCRIPTIONS[role]}</p>
             </div>
 
-            {error && (
-              <div className="flex items-start gap-2 bg-red-50 rounded-lg p-3">
-                <AlertTriangle size={15} className="text-red-500 shrink-0 mt-0.5" />
-                <p className="text-xs text-red-700">{error}</p>
-              </div>
-            )}
+            {/* Container sempre presente evita erro de insertBefore no React */}
+            <div className={error ? 'flex items-start gap-2 bg-red-50 rounded-lg p-3' : 'hidden'} aria-live="polite">
+              <AlertTriangle size={15} className="text-red-500 shrink-0 mt-0.5" />
+              <p className="text-xs text-red-700">{error}</p>
+            </div>
 
             <div className="flex justify-end gap-2 pt-1 border-t border-slate-100">
               <Button type="button" variant="outline" size="sm" onClick={onClose}>
