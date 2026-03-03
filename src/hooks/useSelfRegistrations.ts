@@ -119,6 +119,8 @@ export function useSelfRegistrations() {
       recebeu_carta_transferencia: false,
       data_carta_transferencia: null,
       denominacao_origem: null,
+      naturalidade: registration.naturalidade ?? null,
+      naturalidade_uf: registration.naturalidade_uf ?? null,
     }
 
     // Registro de auto-cadastro atualizado como aprovado
@@ -225,6 +227,8 @@ export interface PublicRegistrationData {
   holy_spirit_date?: string | null
   batismo_pastor?: string | null
   batismo_local?: string | null
+  naturalidade?: string | null
+  naturalidade_uf?: string | null
 }
 
 /** Envia auto-cadastro diretamente ao Supabase (sem passar pelo IndexedDB — formulário público) */
@@ -267,6 +271,8 @@ export async function submitPublicRegistration(
     holy_spirit_date: data.holy_spirit_date ?? null,
     batismo_pastor: data.batismo_pastor ?? null,
     batismo_local: data.batismo_local ?? null,
+    naturalidade: data.naturalidade ?? null,
+    naturalidade_uf: data.naturalidade_uf ?? null,
     status: 'pendente',
     submitted_at: now,
     reviewed_at: null,

@@ -101,6 +101,8 @@ export interface Member {
   recebeu_carta_transferencia: boolean
   data_carta_transferencia: string | null
   denominacao_origem: string | null
+  naturalidade: string | null
+  naturalidade_uf: string | null
 }
 
 // ---- Member with congregation joined ----
@@ -192,6 +194,8 @@ export interface SelfRegistration {
   holy_spirit_date: string | null
   batismo_pastor: string | null
   batismo_local: string | null
+  naturalidade: string | null
+  naturalidade_uf: string | null
 }
 
 // ---- App User ----
