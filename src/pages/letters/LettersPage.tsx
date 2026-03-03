@@ -151,9 +151,10 @@ export function LettersPage() {
           // Tentativa 1: fetch direto na URL pública (bucket público tem CORS *)
           try {
             const resp = await fetch(cleanUrl)
-            if (resp.ok) {
+            const ct = resp.headers.get('content-type') ?? ''
+            if (resp.ok && ct.startsWith('image/')) {
               const buf = await resp.arrayBuffer()
-              const blob = new Blob([buf], { type: 'image/jpeg' })
+              const blob = new Blob([buf], { type: ct })
               resolvedPhotoUrl = await blobToBase64(blob)
             }
           } catch (e) {

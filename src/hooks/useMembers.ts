@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { db } from '@/lib/db'
 import { syncWrite } from '@/lib/sync'
+import { useSyncStore } from '@/store/syncStore'
 import type { Member } from '@/types'
 import type { MemberFormData } from '@/schemas/member.schema'
 import { v4 as uuidv4 } from 'uuid'
@@ -23,6 +24,9 @@ export function useMembers(filters?: MemberFilters) {
   const [members, setMembers] = useState<Member[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+
+  // Recarrega sempre que o sync remoto atualizar o IndexedDB
+  const lastSyncAt = useSyncStore((s) => s.lastSyncAt)
 
   const loadFromLocal = useCallback(async () => {
     try {
@@ -66,7 +70,7 @@ export function useMembers(filters?: MemberFilters) {
     } finally {
       setIsLoading(false)
     }
-  }, [filters?.search, filters?.congregation_id, filters?.status, filters?.church_role])
+  }, [filters?.search, filters?.congregation_id, filters?.status, filters?.church_role, lastSyncAt])
 
   useEffect(() => {
     loadFromLocal()
