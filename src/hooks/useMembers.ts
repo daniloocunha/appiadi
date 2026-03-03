@@ -152,6 +152,8 @@ export function useMembers(filters?: MemberFilters) {
       recebeu_carta_transferencia: data.recebeu_carta_transferencia ?? false,
       data_carta_transferencia: data.data_carta_transferencia ?? null,
       denominacao_origem: data.denominacao_origem ?? null,
+      naturalidade: data.naturalidade ?? null,
+      naturalidade_uf: data.naturalidade_uf ?? null,
     }
 
     try {

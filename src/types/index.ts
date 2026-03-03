@@ -194,6 +194,8 @@ export interface SelfRegistration {
   holy_spirit_date: string | null
   batismo_pastor: string | null
   batismo_local: string | null
+  naturalidade: string | null
+  naturalidade_uf: string | null
 }
 
 // ---- App User ----
