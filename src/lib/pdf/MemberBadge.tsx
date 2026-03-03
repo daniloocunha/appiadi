@@ -409,6 +409,16 @@ function BadgeBack({ member, congregation, badgeNumber, pastorName }: BadgeProps
           </View>
           <View style={styles.fieldRow}>
             <View style={[styles.field, { flex: 1 }]}>
+              <Text style={styles.fieldLabel}>Cargo</Text>
+              <Text style={styles.fieldValue}>{member.church_role ?? '—'}</Text>
+            </View>
+            <View style={[styles.field, { flex: 1 }]}>
+              <Text style={styles.fieldLabel}>Ministério</Text>
+              <Text style={styles.fieldValue}>{member.ministry ?? '—'}</Text>
+            </View>
+          </View>
+          <View style={styles.fieldRow}>
+            <View style={[styles.field, { flex: 1 }]}>
               <Text style={styles.fieldLabel}>RG</Text>
               <Text style={styles.fieldValue}>{member.rg ?? '—'}</Text>
             </View>
