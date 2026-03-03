@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { pdf } from '@react-pdf/renderer'
 import { AppShell } from '@/components/layout/AppShell'
 import { Button } from '@/components/ui/Button'
@@ -43,7 +43,17 @@ export function LettersPage() {
   const [history, setHistory] = useState<Array<Letter | (Badge & { updated_at?: string })>>([])
   const [showHistory, setShowHistory] = useState(false)
 
-  const { members, isLoading } = useMembers({ search: searchRaw })
+  const { members: allMembers, isLoading } = useMembers()
+  const members = useMemo(() => {
+    const q = searchRaw.trim().toLowerCase()
+    if (!q) return []
+    return allMembers.filter((m) =>
+      m.full_name.toLowerCase().includes(q) ||
+      m.phone?.includes(q) ||
+      m.email?.toLowerCase().includes(q) ||
+      m.cpf?.replace(/\D/g, '').includes(q.replace(/\D/g, ''))
+    )
+  }, [allMembers, searchRaw])
   const { congregations } = useCongregations()
   const congregationMap = Object.fromEntries(congregations.map((c) => [c.id, c]))
 
