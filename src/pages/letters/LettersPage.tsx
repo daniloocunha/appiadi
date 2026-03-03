@@ -123,37 +123,50 @@ export function LettersPage() {
         const badgeNumber = await generateBadgeNumber()
 
         // Converte a foto para base64 antes de gerar o PDF.
-        // Usa o cliente Supabase para baixar (evita CORS com fetch direto).
+        // @react-pdf/renderer não consegue carregar URLs externas diretamente;
+        // precisamos passar um data URL base64 com MIME type explícito.
+        const blobToBase64 = (b: Blob): Promise<string> =>
+          new Promise((res, rej) => {
+            const reader = new FileReader()
+            reader.onloadend = () => res(reader.result as string)
+            reader.onerror = rej
+            reader.readAsDataURL(b)
+          })
+
         let resolvedPhotoUrl: string | null = null
         if (selectedMember.photo_url) {
+          // Remove cache-buster (?t=...) para uma URL limpa
+          const cleanUrl = selectedMember.photo_url.split('?')[0]
+
+          // Tentativa 1: fetch direto na URL pública (bucket público tem CORS *)
           try {
-            const url = selectedMember.photo_url
-            let blob: Blob | null = null
+            const resp = await fetch(cleanUrl)
+            if (resp.ok) {
+              const buf = await resp.arrayBuffer()
+              const blob = new Blob([buf], { type: 'image/jpeg' })
+              resolvedPhotoUrl = await blobToBase64(blob)
+            }
+          } catch (e) {
+            console.warn('[Crachá] fetch público falhou, tentando supabase.storage:', e)
+          }
 
-            if (url.includes('member-photos')) {
-              const { data } = await supabase.storage
-                .from('member-photos')
-                .download(`members/${selectedMember.id}.jpg`)
-              blob = data
-            } else if (url.includes('registration-photos')) {
-              const match = url.match(/registration-photos\/(.+?)(?:\?|$)/)
-              if (match) {
-                const { data } = await supabase.storage
-                  .from('registration-photos')
-                  .download(match[1])
-                blob = data
+          // Tentativa 2: supabase.storage.download como fallback
+          if (!resolvedPhotoUrl) {
+            try {
+              const bucket = cleanUrl.includes('registration-photos')
+                ? 'registration-photos'
+                : 'member-photos'
+              const pathMatch = cleanUrl.match(new RegExp(`${bucket}/(.+)$`))
+              if (pathMatch) {
+                const { data } = await supabase.storage.from(bucket).download(pathMatch[1])
+                if (data) {
+                  const blob = new Blob([data], { type: 'image/jpeg' })
+                  resolvedPhotoUrl = await blobToBase64(blob)
+                }
               }
+            } catch (e) {
+              console.error('[Crachá] Não foi possível carregar a foto:', e)
             }
-
-            if (blob) {
-              resolvedPhotoUrl = await new Promise<string>((resolve) => {
-                const reader = new FileReader()
-                reader.onloadend = () => resolve(reader.result as string)
-                reader.readAsDataURL(blob!)
-              })
-            }
-          } catch {
-            resolvedPhotoUrl = null
           }
         }
 
