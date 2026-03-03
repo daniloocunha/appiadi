@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { pdf } from '@react-pdf/renderer'
 import { AppShell } from '@/components/layout/AppShell'
 import { Button } from '@/components/ui/Button'
@@ -9,6 +9,7 @@ import { useMembers } from '@/hooks/useMembers'
 import { useCongregations } from '@/hooks/useCongregations'
 import { usePermission } from '@/hooks/usePermission'
 import { useAuthStore } from '@/store/authStore'
+import { supabase } from '@/lib/supabase'
 import { db } from '@/lib/db'
 import { syncWrite } from '@/lib/sync'
 import { generateLetterNumber, generateBadgeNumber } from '@/utils/letterNumber'
@@ -42,7 +43,17 @@ export function LettersPage() {
   const [history, setHistory] = useState<Array<Letter | (Badge & { updated_at?: string })>>([])
   const [showHistory, setShowHistory] = useState(false)
 
-  const { members, isLoading } = useMembers({ search: searchRaw })
+  const { members: allMembers, isLoading } = useMembers()
+  const members = useMemo(() => {
+    const q = searchRaw.trim().toLowerCase()
+    if (!q) return []
+    return allMembers.filter((m) =>
+      m.full_name.toLowerCase().includes(q) ||
+      m.phone?.includes(q) ||
+      m.email?.toLowerCase().includes(q) ||
+      m.cpf?.replace(/\D/g, '').includes(q.replace(/\D/g, ''))
+    )
+  }, [allMembers, searchRaw])
   const { congregations } = useCongregations()
   const congregationMap = Object.fromEntries(congregations.map((c) => [c.id, c]))
 
@@ -121,20 +132,51 @@ export function LettersPage() {
       } else if (docType === 'cracha') {
         const badgeNumber = await generateBadgeNumber()
 
-        // Converte a foto para base64 antes de gerar o PDF,
-        // pois @react-pdf/renderer tem problemas com URLs remotas do Supabase.
-        let resolvedPhotoUrl: string | null = selectedMember.photo_url
+        // Converte a foto para base64 antes de gerar o PDF.
+        // @react-pdf/renderer não consegue carregar URLs externas diretamente;
+        // precisamos passar um data URL base64 com MIME type explícito.
+        const blobToBase64 = (b: Blob): Promise<string> =>
+          new Promise((res, rej) => {
+            const reader = new FileReader()
+            reader.onloadend = () => res(reader.result as string)
+            reader.onerror = rej
+            reader.readAsDataURL(b)
+          })
+
+        let resolvedPhotoUrl: string | null = null
         if (selectedMember.photo_url) {
+          // Remove cache-buster (?t=...) para uma URL limpa
+          const cleanUrl = selectedMember.photo_url.split('?')[0]
+
+          // Tentativa 1: fetch direto na URL pública (bucket público tem CORS *)
           try {
-            const resp = await fetch(selectedMember.photo_url)
-            const blob = await resp.blob()
-            resolvedPhotoUrl = await new Promise<string>((resolve) => {
-              const reader = new FileReader()
-              reader.onloadend = () => resolve(reader.result as string)
-              reader.readAsDataURL(blob)
-            })
-          } catch {
-            resolvedPhotoUrl = null
+            const resp = await fetch(cleanUrl)
+            if (resp.ok) {
+              const buf = await resp.arrayBuffer()
+              const blob = new Blob([buf], { type: 'image/jpeg' })
+              resolvedPhotoUrl = await blobToBase64(blob)
+            }
+          } catch (e) {
+            console.warn('[Crachá] fetch público falhou, tentando supabase.storage:', e)
+          }
+
+          // Tentativa 2: supabase.storage.download como fallback
+          if (!resolvedPhotoUrl) {
+            try {
+              const bucket = cleanUrl.includes('registration-photos')
+                ? 'registration-photos'
+                : 'member-photos'
+              const pathMatch = cleanUrl.match(new RegExp(`${bucket}/(.+)$`))
+              if (pathMatch) {
+                const { data } = await supabase.storage.from(bucket).download(pathMatch[1])
+                if (data) {
+                  const blob = new Blob([data], { type: 'image/jpeg' })
+                  resolvedPhotoUrl = await blobToBase64(blob)
+                }
+              }
+            } catch (e) {
+              console.error('[Crachá] Não foi possível carregar a foto:', e)
+            }
           }
         }
 

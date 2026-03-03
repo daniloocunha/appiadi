@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   backCol: {
     flex: 1,
     flexDirection: 'column',
-    gap: 4,
+    gap: 3,
   },
   field: {
     flexDirection: 'column',
@@ -253,6 +253,10 @@ const styles = StyleSheet.create({
   fieldValue: {
     fontSize: 6.5,
     color: '#1e293b',
+  },
+  fieldRow: {
+    flexDirection: 'row',
+    gap: 8,
   },
 
   backDivider: {
@@ -365,13 +369,15 @@ function BadgeBack({ member, congregation, badgeNumber, pastorName }: BadgeProps
             <Text style={styles.fieldLabel}>Congregação</Text>
             <Text style={styles.fieldValue}>{congregation?.name ?? '—'}</Text>
           </View>
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Naturalidade</Text>
-            <Text style={styles.fieldValue}>{member.naturalidade ?? '—'}</Text>
-          </View>
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>UF</Text>
-            <Text style={styles.fieldValue}>{member.naturalidade_uf ?? '—'}</Text>
+          <View style={styles.fieldRow}>
+            <View style={[styles.field, { flex: 2 }]}>
+              <Text style={styles.fieldLabel}>Naturalidade</Text>
+              <Text style={styles.fieldValue}>{member.naturalidade ?? '—'}</Text>
+            </View>
+            <View style={[styles.field, { flex: 1 }]}>
+              <Text style={styles.fieldLabel}>UF</Text>
+              <Text style={styles.fieldValue}>{member.naturalidade_uf ?? '—'}</Text>
+            </View>
           </View>
           <View style={styles.field}>
             <Text style={styles.fieldLabel}>Data de Nascimento</Text>
@@ -401,13 +407,15 @@ function BadgeBack({ member, congregation, badgeNumber, pastorName }: BadgeProps
             <Text style={styles.fieldLabel}>Data de Batismo</Text>
             <Text style={styles.fieldValue}>{fmtDate(member.baptism_date)}</Text>
           </View>
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>RG</Text>
-            <Text style={styles.fieldValue}>{member.rg ?? '—'}</Text>
-          </View>
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>CPF</Text>
-            <Text style={styles.fieldValue}>{member.cpf ? formatCPF(member.cpf) : '—'}</Text>
+          <View style={styles.fieldRow}>
+            <View style={[styles.field, { flex: 1 }]}>
+              <Text style={styles.fieldLabel}>RG</Text>
+              <Text style={styles.fieldValue}>{member.rg ?? '—'}</Text>
+            </View>
+            <View style={[styles.field, { flex: 1 }]}>
+              <Text style={styles.fieldLabel}>CPF</Text>
+              <Text style={styles.fieldValue}>{member.cpf ? formatCPF(member.cpf) : '—'}</Text>
+            </View>
           </View>
         </View>
       </View>
