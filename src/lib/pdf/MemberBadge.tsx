@@ -2,13 +2,35 @@ import { Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/render
 import type { Member, Congregation } from '@/types'
 import { formatCPF } from '@/utils/formatters'
 
-// Crachá vertical: ~67mm × 96mm (formato retrato)
-// Página A4: 2 crachás lado a lado — frente + verso separados para plastificação
+// Crachá horizontal: ~92mm × 63mm (formato paisagem)
+// Página A4 retrato: frente (2 crachás) + verso (2 crachás) com separador tracejado
 
-const BADGE_W  = 190   // ~67mm
-const BADGE_H  = 272   // ~96mm
-const PHOTO_SZ = 120   // foto circular centralizada
-const PAGE_PAD = 32
+const BADGE_W  = 258   // ~91mm
+const BADGE_H  = 174   // ~61mm
+const PHOTO_SZ = 76    // foto circular
+const PAGE_PAD = 20
+
+function todayDisplay() {
+  const d = new Date()
+  const dd = String(d.getDate()).padStart(2, '0')
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const yyyy = d.getFullYear()
+  return `Iaçu-BA, ${dd}/${mm}/${yyyy}`
+}
+
+function fmtDate(iso: string | null): string {
+  if (!iso) return '—'
+  const m = iso.match(/^(\d{4})-(\d{2})-(\d{2})/)
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : iso
+}
+
+const MARITAL: Record<string, string> = {
+  solteiro: 'Solteiro(a)',
+  casado: 'Casado(a)',
+  divorciado: 'Divorciado(a)',
+  viuvo: 'Viúvo(a)',
+  separado: 'Separado(a)',
+}
 
 const styles = StyleSheet.create({
   page: {
@@ -17,11 +39,11 @@ const styles = StyleSheet.create({
     padding: PAGE_PAD,
     backgroundColor: '#f1f5f9',
     flexDirection: 'column',
-    gap: 10,
+    gap: 8,
   },
   row: {
     flexDirection: 'row',
-    gap: 16,
+    gap: 14,
     justifyContent: 'center',
   },
   instruction: {
@@ -40,62 +62,69 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopStyle: 'dashed',
     borderTopColor: '#94a3b8',
-    marginVertical: 2,
+    marginVertical: 4,
   },
 
   // ══════════════════════════════
-  // FRENTE
+  // FRENTE (horizontal)
   // ══════════════════════════════
   front: {
     width: BADGE_W,
     height: BADGE_H,
     backgroundColor: '#1e3a8a',
-    borderRadius: 10,
+    borderRadius: 8,
     overflow: 'hidden',
     flexDirection: 'column',
-    alignItems: 'center',
   },
 
-  // Cabeçalho (faixa azul-escura)
   frontHeader: {
     width: '100%',
-    paddingVertical: 9,
-    paddingHorizontal: 12,
+    paddingVertical: 7,
+    paddingHorizontal: 10,
     backgroundColor: '#172554',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 7,
+    gap: 6,
   },
   headerLogo: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
   },
   headerTexts: {
     flexDirection: 'column',
   },
   headerTitle: {
-    fontSize: 10,
+    fontSize: 9,
     fontFamily: 'Helvetica-Bold',
     color: '#ffffff',
     letterSpacing: 1.5,
   },
   headerSub: {
-    fontSize: 6,
+    fontSize: 5.5,
     color: '#93c5fd',
     letterSpacing: 0.8,
   },
 
-  // Foto circular com anel branco
+  // Corpo horizontal: foto à esquerda + info à direita
+  frontBody: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    gap: 10,
+  },
+
   photoRing: {
-    marginTop: 14,
-    width: PHOTO_SZ + 8,
-    height: PHOTO_SZ + 8,
-    borderRadius: (PHOTO_SZ + 8) / 2,
+    width: PHOTO_SZ + 6,
+    height: PHOTO_SZ + 6,
+    borderRadius: (PHOTO_SZ + 6) / 2,
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   photo: {
     width: PHOTO_SZ,
@@ -112,52 +141,46 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   photoInitials: {
-    fontSize: 38,
+    fontSize: 26,
     fontFamily: 'Helvetica-Bold',
     color: '#93c5fd',
   },
 
-  // Dados do membro
   memberInfo: {
     flex: 1,
-    alignItems: 'center',
+    flexDirection: 'column',
     justifyContent: 'center',
-    paddingHorizontal: 14,
-    gap: 4,
+    gap: 3,
   },
   memberName: {
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: 'Helvetica-Bold',
     color: '#ffffff',
-    textAlign: 'center',
     lineHeight: 1.35,
   },
   memberRole: {
-    fontSize: 8,
+    fontSize: 7.5,
     color: '#bfdbfe',
-    textAlign: 'center',
   },
   memberCong: {
-    fontSize: 7,
+    fontSize: 6.5,
     color: '#93c5fd',
-    textAlign: 'center',
   },
 
-  // Faixa âmbar inferior
   amberStripe: {
     width: '100%',
-    height: 9,
+    height: 8,
     backgroundColor: '#f59e0b',
   },
 
   // ══════════════════════════════
-  // VERSO
+  // VERSO (horizontal)
   // ══════════════════════════════
   back: {
     width: BADGE_W,
     height: BADGE_H,
     backgroundColor: '#ffffff',
-    borderRadius: 10,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#e2e8f0',
     overflow: 'hidden',
@@ -166,88 +189,96 @@ const styles = StyleSheet.create({
 
   backHeader: {
     backgroundColor: '#1e3a8a',
-    paddingHorizontal: 10,
-    paddingVertical: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 5,
   },
   backLogo: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
   },
   backChurchName: {
     flex: 1,
-    fontSize: 7,
+    fontSize: 6,
     fontFamily: 'Helvetica-Bold',
     color: '#ffffff',
     lineHeight: 1.4,
   },
   idBox: {
     backgroundColor: '#172554',
-    borderRadius: 4,
-    paddingHorizontal: 5,
-    paddingVertical: 3,
+    borderRadius: 3,
+    paddingHorizontal: 4,
+    paddingVertical: 2,
     alignItems: 'center',
-    minWidth: 42,
+    minWidth: 36,
   },
   idLabel: {
-    fontSize: 5,
+    fontSize: 4.5,
     color: '#93c5fd',
-    letterSpacing: 0.5,
+    letterSpacing: 0.4,
   },
   idValue: {
-    fontSize: 9,
+    fontSize: 8,
     fontFamily: 'Helvetica-Bold',
     color: '#ffffff',
   },
 
-  backFields: {
+  // Corpo em 2 colunas
+  backBody: {
     flex: 1,
-    padding: 10,
-    gap: 7,
+    flexDirection: 'row',
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+    gap: 8,
+  },
+  backCol: {
+    flex: 1,
+    flexDirection: 'column',
+    gap: 4,
   },
   field: {
     flexDirection: 'column',
-    gap: 1,
+    gap: 0.5,
   },
   fieldLabel: {
-    fontSize: 6,
+    fontSize: 5,
     color: '#94a3b8',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.4,
     fontFamily: 'Helvetica-Bold',
   },
   fieldValue: {
-    fontSize: 8,
+    fontSize: 6.5,
     color: '#1e293b',
   },
 
   backDivider: {
-    borderTopWidth: 1,
+    borderTopWidth: 0.5,
     borderTopColor: '#e2e8f0',
   },
   signatureArea: {
-    paddingHorizontal: 10,
-    paddingVertical: 7,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
   signatureLine: {
-    width: 88,
-    borderTopWidth: 1,
+    width: 76,
+    borderTopWidth: 0.5,
     borderTopColor: '#334155',
-    marginBottom: 2,
+    marginBottom: 1,
   },
   signatureText: {
-    fontSize: 6,
+    fontSize: 5,
     color: '#64748b',
     textAlign: 'center',
   },
-  badgeRef: {
-    fontSize: 6,
+  genDate: {
+    fontSize: 5.5,
     color: '#94a3b8',
     textAlign: 'right',
   },
@@ -264,7 +295,7 @@ interface BadgeProps {
   pastorName: string
 }
 
-// ── Frente ──────────────────────────────────────────────
+// ── Frente horizontal ──────────────────────────────────────
 function BadgeFront({ member, congregation }: Pick<BadgeProps, 'member' | 'congregation'>) {
   const initials = getInitials(member.full_name)
   return (
@@ -278,24 +309,24 @@ function BadgeFront({ member, congregation }: Pick<BadgeProps, 'member' | 'congr
         </View>
       </View>
 
-      {/* Foto circular */}
-      <View style={styles.photoRing}>
-        {member.photo_url ? (
-          <Image src={member.photo_url} style={styles.photo} />
-        ) : (
-          <View style={styles.photoPlaceholder}>
-            <Text style={styles.photoInitials}>{initials}</Text>
-          </View>
-        )}
-      </View>
-
-      {/* Nome + cargo + congregação */}
-      <View style={styles.memberInfo}>
-        <Text style={styles.memberName}>{member.full_name}</Text>
-        <Text style={styles.memberRole}>{member.church_role ?? 'Membro'}</Text>
-        {congregation && (
-          <Text style={styles.memberCong}>{congregation.name}</Text>
-        )}
+      {/* Corpo: foto + info */}
+      <View style={styles.frontBody}>
+        <View style={styles.photoRing}>
+          {member.photo_url ? (
+            <Image src={member.photo_url} style={styles.photo} />
+          ) : (
+            <View style={styles.photoPlaceholder}>
+              <Text style={styles.photoInitials}>{initials}</Text>
+            </View>
+          )}
+        </View>
+        <View style={styles.memberInfo}>
+          <Text style={styles.memberName}>{member.full_name}</Text>
+          <Text style={styles.memberRole}>{member.church_role ?? 'Membro'}</Text>
+          {congregation && (
+            <Text style={styles.memberCong}>{congregation.name}</Text>
+          )}
+        </View>
       </View>
 
       {/* Faixa âmbar */}
@@ -304,11 +335,13 @@ function BadgeFront({ member, congregation }: Pick<BadgeProps, 'member' | 'congr
   )
 }
 
-// ── Verso ────────────────────────────────────────────────
-function BadgeBack({ member, badgeNumber, pastorName }: Omit<BadgeProps, 'congregation'>) {
+// ── Verso horizontal ──────────────────────────────────────
+function BadgeBack({ member, congregation, badgeNumber, pastorName }: BadgeProps) {
   const memberNum = member.member_number
     ? `#${String(member.member_number).padStart(4, '0')}`
     : badgeNumber
+
+  const maritalLabel = member.marital_status ? (MARITAL[member.marital_status] ?? member.marital_status) : '—'
 
   return (
     <View style={styles.back}>
@@ -316,7 +349,7 @@ function BadgeBack({ member, badgeNumber, pastorName }: Omit<BadgeProps, 'congre
       <View style={styles.backHeader}>
         <Image src="/logo.png" style={styles.backLogo} />
         <Text style={styles.backChurchName}>
-          Igreja Evang.{'\n'}Assembleia de Deus{'\n'}Iaçu — BA
+          Igreja Assembleia de Deus{'\n'}Iaçu — BA
         </Text>
         <View style={styles.idBox}>
           <Text style={styles.idLabel}>Nº</Text>
@@ -324,37 +357,62 @@ function BadgeBack({ member, badgeNumber, pastorName }: Omit<BadgeProps, 'congre
         </View>
       </View>
 
-      {/* Campos */}
-      <View style={styles.backFields}>
-        <View style={styles.field}>
-          <Text style={styles.fieldLabel}>Nome Completo</Text>
-          <Text style={styles.fieldValue}>{member.full_name}</Text>
-        </View>
-        <View style={styles.field}>
-          <Text style={styles.fieldLabel}>RG</Text>
-          <Text style={styles.fieldValue}>{member.rg ?? '—'}</Text>
-        </View>
-        <View style={styles.field}>
-          <Text style={styles.fieldLabel}>CPF</Text>
-          <Text style={styles.fieldValue}>{member.cpf ? formatCPF(member.cpf) : '—'}</Text>
-        </View>
-        <View style={styles.field}>
-          <Text style={styles.fieldLabel}>Nome do Pai</Text>
-          <Text style={styles.fieldValue}>{member.father_name ?? '—'}</Text>
-        </View>
-        <View style={styles.field}>
-          <Text style={styles.fieldLabel}>Nome da Mãe</Text>
-          <Text style={styles.fieldValue}>{member.mother_name ?? '—'}</Text>
-        </View>
-        {member.ministry ? (
+      {/* Campos em 2 colunas */}
+      <View style={styles.backBody}>
+        {/* Coluna esquerda */}
+        <View style={styles.backCol}>
           <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Ministério</Text>
-            <Text style={styles.fieldValue}>{member.ministry}</Text>
+            <Text style={styles.fieldLabel}>Congregação</Text>
+            <Text style={styles.fieldValue}>{congregation?.name ?? '—'}</Text>
           </View>
-        ) : null}
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>Naturalidade</Text>
+            <Text style={styles.fieldValue}>{member.naturalidade ?? '—'}</Text>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>UF</Text>
+            <Text style={styles.fieldValue}>{member.naturalidade_uf ?? '—'}</Text>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>Data de Nascimento</Text>
+            <Text style={styles.fieldValue}>{fmtDate(member.birth_date)}</Text>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>Estado Civil</Text>
+            <Text style={styles.fieldValue}>{maritalLabel}</Text>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>Cônjuge</Text>
+            <Text style={styles.fieldValue}>{member.spouse_name ?? '—'}</Text>
+          </View>
+        </View>
+
+        {/* Coluna direita */}
+        <View style={styles.backCol}>
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>Nome do Pai</Text>
+            <Text style={styles.fieldValue}>{member.father_name ?? '—'}</Text>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>Nome da Mãe</Text>
+            <Text style={styles.fieldValue}>{member.mother_name ?? '—'}</Text>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>Data de Batismo</Text>
+            <Text style={styles.fieldValue}>{fmtDate(member.baptism_date)}</Text>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>RG</Text>
+            <Text style={styles.fieldValue}>{member.rg ?? '—'}</Text>
+          </View>
+          <View style={styles.field}>
+            <Text style={styles.fieldLabel}>CPF</Text>
+            <Text style={styles.fieldValue}>{member.cpf ? formatCPF(member.cpf) : '—'}</Text>
+          </View>
+        </View>
       </View>
 
-      {/* Assinatura */}
+      {/* Assinatura + data de geração */}
       <View style={styles.backDivider} />
       <View style={styles.signatureArea}>
         <View>
@@ -362,7 +420,7 @@ function BadgeBack({ member, badgeNumber, pastorName }: Omit<BadgeProps, 'congre
           <Text style={styles.signatureText}>{pastorName}</Text>
           <Text style={styles.signatureText}>Pastor Presidente</Text>
         </View>
-        <Text style={styles.badgeRef}>{badgeNumber}</Text>
+        <Text style={styles.genDate}>{todayDisplay()}</Text>
       </View>
 
       {/* Faixa âmbar */}
@@ -371,7 +429,7 @@ function BadgeBack({ member, badgeNumber, pastorName }: Omit<BadgeProps, 'congre
   )
 }
 
-// ── Documento: 2 crachás verticais por página A4 ─────────
+// ── Documento: 2 crachás horizontais por linha ────────────
 export function MemberBadgePDF({ member, congregation, badgeNumber, pastorName }: BadgeProps) {
   return (
     <Document>
@@ -390,8 +448,8 @@ export function MemberBadgePDF({ member, congregation, badgeNumber, pastorName }
 
         <Text style={styles.instructionBold}>▼  VERSO</Text>
         <View style={styles.row}>
-          <BadgeBack member={member} badgeNumber={badgeNumber} pastorName={pastorName} />
-          <BadgeBack member={member} badgeNumber={badgeNumber} pastorName={pastorName} />
+          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} pastorName={pastorName} />
+          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} pastorName={pastorName} />
         </View>
 
         <Text style={styles.instruction}>

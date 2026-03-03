@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { submitPublicRegistration } from '@/hooks/useSelfRegistrations'
 import { uploadRegistrationPhoto } from '@/utils/photoUpload'
 import { CHURCH_ROLES, MINISTRIES, ESCOLARIDADES } from '@/schemas/member.schema'
-import { maskCPF, maskPhone, maskCEP } from '@/utils/inputMasks'
+import { maskCPF, maskPhone, maskCEP, maskDate, dateDisplayToISO } from '@/utils/inputMasks'
 import { Camera, X, CheckCircle, AlertCircle } from 'lucide-react'
 
 // Schema simplificado para o formulário público
@@ -34,6 +34,8 @@ const publicSchema = z.object({
   titulo_eleitor:       z.string().optional(),
   zona_eleitoral:       z.string().optional(),
   secao_eleitoral:      z.string().optional(),
+  naturalidade:         z.string().optional(),
+  naturalidade_uf:      z.string().optional(),
   // Batismo
   batizado_aguas:       z.boolean().optional(),
   baptism_date:         z.string().optional(),
@@ -181,13 +183,15 @@ export function PublicRegistrationPage() {
               const { error } = await submitPublicRegistration({
                 token,
                 full_name: raw.full_name,
-                birth_date: raw.birth_date || null,
+                birth_date: raw.birth_date ? (dateDisplayToISO(raw.birth_date) ?? null) : null,
                 phone: raw.phone ? raw.phone.replace(/\D/g, '') : null,
                 email: raw.email || null,
                 cpf: raw.cpf ? raw.cpf.replace(/\D/g, '') : null,
                 rg: raw.rg || null,
                 father_name: raw.father_name || null,
                 mother_name: raw.mother_name || null,
+                naturalidade: raw.naturalidade || null,
+                naturalidade_uf: raw.naturalidade_uf ? raw.naturalidade_uf.toUpperCase() : null,
                 address_street: raw.address_street || null,
                 address_number: raw.address_number || null,
                 address_neighborhood: raw.address_neighborhood || null,
@@ -204,8 +208,8 @@ export function PublicRegistrationPage() {
                 titulo_eleitor: raw.titulo_eleitor || null,
                 zona_eleitoral: raw.zona_eleitoral || null,
                 secao_eleitoral: raw.secao_eleitoral || null,
-                baptism_date: raw.batizado_aguas ? (raw.baptism_date || null) : null,
-                holy_spirit_date: raw.batizado_espirito ? (raw.holy_spirit_date || null) : null,
+                baptism_date: raw.batizado_aguas ? (raw.baptism_date ? (dateDisplayToISO(raw.baptism_date) ?? null) : null) : null,
+                holy_spirit_date: raw.batizado_espirito ? (raw.holy_spirit_date ? (dateDisplayToISO(raw.holy_spirit_date) ?? null) : null) : null,
                 batismo_pastor: raw.batizado_aguas ? (raw.batismo_pastor || null) : null,
                 batismo_local: raw.batizado_aguas ? (raw.batismo_local || null) : null,
               })
@@ -271,7 +275,18 @@ export function PublicRegistrationPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Data de Nascimento" error={errors.birth_date?.message}>
-                  <input type="date" className={inputClass} {...register('birth_date')} />
+                  <Controller
+                    name="birth_date"
+                    control={control}
+                    render={({ field }) => (
+                      <input
+                        className={inputClass}
+                        placeholder="dd/mm/aaaa"
+                        value={field.value ?? ''}
+                        onChange={(e) => field.onChange(maskDate(e.target.value))}
+                      />
+                    )}
+                  />
                 </Field>
                 <Field label="Estado Civil" error={errors.marital_status?.message}>
                   <select className={selectClass} {...register('marital_status')}>
@@ -297,6 +312,17 @@ export function PublicRegistrationPage() {
                 </Field>
                 <Field label="Nome da Mãe">
                   <input className={inputClass} placeholder="Nome da mãe" {...register('mother_name')} />
+                </Field>
+              </div>
+
+              <div className="grid grid-cols-3 gap-3">
+                <div className="col-span-2">
+                  <Field label="Naturalidade (cidade de nascimento)">
+                    <input className={inputClass} placeholder="Ex: Iaçu" {...register('naturalidade')} />
+                  </Field>
+                </div>
+                <Field label="UF">
+                  <input className={inputClass} placeholder="BA" maxLength={2} {...register('naturalidade_uf')} style={{ textTransform: 'uppercase' }} />
                 </Field>
               </div>
 
@@ -437,7 +463,18 @@ export function PublicRegistrationPage() {
               {batizadoAguas && (
                 <div className="pl-1 flex flex-col gap-3 border-l-2 border-blue-100 ml-1">
                   <Field label="Data do batismo em águas">
-                    <input type="date" className={inputClass} {...register('baptism_date')} />
+                    <Controller
+                      name="baptism_date"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          className={inputClass}
+                          placeholder="dd/mm/aaaa"
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(maskDate(e.target.value))}
+                        />
+                      )}
+                    />
                   </Field>
                   <div className="grid grid-cols-2 gap-3">
                     <Field label="Pastor que efetuou o batismo">
@@ -462,7 +499,18 @@ export function PublicRegistrationPage() {
               {batizadoEspirito && (
                 <div className="pl-1 border-l-2 border-blue-100 ml-1">
                   <Field label="Data do batismo no Espírito Santo">
-                    <input type="date" className={inputClass} {...register('holy_spirit_date')} />
+                    <Controller
+                      name="holy_spirit_date"
+                      control={control}
+                      render={({ field }) => (
+                        <input
+                          className={inputClass}
+                          placeholder="dd/mm/aaaa"
+                          value={field.value ?? ''}
+                          onChange={(e) => field.onChange(maskDate(e.target.value))}
+                        />
+                      )}
+                    />
                   </Field>
                 </div>
               )}

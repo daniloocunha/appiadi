@@ -101,6 +101,8 @@ export interface Member {
   recebeu_carta_transferencia: boolean
   data_carta_transferencia: string | null
   denominacao_origem: string | null
+  naturalidade: string | null
+  naturalidade_uf: string | null
 }
 
 // ---- Member with congregation joined ----

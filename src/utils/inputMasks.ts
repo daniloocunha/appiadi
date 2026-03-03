@@ -28,6 +28,26 @@ export function maskCEP(value: string): string {
   return `${digits.slice(0, 5)}-${digits.slice(5)}`
 }
 
+/** Data: dd/mm/aaaa (auto-formatação ao digitar) */
+export function maskDate(value: string): string {
+  const d = value.replace(/\D/g, '').slice(0, 8)
+  if (d.length <= 2) return d
+  if (d.length <= 4) return `${d.slice(0, 2)}/${d.slice(2)}`
+  return `${d.slice(0, 2)}/${d.slice(2, 4)}/${d.slice(4)}`
+}
+
+/** dd/mm/aaaa → YYYY-MM-DD (para salvar no banco como DATE) */
+export function dateDisplayToISO(v: string): string | undefined {
+  const m = v.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+  return m ? `${m[3]}-${m[2]}-${m[1]}` : undefined
+}
+
+/** YYYY-MM-DD → dd/mm/aaaa (para exibir no formulário) */
+export function dateISOToDisplay(v: string): string {
+  const m = v.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : v
+}
+
 /** Remove formatação — retorna só dígitos (para salvar no banco) */
 export function onlyDigits(value: string): string {
   return value.replace(/\D/g, '')

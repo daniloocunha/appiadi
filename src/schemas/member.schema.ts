@@ -7,6 +7,7 @@ export const CHURCH_ROLES = [
   'Presbítero',
   'Diácono',
   'Obreiro',
+  'Cooperador',
   'Evangelista',
   'Membro',
   'Congregado',
@@ -24,6 +25,7 @@ export const MINISTRIES = [
   'Intercessão',
   'Evangelismo',
   'Assistência Social',
+  'Dirigente de Congregação',
 ] as const
 
 export const ESCOLARIDADES = [
@@ -75,6 +77,8 @@ export const memberSchema = z.object({
   recebeu_carta_transferencia:   z.boolean().optional(),
   data_carta_transferencia:      z.string().nullable().optional(),
   denominacao_origem:            z.string().nullable().optional(),
+  naturalidade:                  z.string().nullable().optional(),
+  naturalidade_uf:               z.string().nullable().optional(),
 })
 
 export type MemberFormInput = z.input<typeof memberSchema>

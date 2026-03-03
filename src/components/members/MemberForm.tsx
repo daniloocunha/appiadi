@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/Button'
 import { Avatar } from '@/components/ui/Avatar'
 import type { Member, Congregation } from '@/types'
 import { Camera, X } from 'lucide-react'
-import { maskCPF, maskPhone, maskCEP } from '@/utils/inputMasks'
+import { maskCPF, maskPhone, maskCEP, maskDate, dateDisplayToISO, dateISOToDisplay } from '@/utils/inputMasks'
 
 interface MemberFormProps {
   initialData?: Member
@@ -109,11 +109,13 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
     resolver: zodResolver(memberSchema),
     defaultValues: {
       full_name: initialData?.full_name ?? '',
-      birth_date: initialData?.birth_date ?? '',
-      baptism_date: initialData?.baptism_date ?? '',
-      holy_spirit_date: initialData?.holy_spirit_date ?? '',
+      birth_date: initialData?.birth_date ? dateISOToDisplay(initialData.birth_date) : '',
+      baptism_date: initialData?.baptism_date ? dateISOToDisplay(initialData.baptism_date) : '',
+      holy_spirit_date: initialData?.holy_spirit_date ? dateISOToDisplay(initialData.holy_spirit_date) : '',
       father_name: initialData?.father_name ?? '',
       mother_name: initialData?.mother_name ?? '',
+      naturalidade: initialData?.naturalidade ?? '',
+      naturalidade_uf: initialData?.naturalidade_uf ?? '',
       cpf: initialData?.cpf ?? '',
       rg: initialData?.rg ?? '',
       phone: initialData?.phone ?? '',
@@ -134,7 +136,7 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
       church_role: initialData?.church_role ?? '',
       ministry: initialData?.ministry ?? '',
       notes: initialData?.notes ?? '',
-      joined_at: initialData?.joined_at ?? '',
+      joined_at: initialData?.joined_at ? dateISOToDisplay(initialData.joined_at) : '',
       escolaridade: initialData?.escolaridade ?? '',
       titulo_eleitor: initialData?.titulo_eleitor ?? '',
       zona_eleitoral: initialData?.zona_eleitoral ?? '',
@@ -142,7 +144,7 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
       batismo_pastor: initialData?.batismo_pastor ?? '',
       batismo_local: initialData?.batismo_local ?? '',
       recebeu_carta_transferencia: initialData?.recebeu_carta_transferencia ?? false,
-      data_carta_transferencia: initialData?.data_carta_transferencia ?? '',
+      data_carta_transferencia: initialData?.data_carta_transferencia ? dateISOToDisplay(initialData.data_carta_transferencia) : '',
       denominacao_origem: initialData?.denominacao_origem ?? '',
     },
   })
@@ -170,11 +172,13 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
       onSubmit={handleSubmit(async (raw) => {
         const data: MemberFormData = {
           full_name: raw.full_name,
-          birth_date: raw.birth_date || null,
-          baptism_date: raw.baptism_date || null,
-          holy_spirit_date: raw.holy_spirit_date || null,
+          birth_date: raw.birth_date ? (dateDisplayToISO(raw.birth_date) ?? null) : null,
+          baptism_date: raw.baptism_date ? (dateDisplayToISO(raw.baptism_date) ?? null) : null,
+          holy_spirit_date: raw.holy_spirit_date ? (dateDisplayToISO(raw.holy_spirit_date) ?? null) : null,
           father_name: raw.father_name || null,
           mother_name: raw.mother_name || null,
+          naturalidade: raw.naturalidade || null,
+          naturalidade_uf: raw.naturalidade_uf ? raw.naturalidade_uf.toUpperCase() : null,
           cpf: raw.cpf ? raw.cpf.replace(/\D/g, '') : null,
           rg: raw.rg || null,
           phone: raw.phone ? raw.phone.replace(/\D/g, '') : null,
@@ -195,7 +199,7 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
           church_role: raw.church_role || null,
           ministry: raw.ministry || null,
           notes: raw.notes || null,
-          joined_at: raw.joined_at || null,
+          joined_at: raw.joined_at ? (dateDisplayToISO(raw.joined_at) ?? null) : null,
           escolaridade: raw.escolaridade || null,
           titulo_eleitor: raw.titulo_eleitor || null,
           zona_eleitoral: raw.zona_eleitoral || null,
@@ -203,7 +207,7 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
           batismo_pastor: raw.batismo_pastor || null,
           batismo_local: raw.batismo_local || null,
           recebeu_carta_transferencia: raw.recebeu_carta_transferencia ?? false,
-          data_carta_transferencia: raw.data_carta_transferencia || null,
+          data_carta_transferencia: raw.data_carta_transferencia ? (dateDisplayToISO(raw.data_carta_transferencia) ?? null) : null,
           denominacao_origem: raw.denominacao_origem || null,
         }
         await onSave(data, photoFile)
@@ -255,17 +259,31 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
           {...register('full_name')}
         />
         <div className="grid grid-cols-2 gap-3">
-          <Input
-            label="Data de Nascimento"
-            type="date"
-            error={errors.birth_date?.message}
-            {...register('birth_date')}
+          <Controller
+            name="birth_date"
+            control={control}
+            render={({ field }) => (
+              <Input
+                label="Data de Nascimento"
+                placeholder="dd/mm/aaaa"
+                error={errors.birth_date?.message}
+                value={field.value ?? ''}
+                onChange={(e) => field.onChange(maskDate(e.target.value))}
+              />
+            )}
           />
-          <Input
-            label="Data de Ingresso"
-            type="date"
-            error={errors.joined_at?.message}
-            {...register('joined_at')}
+          <Controller
+            name="joined_at"
+            control={control}
+            render={({ field }) => (
+              <Input
+                label="Data de Ingresso"
+                placeholder="dd/mm/aaaa"
+                error={errors.joined_at?.message}
+                value={field.value ?? ''}
+                onChange={(e) => field.onChange(maskDate(e.target.value))}
+              />
+            )}
           />
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -280,6 +298,23 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
             placeholder="Nome da mãe"
             error={errors.mother_name?.message}
             {...register('mother_name')}
+          />
+        </div>
+        <div className="grid grid-cols-3 gap-3">
+          <div className="col-span-2">
+            <Input
+              label="Naturalidade (cidade de nascimento)"
+              placeholder="Ex: Iaçu"
+              error={errors.naturalidade?.message}
+              {...register('naturalidade')}
+            />
+          </div>
+          <Input
+            label="UF"
+            placeholder="BA"
+            maxLength={2}
+            error={errors.naturalidade_uf?.message}
+            {...register('naturalidade_uf')}
           />
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -531,17 +566,31 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
         </SelectField>
 
         <div className="grid grid-cols-2 gap-3">
-          <Input
-            label="Data de Batismo em Águas"
-            type="date"
-            error={errors.baptism_date?.message}
-            {...register('baptism_date')}
+          <Controller
+            name="baptism_date"
+            control={control}
+            render={({ field }) => (
+              <Input
+                label="Data de Batismo em Águas"
+                placeholder="dd/mm/aaaa"
+                error={errors.baptism_date?.message}
+                value={field.value ?? ''}
+                onChange={(e) => field.onChange(maskDate(e.target.value))}
+              />
+            )}
           />
-          <Input
-            label="Data do Batismo no Espírito"
-            type="date"
-            error={errors.holy_spirit_date?.message}
-            {...register('holy_spirit_date')}
+          <Controller
+            name="holy_spirit_date"
+            control={control}
+            render={({ field }) => (
+              <Input
+                label="Data do Batismo no Espírito"
+                placeholder="dd/mm/aaaa"
+                error={errors.holy_spirit_date?.message}
+                value={field.value ?? ''}
+                onChange={(e) => field.onChange(maskDate(e.target.value))}
+              />
+            )}
           />
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -572,11 +621,18 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
         </label>
         {recebeuCarta && (
           <div className="grid grid-cols-2 gap-3">
-            <Input
-              label="Data de recebimento da carta"
-              type="date"
-              error={errors.data_carta_transferencia?.message}
-              {...register('data_carta_transferencia')}
+            <Controller
+              name="data_carta_transferencia"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  label="Data de recebimento da carta"
+                  placeholder="dd/mm/aaaa"
+                  error={errors.data_carta_transferencia?.message}
+                  value={field.value ?? ''}
+                  onChange={(e) => field.onChange(maskDate(e.target.value))}
+                />
+              )}
             />
             <Input
               label="Denominação de origem"

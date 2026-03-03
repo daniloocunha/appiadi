@@ -120,9 +120,27 @@ export function LettersPage() {
 
       } else if (docType === 'cracha') {
         const badgeNumber = await generateBadgeNumber()
+
+        // Converte a foto para base64 antes de gerar o PDF,
+        // pois @react-pdf/renderer tem problemas com URLs remotas do Supabase.
+        let resolvedPhotoUrl: string | null = selectedMember.photo_url
+        if (selectedMember.photo_url) {
+          try {
+            const resp = await fetch(selectedMember.photo_url)
+            const blob = await resp.blob()
+            resolvedPhotoUrl = await new Promise<string>((resolve) => {
+              const reader = new FileReader()
+              reader.onloadend = () => resolve(reader.result as string)
+              reader.readAsDataURL(blob)
+            })
+          } catch {
+            resolvedPhotoUrl = null
+          }
+        }
+
         const doc = (
           <MemberBadgePDF
-            member={selectedMember}
+            member={{ ...selectedMember, photo_url: resolvedPhotoUrl }}
             congregation={congregation}
             badgeNumber={badgeNumber}
             pastorName={pastorName}
