@@ -254,6 +254,10 @@ const styles = StyleSheet.create({
     fontSize: 6.5,
     color: '#1e293b',
   },
+  fieldRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
 
   backDivider: {
     borderTopWidth: 0.5,
@@ -401,13 +405,15 @@ function BadgeBack({ member, congregation, badgeNumber, pastorName }: BadgeProps
             <Text style={styles.fieldLabel}>Data de Batismo</Text>
             <Text style={styles.fieldValue}>{fmtDate(member.baptism_date)}</Text>
           </View>
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>RG</Text>
-            <Text style={styles.fieldValue}>{member.rg ?? '—'}</Text>
-          </View>
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>CPF</Text>
-            <Text style={styles.fieldValue}>{member.cpf ? formatCPF(member.cpf) : '—'}</Text>
+          <View style={styles.fieldRow}>
+            <View style={[styles.field, { flex: 1 }]}>
+              <Text style={styles.fieldLabel}>RG</Text>
+              <Text style={styles.fieldValue}>{member.rg ?? '—'}</Text>
+            </View>
+            <View style={[styles.field, { flex: 1 }]}>
+              <Text style={styles.fieldLabel}>CPF</Text>
+              <Text style={styles.fieldValue}>{member.cpf ? formatCPF(member.cpf) : '—'}</Text>
+            </View>
           </View>
         </View>
       </View>

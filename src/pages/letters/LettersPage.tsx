@@ -9,6 +9,7 @@ import { useMembers } from '@/hooks/useMembers'
 import { useCongregations } from '@/hooks/useCongregations'
 import { usePermission } from '@/hooks/usePermission'
 import { useAuthStore } from '@/store/authStore'
+import { supabase } from '@/lib/supabase'
 import { db } from '@/lib/db'
 import { syncWrite } from '@/lib/sync'
 import { generateLetterNumber, generateBadgeNumber } from '@/utils/letterNumber'
@@ -121,18 +122,36 @@ export function LettersPage() {
       } else if (docType === 'cracha') {
         const badgeNumber = await generateBadgeNumber()
 
-        // Converte a foto para base64 antes de gerar o PDF,
-        // pois @react-pdf/renderer tem problemas com URLs remotas do Supabase.
-        let resolvedPhotoUrl: string | null = selectedMember.photo_url
+        // Converte a foto para base64 antes de gerar o PDF.
+        // Usa o cliente Supabase para baixar (evita CORS com fetch direto).
+        let resolvedPhotoUrl: string | null = null
         if (selectedMember.photo_url) {
           try {
-            const resp = await fetch(selectedMember.photo_url)
-            const blob = await resp.blob()
-            resolvedPhotoUrl = await new Promise<string>((resolve) => {
-              const reader = new FileReader()
-              reader.onloadend = () => resolve(reader.result as string)
-              reader.readAsDataURL(blob)
-            })
+            const url = selectedMember.photo_url
+            let blob: Blob | null = null
+
+            if (url.includes('member-photos')) {
+              const { data } = await supabase.storage
+                .from('member-photos')
+                .download(`members/${selectedMember.id}.jpg`)
+              blob = data
+            } else if (url.includes('registration-photos')) {
+              const match = url.match(/registration-photos\/(.+?)(?:\?|$)/)
+              if (match) {
+                const { data } = await supabase.storage
+                  .from('registration-photos')
+                  .download(match[1])
+                blob = data
+              }
+            }
+
+            if (blob) {
+              resolvedPhotoUrl = await new Promise<string>((resolve) => {
+                const reader = new FileReader()
+                reader.onloadend = () => resolve(reader.result as string)
+                reader.readAsDataURL(blob!)
+              })
+            }
           } catch {
             resolvedPhotoUrl = null
           }
