@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { submitPublicRegistration } from '@/hooks/useSelfRegistrations'
 import { uploadRegistrationPhoto } from '@/utils/photoUpload'
 import { CHURCH_ROLES, MINISTRIES, ESCOLARIDADES } from '@/schemas/member.schema'
+import { MARITAL_STATUSES } from '@/types'
 import { maskCPF, maskPhone, maskCEP, maskDate, dateDisplayToISO } from '@/utils/inputMasks'
 import { Camera, X, CheckCircle, AlertCircle } from 'lucide-react'
 
@@ -25,7 +26,7 @@ const publicSchema = z.object({
   address_city:         z.string().optional(),
   address_state:        z.string().optional(),
   address_zip:          z.string().optional(),
-  marital_status:       z.enum(['solteiro','casado','divorciado','viuvo','separado']).optional(),
+  marital_status:       z.enum(MARITAL_STATUSES).optional(),
   spouse_name:          z.string().optional(),
   occupation:           z.string().optional(),
   escolaridade:         z.string().optional(),

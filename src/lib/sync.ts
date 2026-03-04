@@ -7,6 +7,7 @@ import {
   isDbInitialized,
 } from './db'
 import { useSyncStore } from '@/store/syncStore'
+import { logger } from '@/utils/logger'
 
 // ============================================================
 // Motor de sincronização offline-first
@@ -23,6 +24,19 @@ const SYNCABLE_TABLES = [
 
 type SyncableTable = (typeof SYNCABLE_TABLES)[number]
 
+// Accessor tipado — evita (db as any)[tableName] em todo o arquivo
+function getDbTable(tableName: SyncableTable) {
+  const tables = {
+    congregations:     db.congregations,
+    members:           db.members,
+    events:            db.events,
+    letters:           db.letters,
+    badges:            db.badges,
+    self_registrations:db.self_registrations,
+  } satisfies Record<SyncableTable, unknown>
+  return tables[tableName]
+}
+
 // ---- PULL (Supabase → IndexedDB) ----
 
 async function pullTable(tableName: SyncableTable, since: string): Promise<number> {
@@ -33,19 +47,15 @@ async function pullTable(tableName: SyncableTable, since: string): Promise<numbe
     .order('updated_at', { ascending: true })
 
   if (error) {
-    console.error(`[sync] Erro ao baixar ${tableName}:`, error)
+    logger.error(`[sync] Erro ao baixar ${tableName}:`, error)
     return 0
   }
 
   if (!data || data.length === 0) return 0
 
-  // Tipo seguro: cast para qualquer pois cada tabela tem campos diferentes
+  const table = getDbTable(tableName)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const table = (db as any)[tableName]
-  await table.bulkPut(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data.map((record: any) => ({ ...record, _synced: true }))
-  )
+  await (table as any).bulkPut(data.map((record: unknown) => ({ ...(record as object), _synced: true })))
 
   return data.length
 }
@@ -66,7 +76,7 @@ export async function pullFromSupabase(): Promise<void> {
   if (!isDbInitialized()) markDbInitialized()
 
   if (totalPulled > 0) {
-    console.log(`[sync] Pull concluído: ${totalPulled} registros atualizados`)
+    logger.log(`[sync] Pull concluído: ${totalPulled} registros atualizados`)
   }
 }
 
@@ -150,24 +160,24 @@ export async function pushToSupabase(): Promise<void> {
       processedCount++
 
       // Marca o registro local como sincronizado
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const table = (db as any)[item.table_name]
+      const table = getDbTable(item.table_name as SyncableTable)
       if (table) {
-        await table.update(item.record_id, { _synced: true })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (table as any).update(item.record_id, { _synced: true })
       }
     } catch (error) {
       const newRetryCount = item.retry_count + 1
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const err = error as any
       lastError = err?.message ?? `HTTP ${err?.httpStatus ?? 'unknown'}`
-      console.error(
+      logger.error(
         `[sync] Erro ao sincronizar ${item.table_name}/${item.record_id} (tentativa ${newRetryCount}):`,
         error
       )
 
       // Limite absoluto: descarta independente do tipo de erro
       if (newRetryCount >= HARD_RETRY_LIMIT) {
-        console.warn(`[sync] Descartando item após ${HARD_RETRY_LIMIT} tentativas: ${item.table_name}/${item.record_id}`, error)
+        logger.warn(`[sync] Descartando item após ${HARD_RETRY_LIMIT} tentativas: ${item.table_name}/${item.record_id}`, error)
         await db.sync_queue.delete(item.id!)
         skippedCount++
         continue
@@ -175,7 +185,7 @@ export async function pushToSupabase(): Promise<void> {
 
       if (isPermanentError(error) && newRetryCount >= MAX_RETRIES) {
         // Erro permanente após várias tentativas — descarta o item para não bloquear a fila
-        console.warn(`[sync] Descartando item permanentemente inválido: ${item.table_name}/${item.record_id}`)
+        logger.warn(`[sync] Descartando item permanentemente inválido: ${item.table_name}/${item.record_id}`)
         await db.sync_queue.delete(item.id!)
         skippedCount++
         // Continua para o próximo item (não quebra o loop)
@@ -207,10 +217,10 @@ export async function pushToSupabase(): Promise<void> {
   }
 
   if (processedCount > 0) {
-    console.log(`[sync] Push concluído: ${processedCount} registros enviados`)
+    logger.log(`[sync] Push concluído: ${processedCount} registros enviados`)
   }
   if (skippedCount > 0) {
-    console.warn(`[sync] ${skippedCount} registros descartados por erro permanente`)
+    logger.warn(`[sync] ${skippedCount} registros descartados por erro permanente`)
   }
 }
 
@@ -226,9 +236,9 @@ export async function syncWrite<T extends { id: string; updated_at: string }>(
   operation: Operation = 'UPDATE'
 ): Promise<void> {
   // 1. Grava no IndexedDB imediatamente (offline-safe)
+  const table = getDbTable(tableName)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const table = (db as any)[tableName]
-  await table.put({ ...record, _synced: false })
+  await (table as any).put({ ...record, _synced: false })
 
   const queueItem = {
     table_name: tableName,
@@ -256,7 +266,8 @@ export async function syncWrite<T extends { id: string; updated_at: string }>(
         if (error) throw error
       }
       // 3. Marca como sincronizado
-      await table.update(record.id, { _synced: true })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      await (table as any).update(record.id, { _synced: true })
     } catch {
       // 4. Se falhar, adiciona à fila
       await db.sync_queue.add(queueItem)
@@ -280,7 +291,7 @@ export async function syncAll(): Promise<void> {
     await pullFromSupabase()
     useSyncStore.getState().setLastSyncAt(new Date().toISOString())
   } catch (error) {
-    console.error('[sync] Erro na sincronização:', error)
+    logger.error('[sync] Erro na sincronização:', error)
   } finally {
     useSyncStore.getState().setSyncing(false)
   }

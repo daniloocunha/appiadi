@@ -4,6 +4,7 @@ import { db } from '@/lib/db'
 import { syncWrite } from '@/lib/sync'
 import { v4 as uuidv4 } from 'uuid'
 import type { SelfRegistration, Member } from '@/types'
+import { logger } from '@/utils/logger'
 
 // ============================================================
 // Hook: useSelfRegistrations
@@ -51,7 +52,7 @@ export function useSelfRegistrations() {
       setRegistrations(local as SelfRegistration[])
     } catch (e) {
       setError('Erro ao carregar cadastros pendentes')
-      console.error(e)
+      logger.error(e)
     } finally {
       setIsLoading(false)
     }

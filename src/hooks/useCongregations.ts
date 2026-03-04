@@ -5,6 +5,7 @@ import { syncWrite } from '@/lib/sync'
 import type { Congregation } from '@/types'
 import type { CongregationFormData } from '@/schemas/congregation.schema'
 import { v4 as uuidv4 } from 'uuid'
+import { logger } from '@/utils/logger'
 
 // ============================================================
 // Hook: useCongregations
@@ -28,7 +29,7 @@ export function useCongregations() {
       setCongregations(local as Congregation[])
     } catch (e) {
       setError('Erro ao carregar congregações locais')
-      console.error(e)
+      logger.error(e)
     } finally {
       setIsLoading(false)
     }

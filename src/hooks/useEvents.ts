@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { db } from '@/lib/db'
 import { syncWrite } from '@/lib/sync'
 import type { ChurchEvent, EventType } from '@/types'
+import { EVENT_TYPES } from '@/types'
 import { v4 as uuidv4 } from 'uuid'
 import { z } from 'zod'
+import { logger } from '@/utils/logger'
 
 export const eventSchema = z.object({
   title:          z.string().min(2, 'Título deve ter pelo menos 2 caracteres'),
@@ -14,7 +16,7 @@ export const eventSchema = z.object({
   end_time:       z.string().nullable().optional(),
   location:       z.string().nullable().optional(),
   congregation_id:z.string().nullable().optional(),
-  event_type:     z.enum(['culto','reuniao','conferencia','retiro','aniversario_congregacao','outro']),
+  event_type:     z.enum(EVENT_TYPES),
 })
 
 export type EventFormData = z.infer<typeof eventSchema>
@@ -51,7 +53,7 @@ export function useEvents(month?: number, year?: number) {
       all.sort((a, b) => a.event_date.localeCompare(b.event_date))
       setEvents(all as ChurchEvent[])
     } catch (e) {
-      console.error(e)
+      logger.error(e)
     } finally {
       setIsLoading(false)
     }

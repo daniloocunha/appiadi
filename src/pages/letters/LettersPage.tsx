@@ -23,6 +23,7 @@ import {
   FileText, Award, Search, X, Download, FileCheck,
   ChevronDown, ChevronUp, History
 } from 'lucide-react'
+import { logger } from '@/utils/logger'
 
 type DocumentType = 'recomendacao' | 'transferencia' | 'cracha'
 
@@ -158,7 +159,7 @@ export function LettersPage() {
               resolvedPhotoUrl = await blobToBase64(blob)
             }
           } catch (e) {
-            console.warn('[Crachá] fetch público falhou, tentando supabase.storage:', e)
+            logger.warn('[Crachá] fetch público falhou, tentando supabase.storage:', e)
           }
 
           // Tentativa 2: supabase.storage.download como fallback
@@ -176,7 +177,7 @@ export function LettersPage() {
                 }
               }
             } catch (e) {
-              console.error('[Crachá] Não foi possível carregar a foto:', e)
+              logger.error('[Crachá] Não foi possível carregar a foto:', e)
             }
           }
         }
@@ -205,7 +206,7 @@ export function LettersPage() {
       setDestination('')
       setDestinationCity('')
     } catch (e) {
-      console.error('Erro ao gerar PDF:', e)
+      logger.error('Erro ao gerar PDF:', e)
       alert('Erro ao gerar o documento. Tente novamente.')
     } finally {
       setIsGenerating(false)
