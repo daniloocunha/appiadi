@@ -9,7 +9,7 @@ const PASTOR_CREDENTIALS = 'CEADEB 5.898 | CGADB 37087'
 
 const styles = StyleSheet.create({
   page: {
-    padding: 50,
+    padding: 36,
     fontFamily: 'Helvetica',
     fontSize: 11,
     color: '#1e293b',
@@ -18,43 +18,43 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
     borderBottom: 2,
     borderBottomColor: '#1e3a8a',
-    paddingBottom: 15,
-    gap: 15,
+    paddingBottom: 10,
+    gap: 12,
   },
-  logo: { width: 60, height: 60 },
+  logo: { width: 54, height: 54 },
   headerText: { flex: 1 },
   churchName: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: 'Helvetica-Bold',
     color: '#1e3a8a',
   },
-  churchSub: { fontSize: 8, color: '#475569', marginTop: 1.5 },
-  letterNumber: { fontSize: 9, color: '#94a3b8', marginTop: 4 },
+  churchSub: { fontSize: 7.5, color: '#475569', marginTop: 1.5 },
+  letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 3 },
   verse: {
     fontSize: 7.5,
     color: '#1e3a8a',
     fontStyle: 'italic',
     textAlign: 'center',
-    marginBottom: 10,
-    marginTop: 6,
+    marginBottom: 6,
+    marginTop: 4,
   },
   title: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: 'Helvetica-Bold',
     textAlign: 'center',
     color: '#1e3a8a',
-    marginBottom: 16,
+    marginBottom: 8,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
   body: {
     fontSize: 11,
-    lineHeight: 2,
+    lineHeight: 1.7,
     textAlign: 'justify',
-    marginBottom: 20,
+    marginBottom: 10,
   },
   bold: { fontFamily: 'Helvetica-Bold' },
 
@@ -63,21 +63,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#1e3a8a',
     borderRadius: 4,
-    padding: 10,
-    marginBottom: 20,
+    padding: 8,
+    marginBottom: 10,
     backgroundColor: '#f0f4ff',
   },
   memberBoxTitle: {
-    fontSize: 8,
+    fontSize: 7.5,
     fontFamily: 'Helvetica-Bold',
     color: '#1e3a8a',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-    marginBottom: 6,
+    marginBottom: 5,
   },
   memberBoxRow: {
     flexDirection: 'row',
-    gap: 20,
+    gap: 16,
     marginBottom: 3,
   },
   memberBoxField: {
@@ -85,42 +85,42 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   memberBoxLabel: {
-    fontSize: 7,
+    fontSize: 6.5,
     color: '#64748b',
     fontFamily: 'Helvetica-Bold',
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
   memberBoxValue: {
-    fontSize: 10,
+    fontSize: 9.5,
     color: '#1e293b',
     fontFamily: 'Helvetica-Bold',
   },
 
-  signatureSection: { marginTop: 50, alignItems: 'center' },
-  signatureImg: { width: 120, height: 66, objectFit: 'contain', marginBottom: 2 },
+  signatureSection: { marginTop: 24, alignItems: 'center' },
+  signatureImg: { width: 110, height: 60, objectFit: 'contain', marginBottom: 2 },
   signatureLine: {
     borderTop: 1,
     borderTopColor: '#1e293b',
-    width: 250,
-    marginBottom: 5,
+    width: 240,
+    marginBottom: 4,
   },
-  signatureText: { fontSize: 10, textAlign: 'center', color: '#475569' },
+  signatureText: { fontSize: 9.5, textAlign: 'center', color: '#475569' },
   dateText: {
     fontSize: 10,
     textAlign: 'right',
     color: '#475569',
-    marginBottom: 30,
+    marginBottom: 10,
   },
   footer: {
     position: 'absolute',
-    bottom: 30,
-    left: 50,
-    right: 50,
+    bottom: 20,
+    left: 36,
+    right: 36,
     borderTop: 1,
     borderTopColor: '#e2e8f0',
-    paddingTop: 8,
-    fontSize: 8,
+    paddingTop: 6,
+    fontSize: 7.5,
     color: '#94a3b8',
     textAlign: 'center',
   },
@@ -176,6 +176,10 @@ export function RecommendationLetterPDF({
           </View>
           <View style={styles.memberBoxRow}>
             <View style={styles.memberBoxField}>
+              <Text style={styles.memberBoxLabel}>Cargo / Função</Text>
+              <Text style={styles.memberBoxValue}>{member.church_role ?? '—'}</Text>
+            </View>
+            <View style={styles.memberBoxField}>
               <Text style={styles.memberBoxLabel}>Congregação / Sede</Text>
               <Text style={styles.memberBoxValue}>{congregation?.name ?? '—'}</Text>
             </View>
@@ -193,7 +197,7 @@ export function RecommendationLetterPDF({
           <Text style={styles.bold}>Igreja Evangélica Assembleia de Deus — {congregation?.name ?? 'IADI'}</Text>
           {', sediada em '}
           <Text style={styles.bold}>{city} — BA</Text>
-          {', vem por meio desta, recomendar o(a) irmão(ã) '}
+          {', vem por meio desta recomendar o(a) irmão(ã) '}
           <Text style={styles.bold}>{member.full_name}</Text>
           {', portador(a) do CPF '}
           <Text style={styles.bold}>{member.cpf ? formatCPF(member.cpf) : 'não informado'}</Text>
@@ -201,7 +205,7 @@ export function RecommendationLetterPDF({
           <Text style={styles.bold}>
             {member.baptism_date ? formatDate(member.baptism_date, 'long') : 'data não informada'}
           </Text>
-          {', que tem se mantido em comunhão ativa com esta Igreja, participando regularmente dos cultos e atividades da congregação.'}
+          {'. O(A) referido(a) irmão(ã) é membro ativo desta Igreja, dentro dos princípios bíblicos e doutrinários, mantendo-se em comunhão ativa e participando regularmente dos cultos e atividades da congregação.'}
           {'\n\n'}
           {'        '}Recomendamos o(a) referido(a) irmão(ã) como pessoa de boa índole moral e cristã, digno(a) de toda confiança, a ser recebido(a) em qualquer congregação desta ou de outras denominações.
           {'\n\n'}
