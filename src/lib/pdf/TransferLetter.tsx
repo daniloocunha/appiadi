@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 6,
     borderBottom: 2,
     borderBottomColor: '#1e3a8a',
@@ -23,7 +24,7 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   logo: { width: 68, height: 68 },
-  headerText: { flex: 1 },
+  headerText: {},
   churchName: {
     fontSize: 16,
     fontFamily: 'Helvetica-Bold',
