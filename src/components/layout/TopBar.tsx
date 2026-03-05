@@ -23,7 +23,7 @@ export function TopBar({ title }: TopBarProps) {
       {/* Logo mobile */}
       <div className="flex items-center gap-2 lg:hidden">
         <img src="/logo.png" alt="IADI" className="w-7 h-7 rounded-full" />
-        <span className="text-sm font-bold text-blue-900">{title ?? 'IADI'}</span>
+        <span className="text-sm font-bold text-amber-900">{title ?? 'IADI'}</span>
       </div>
 
       {/* Título desktop */}

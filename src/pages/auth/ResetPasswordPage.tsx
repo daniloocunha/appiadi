@@ -103,7 +103,7 @@ export function ResetPasswordPage() {
 
   if (pageState === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-900 via-amber-800 to-amber-950">
         <div className="flex flex-col items-center gap-3">
           <img src="/logo.png" alt="IADI" className="w-16 h-16 rounded-full animate-pulse" />
           <p className="text-white text-sm">Verificando link…</p>
@@ -114,7 +114,7 @@ export function ResetPasswordPage() {
 
   if (pageState === 'invalid') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-900 via-amber-800 to-amber-950 p-4">
         <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-8 text-center">
           <AlertTriangle size={48} className="text-amber-500 mx-auto mb-4" />
           <h2 className="text-lg font-bold text-slate-800 mb-2">Link inválido ou expirado</h2>
@@ -131,7 +131,7 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-900 via-amber-800 to-amber-950 p-4">
       <div className="w-full max-w-sm">
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Logo */}
@@ -141,7 +141,7 @@ export function ResetPasswordPage() {
               alt="IADI"
               className="w-16 h-16 rounded-full object-cover mb-3 shadow-md"
             />
-            <h1 className="text-xl font-bold text-blue-900 text-center">Definir sua senha</h1>
+            <h1 className="text-xl font-bold text-amber-900 text-center">Definir sua senha</h1>
             <p className="text-sm text-slate-500 text-center mt-1">Igreja Assembleia de Deus em Iaçu — Gestão de Membros</p>
           </div>
 
@@ -212,7 +212,7 @@ export function ResetPasswordPage() {
           )}
         </div>
 
-        <p className="text-center text-xs text-blue-300 mt-4">
+        <p className="text-center text-xs text-amber-300 mt-4">
           IADI © {new Date().getFullYear()} — Sistema restrito à liderança
         </p>
       </div>

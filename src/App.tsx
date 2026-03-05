@@ -30,7 +30,7 @@ const SettingsPage          = lazy(() => import('@/pages/settings/SettingsPage')
 function PageLoadingFallback() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="w-8 h-8 border-4 border-blue-700 border-t-transparent rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-amber-700 border-t-transparent rounded-full animate-spin" />
     </div>
   )
 }
@@ -60,7 +60,7 @@ class RouteErrorBoundary extends Component<
           <p className="text-slate-700 font-medium">Algo deu errado nesta página.</p>
           <button
             onClick={() => this.setState({ hasError: false })}
-            className="px-4 py-2 bg-blue-700 text-white text-sm rounded-lg hover:bg-blue-800"
+            className="px-4 py-2 bg-amber-700 text-white text-sm rounded-lg hover:bg-amber-800"
           >
             Tentar novamente
           </button>
@@ -100,7 +100,7 @@ class ErrorBoundary extends Component<
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-blue-700 text-white text-sm rounded-lg hover:bg-blue-800"
+              className="px-4 py-2 bg-amber-700 text-white text-sm rounded-lg hover:bg-amber-800"
             >
               Recarregar
             </button>
@@ -138,7 +138,7 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-blue-900">
+      <div className="min-h-screen flex items-center justify-center bg-amber-900">
         <div className="flex flex-col items-center gap-3">
           <img src="/logo.png" alt="IADI" className="w-16 h-16 rounded-full animate-pulse" />
           <p className="text-white text-sm">Carregando…</p>

@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   instructionBold: {
     textAlign: 'center',
     fontSize: 7,
-    color: '#1e3a8a',
+    color: '#78350f',
     fontFamily: 'Helvetica-Bold',
     letterSpacing: 0.5,
   },
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   front: {
     width: BADGE_W,
     height: BADGE_H,
-    backgroundColor: '#1e3a8a',
+    backgroundColor: '#78350f',
     borderRadius: 8,
     overflow: 'hidden',
     flexDirection: 'column',
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingVertical: 7,
     paddingHorizontal: 10,
-    backgroundColor: '#172554',
+    backgroundColor: '#451a03',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   headerSub: {
     fontSize: 5.5,
-    color: '#93c5fd',
+    color: '#fcd34d',
     letterSpacing: 0.8,
   },
 
@@ -138,14 +138,14 @@ const styles = StyleSheet.create({
     width: PHOTO_SZ,
     height: PHOTO_SZ,
     borderRadius: PHOTO_SZ / 2,
-    backgroundColor: '#1e40af',
+    backgroundColor: '#92400e',
     alignItems: 'center',
     justifyContent: 'center',
   },
   photoInitials: {
     fontSize: 26,
     fontFamily: 'Helvetica-Bold',
-    color: '#93c5fd',
+    color: '#fcd34d',
   },
 
   memberInfo: {
@@ -162,11 +162,11 @@ const styles = StyleSheet.create({
   },
   memberRole: {
     fontSize: 7.5,
-    color: '#bfdbfe',
+    color: '#fde68a',
   },
   memberCong: {
     fontSize: 6.5,
-    color: '#93c5fd',
+    color: '#fcd34d',
   },
 
   amberStripe: {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
 
   backHeader: {
-    backgroundColor: '#1e3a8a',
+    backgroundColor: '#78350f',
     paddingHorizontal: 8,
     paddingVertical: 6,
     flexDirection: 'row',
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
   },
   idBox: {
-    backgroundColor: '#172554',
+    backgroundColor: '#451a03',
     borderRadius: 3,
     paddingHorizontal: 4,
     paddingVertical: 2,
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   idLabel: {
     fontSize: 4.5,
-    color: '#93c5fd',
+    color: '#fcd34d',
     letterSpacing: 0.4,
   },
   idValue: {

@@ -91,12 +91,12 @@ export function DashboardPage() {
     <AppShell title="Início">
       <div className="p-4 lg:p-6 flex flex-col gap-4">
         {/* Boas-vindas */}
-        <div className="bg-gradient-to-r from-blue-900 to-blue-700 rounded-xl p-5 text-white">
-          <p className="text-blue-200 text-xs mb-0.5">{greeting()},</p>
+        <div className="bg-gradient-to-r from-amber-900 to-amber-700 rounded-xl p-5 text-white">
+          <p className="text-amber-200 text-xs mb-0.5">{greeting()},</p>
           <h2 className="text-base font-bold">
             {appUser?.full_name ?? 'Bem-vindo!'}
           </h2>
-          <p className="text-xs text-blue-300 mt-1">
+          <p className="text-xs text-amber-300 mt-1">
             {formatDate(today, 'long')}
           </p>
         </div>
@@ -146,7 +146,7 @@ export function DashboardPage() {
         {birthdays.length > 0 && (
           <Section
             title="🎂 Aniversariantes desta semana"
-            action={<button onClick={() => navigate('/calendar')} className="text-xs text-blue-600">Ver todos</button>}
+            action={<button onClick={() => navigate('/calendar')} className="text-xs text-amber-600">Ver todos</button>}
           >
             <div className="flex flex-col gap-2">
               {birthdays.map((b) => {
@@ -159,7 +159,7 @@ export function DashboardPage() {
                   ].join(' ')}>
                     <div className={[
                       'w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold shrink-0',
-                      isToday ? 'bg-amber-400 text-white' : 'bg-blue-50 text-blue-700',
+                      isToday ? 'bg-amber-400 text-white' : 'bg-amber-50 text-amber-700',
                     ].join(' ')}>
                       {day}
                     </div>
@@ -187,7 +187,7 @@ export function DashboardPage() {
         {stats.upcomingEvents.length > 0 && (
           <Section
             title="📅 Próximos eventos"
-            action={<button onClick={() => navigate('/calendar')} className="text-xs text-blue-600">Ver calendário</button>}
+            action={<button onClick={() => navigate('/calendar')} className="text-xs text-amber-600">Ver calendário</button>}
           >
             <div className="flex flex-col gap-2">
               {stats.upcomingEvents.map((event) => {
@@ -196,9 +196,9 @@ export function DashboardPage() {
                 const monthNum = parseInt(parts[1])
                 return (
                   <div key={event.id} className="bg-white rounded-xl border border-slate-100 p-3 flex items-center gap-3">
-                    <div className="w-10 h-10 bg-blue-50 rounded-lg flex flex-col items-center justify-center shrink-0">
-                      <span className="text-lg font-bold text-blue-700 leading-none">{day}</span>
-                      <span className="text-xs text-blue-400">
+                    <div className="w-10 h-10 bg-amber-50 rounded-lg flex flex-col items-center justify-center shrink-0">
+                      <span className="text-lg font-bold text-amber-700 leading-none">{day}</span>
+                      <span className="text-xs text-amber-400">
                         {['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][monthNum - 1]}
                       </span>
                     </div>
@@ -248,7 +248,7 @@ function StatCard({
   onClick?: () => void
 }) {
   const colors = {
-    blue:   { bg: 'bg-blue-50',   text: 'text-blue-700',   num: 'text-blue-800' },
+    blue:   { bg: 'bg-amber-50',   text: 'text-amber-700',   num: 'text-amber-800' },
     purple: { bg: 'bg-purple-50', text: 'text-purple-700', num: 'text-purple-800' },
     green:  { bg: 'bg-green-50',  text: 'text-green-700',  num: 'text-green-800' },
     amber:  { bg: 'bg-amber-50',  text: 'text-amber-700',  num: 'text-amber-800' },

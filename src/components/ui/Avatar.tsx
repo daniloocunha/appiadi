@@ -47,7 +47,7 @@ export function Avatar({ src, name, size = 'md', className = '' }: AvatarProps) 
   return (
     <div
       className={[
-        'rounded-full bg-blue-100 text-blue-700 font-semibold',
+        'rounded-full bg-amber-100 text-amber-700 font-semibold',
         'flex items-center justify-center shrink-0',
         sizeClasses[size],
         className,

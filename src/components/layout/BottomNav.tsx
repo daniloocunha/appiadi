@@ -33,7 +33,7 @@ export function BottomNav() {
             [
               'flex-1 flex flex-col items-center justify-center py-2 text-xs gap-0.5 transition-colors min-w-0',
               isActive
-                ? 'text-blue-900 font-semibold'
+                ? 'text-amber-900 font-semibold'
                 : 'text-slate-500 hover:text-slate-700',
             ].join(' ')
           }

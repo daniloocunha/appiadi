@@ -20,7 +20,7 @@ export function SyncStatusIndicator() {
 
   if (isSyncing) {
     return (
-      <div className="flex items-center gap-1.5 text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+      <div className="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
         <RefreshCw size={13} className="animate-spin" />
         <span>Sincronizando…</span>
       </div>

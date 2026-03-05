@@ -50,7 +50,7 @@ function SelectField({
       <select
         className={[
           'h-9 w-full rounded-lg border px-3 py-2 text-sm bg-white',
-          'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+          'focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent',
           'transition-colors',
           error
             ? 'border-red-400 bg-red-50 focus:ring-red-400'
@@ -81,7 +81,7 @@ function TextArea({
         rows={3}
         className={[
           'w-full rounded-lg border px-3 py-2 text-sm bg-white resize-none',
-          'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+          'focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent',
           'transition-colors',
           error
             ? 'border-red-400 bg-red-50 focus:ring-red-400'
@@ -235,7 +235,7 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-700 font-medium"
+          className="flex items-center gap-1.5 text-xs text-amber-600 hover:text-amber-700 font-medium"
         >
           <Camera size={13} />
           {photoPreview ? 'Trocar foto' : 'Adicionar foto'}
@@ -614,7 +614,7 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
         <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-700">
           <input
             type="checkbox"
-            className="rounded border-slate-300 text-blue-700 focus:ring-blue-500"
+            className="rounded border-slate-300 text-amber-700 focus:ring-amber-500"
             {...register('recebeu_carta_transferencia')}
           />
           Recebeu carta de transferência de outra igreja

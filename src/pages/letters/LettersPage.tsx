@@ -300,7 +300,7 @@ export function LettersPage() {
                     : 'Crachá'
                   const colorClass = isLetter
                     ? (item as Letter).letter_type === 'recomendacao'
-                      ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
+                      ? 'bg-amber-100 text-amber-700' : 'bg-purple-100 text-purple-700'
                     : 'bg-amber-100 text-amber-700'
 
                   const issuerName = item.issued_by ? (userNames[item.issued_by] ?? 'Usuário') : null
@@ -352,8 +352,8 @@ export function LettersPage() {
                     'px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors',
                     !opt.ok ? 'opacity-40 cursor-not-allowed border-slate-200 text-slate-400' :
                     docType === opt.value
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'border-slate-200 text-slate-600 hover:border-blue-300',
+                      ? 'bg-amber-600 text-white border-amber-600'
+                      : 'border-slate-200 text-slate-600 hover:border-amber-300',
                   ].join(' ')}
                 >
                   {opt.label}
@@ -368,7 +368,7 @@ export function LettersPage() {
               Membro <span className="text-red-500">*</span>
             </label>
             {selectedMember ? (
-              <div className="flex items-center gap-3 p-2.5 bg-blue-50 rounded-xl border border-blue-200">
+              <div className="flex items-center gap-3 p-2.5 bg-amber-50 rounded-xl border border-amber-200">
                 <Avatar src={selectedMember.photo_url ?? undefined} name={selectedMember.full_name} size="sm" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-slate-800">{selectedMember.full_name}</p>
@@ -389,7 +389,7 @@ export function LettersPage() {
                     placeholder="Buscar membro..."
                     value={searchRaw}
                     onChange={(e) => setSearchRaw(e.target.value)}
-                    className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   />
                 </div>
                 {searchRaw && (
@@ -428,7 +428,7 @@ export function LettersPage() {
                   Igreja de destino <span className="text-red-500">*</span>
                 </label>
                 <input
-                  className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                   placeholder="Ex: Assembleia de Deus Central"
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
@@ -439,7 +439,7 @@ export function LettersPage() {
                   Cidade de destino <span className="text-red-500">*</span>
                 </label>
                 <input
-                  className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
                   placeholder="Ex: Salvador — BA"
                   value={destinationCity}
                   onChange={(e) => setDestinationCity(e.target.value)}
@@ -485,7 +485,7 @@ function DocTypeCard({
   disabled?: boolean
 }) {
   const c = {
-    blue:   { bg: 'bg-blue-50',   icon: 'text-blue-600',   border: 'hover:border-blue-300' },
+    blue:   { bg: 'bg-amber-50',   icon: 'text-amber-600',   border: 'hover:border-amber-300' },
     purple: { bg: 'bg-purple-50', icon: 'text-purple-600', border: 'hover:border-purple-300' },
     amber:  { bg: 'bg-amber-50',  icon: 'text-amber-600',  border: 'hover:border-amber-300' },
   }[color]

@@ -132,7 +132,7 @@ export function MembersPage() {
                     placeholder="Buscar por nome, telefone, CPF..."
                     value={rawSearch}
                     onChange={(e) => setRawSearch(e.target.value)}
-                    className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                    className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white"
                   />
                   {rawSearch && (
                     <button
@@ -148,14 +148,14 @@ export function MembersPage() {
                   className={[
                     'h-9 px-3 rounded-lg border text-sm flex items-center gap-1.5 transition-colors',
                     showFilters || statusFilter || congregationFilter
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
+                      ? 'border-amber-500 bg-amber-50 text-amber-700'
                       : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
                   ].join(' ')}
                 >
                   <Filter size={14} />
                   Filtros
                   {(statusFilter || congregationFilter) && (
-                    <span className="w-4 h-4 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
+                    <span className="w-4 h-4 bg-amber-600 text-white text-xs rounded-full flex items-center justify-center">
                       {(statusFilter ? 1 : 0) + (congregationFilter ? 1 : 0)}
                     </span>
                   )}
@@ -174,7 +174,7 @@ export function MembersPage() {
                           className={[
                             'px-2.5 py-1 rounded-full text-xs font-medium transition-colors',
                             statusFilter === f.value
-                              ? 'bg-blue-600 text-white'
+                              ? 'bg-amber-600 text-white'
                               : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
                           ].join(' ')}
                         >
@@ -192,7 +192,7 @@ export function MembersPage() {
                           onClick={() => setCongregationFilter('')}
                           className={[
                             'px-2.5 py-1 rounded-full text-xs font-medium transition-colors',
-                            !congregationFilter ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                            !congregationFilter ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
                           ].join(' ')}
                         >
                           Todas
@@ -203,7 +203,7 @@ export function MembersPage() {
                             onClick={() => setCongregationFilter(c.id)}
                             className={[
                               'px-2.5 py-1 rounded-full text-xs font-medium transition-colors',
-                              congregationFilter === c.id ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                              congregationFilter === c.id ? 'bg-amber-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
                             ].join(' ')}
                           >
                             {c.name}

@@ -162,7 +162,7 @@ export function MemberDetailPage() {
                 <div className="flex gap-1 shrink-0">
                   <button
                     onClick={() => setEditOpen(true)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
                     title="Editar"
                   >
                     <Pencil size={15} />

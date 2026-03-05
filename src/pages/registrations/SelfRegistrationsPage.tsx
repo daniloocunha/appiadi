@@ -228,7 +228,7 @@ export function SelfRegistrationsPage() {
                 Atribuir à Congregação <span className="text-red-500">*</span>
               </label>
               <select
-                className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 value={selectedCongregation}
                 onChange={(e) => setSelectedCongregation(e.target.value)}
               >
@@ -241,7 +241,7 @@ export function SelfRegistrationsPage() {
               </select>
             </div>
 
-            <p className="text-xs text-blue-600 bg-blue-50 rounded-lg p-2">
+            <p className="text-xs text-amber-600 bg-amber-50 rounded-lg p-2">
               O membro será criado com status "Em Experiência". Você poderá editar seus dados depois.
             </p>
           </div>

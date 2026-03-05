@@ -13,7 +13,7 @@ export function MemberCard({ member, congregation, onClick }: MemberCardProps) {
   return (
     <button
       onClick={onClick}
-      className="w-full bg-white rounded-xl border border-slate-100 shadow-sm p-3.5 flex items-center gap-3 hover:border-blue-200 hover:shadow-md transition-all text-left"
+      className="w-full bg-white rounded-xl border border-slate-100 shadow-sm p-3.5 flex items-center gap-3 hover:border-amber-200 hover:shadow-md transition-all text-left"
     >
       <Avatar
         src={member.photo_url ?? undefined}

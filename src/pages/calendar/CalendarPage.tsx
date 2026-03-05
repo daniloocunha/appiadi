@@ -28,7 +28,7 @@ type Tab = 'eventos' | 'aniversariantes'
 
 // Cores por tipo de evento
 const EVENT_TYPE_DOT: Record<string, string> = {
-  culto:                   'bg-blue-500',
+  culto:                   'bg-amber-500',
   reuniao:                 'bg-purple-500',
   conferencia:             'bg-green-500',
   retiro:                  'bg-amber-500',
@@ -37,7 +37,7 @@ const EVENT_TYPE_DOT: Record<string, string> = {
 }
 
 const EVENT_TYPE_BADGE: Record<string, string> = {
-  culto:                   'bg-blue-100 text-blue-700',
+  culto:                   'bg-amber-100 text-amber-700',
   reuniao:                 'bg-purple-100 text-purple-700',
   conferencia:             'bg-green-100 text-green-700',
   retiro:                  'bg-amber-100 text-amber-700',
@@ -128,15 +128,15 @@ function MonthGrid({
                 !isLastRow ? 'border-b' : '',
                 !isLastCol ? 'border-r' : '',
                 'border-slate-100',
-                isSelected ? 'bg-blue-50' : 'hover:bg-slate-50',
+                isSelected ? 'bg-amber-50' : 'hover:bg-slate-50',
               ].join(' ')}
             >
               <span className={[
                 'w-7 h-7 flex items-center justify-center rounded-full text-sm font-medium leading-none',
                 isToday
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-amber-600 text-white'
                   : isSelected
-                    ? 'text-blue-700 font-semibold'
+                    ? 'text-amber-700 font-semibold'
                     : 'text-slate-700',
               ].join(' ')}>
                 {day}
@@ -251,12 +251,12 @@ export function CalendarPage() {
 
         {/* Chip do dia selecionado */}
         {selectedDay && (
-          <div className="flex items-center gap-2 bg-blue-50 rounded-xl px-3 py-2">
-            <CalendarDays size={14} className="text-blue-600" />
-            <span className="text-sm text-blue-700 font-medium flex-1">
+          <div className="flex items-center gap-2 bg-amber-50 rounded-xl px-3 py-2">
+            <CalendarDays size={14} className="text-amber-600" />
+            <span className="text-sm text-amber-700 font-medium flex-1">
               {selectedDay} de {getMonthName(month)} — filtrando
             </span>
-            <button onClick={() => setSelectedDay(null)} className="text-blue-400 hover:text-blue-700">
+            <button onClick={() => setSelectedDay(null)} className="text-amber-400 hover:text-amber-700">
               <X size={14} />
             </button>
           </div>
@@ -298,7 +298,7 @@ export function CalendarPage() {
               {canManageEvents && !selectedDay && (
                 <button
                   onClick={() => { setEditingEvent(null); setFormOpen(true) }}
-                  className="mt-2 text-xs text-blue-600 hover:underline"
+                  className="mt-2 text-xs text-amber-600 hover:underline"
                 >
                   Criar primeiro evento do mês
                 </button>
@@ -308,11 +308,11 @@ export function CalendarPage() {
             <div className="flex flex-col gap-2">
               {filteredEvents.map((event) => (
                 <div key={event.id} className="bg-white rounded-xl border border-slate-100 shadow-sm p-4 flex gap-3">
-                  <div className="w-12 shrink-0 flex flex-col items-center justify-center bg-blue-50 rounded-lg py-2">
-                    <span className="text-xl font-bold text-blue-700 leading-none">
+                  <div className="w-12 shrink-0 flex flex-col items-center justify-center bg-amber-50 rounded-lg py-2">
+                    <span className="text-xl font-bold text-amber-700 leading-none">
                       {event.event_date.split('-')[2]}
                     </span>
-                    <span className="text-xs text-blue-500 capitalize">
+                    <span className="text-xs text-amber-500 capitalize">
                       {getMonthName(parseInt(event.event_date.split('-')[1])).slice(0, 3)}
                     </span>
                   </div>
@@ -326,7 +326,7 @@ export function CalendarPage() {
                       </div>
                       {canManageEvents && (
                         <div className="flex gap-1 shrink-0">
-                          <button onClick={() => { setEditingEvent(event); setFormOpen(true) }} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50">
+                          <button onClick={() => { setEditingEvent(event); setFormOpen(true) }} className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50">
                             <Pencil size={13} />
                           </button>
                           <button onClick={() => setDeleteTarget(event)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50">
@@ -379,7 +379,7 @@ export function CalendarPage() {
                 const isToday = day === today.getDate() && month === today.getMonth() + 1
                 return (
                   <div key={b.id} className={`bg-white rounded-xl border p-3.5 flex items-center gap-3 ${isToday ? 'border-amber-300 bg-amber-50' : 'border-slate-100'}`}>
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold text-sm ${isToday ? 'bg-amber-400 text-white' : 'bg-blue-50 text-blue-700'}`}>
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 font-bold text-sm ${isToday ? 'bg-amber-400 text-white' : 'bg-amber-50 text-amber-700'}`}>
                       {day}
                     </div>
                     <Avatar src={b.photo_url ?? undefined} name={b.full_name} size="sm" />
@@ -483,7 +483,7 @@ function EventForm({
     },
   })
 
-  const inputClass = 'h-9 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+  const inputClass = 'h-9 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-500'
 
   return (
     <form onSubmit={handleSubmit(onSave)} className="flex flex-col gap-4">
@@ -529,7 +529,7 @@ function EventForm({
       </div>
       <div className="flex flex-col gap-1">
         <label className="text-xs font-medium text-slate-600">Descrição</label>
-        <textarea rows={2} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Detalhes do evento..." {...register('description')} />
+        <textarea rows={2} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white resize-none focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="Detalhes do evento..." {...register('description')} />
       </div>
       <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>Cancelar</Button>

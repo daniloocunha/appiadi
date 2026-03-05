@@ -189,7 +189,7 @@ function CongregationCard({
         <div className="flex items-center gap-2.5 min-w-0">
           <div className={[
             'w-9 h-9 rounded-lg flex items-center justify-center shrink-0',
-            congregation.is_headquarters ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
+            congregation.is_headquarters ? 'bg-amber-100 text-amber-700' : 'bg-purple-100 text-purple-700'
           ].join(' ')}>
             {congregation.is_headquarters ? <Star size={18} /> : <Building2 size={18} />}
           </div>
@@ -205,7 +205,7 @@ function CongregationCard({
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={() => onEdit(congregation)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors"
               title="Editar"
             >
               <Pencil size={14} />
@@ -241,7 +241,7 @@ function CongregationCard({
         {congregation.dirigente_id && (
           <div className="flex items-center gap-1.5 text-xs text-slate-500">
             <User size={12} className="shrink-0" />
-            <span className="text-blue-600">Dirigente atribuído</span>
+            <span className="text-amber-600">Dirigente atribuído</span>
           </div>
         )}
       </div>

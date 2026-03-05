@@ -28,7 +28,7 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-900 via-amber-800 to-amber-950 p-4">
       <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl p-8">
         <Link
           to="/login"
@@ -50,7 +50,7 @@ export function ForgotPasswordPage() {
           </div>
         ) : (
           <>
-            <h2 className="text-lg font-bold text-blue-900 mb-1">Redefinir senha</h2>
+            <h2 className="text-lg font-bold text-amber-900 mb-1">Redefinir senha</h2>
             <p className="text-sm text-slate-600 mb-6">
               Informe seu e-mail e enviaremos um link para redefinição de senha.
             </p>

@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 6,
     borderBottom: 2,
-    borderBottomColor: '#1e3a8a',
+    borderBottomColor: '#78350f',
     paddingBottom: 10,
     gap: 14,
   },
@@ -28,14 +28,14 @@ const styles = StyleSheet.create({
   churchName: {
     fontSize: 16,
     fontFamily: 'Helvetica-Bold',
-    color: '#1e3a8a',
+    color: '#78350f',
     marginBottom: 5,
   },
   churchSub: { fontSize: 7.5, color: '#475569', marginTop: 0 },
   letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 2 },
   verse: {
     fontSize: 7.5,
-    color: '#1d4ed8',
+    color: '#b45309',
     fontStyle: 'italic',
     textAlign: 'center',
     marginBottom: 6,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'Helvetica-Bold',
     textAlign: 'center',
-    color: '#1e3a8a',
+    color: '#78350f',
     marginBottom: 2,
     textTransform: 'uppercase',
     letterSpacing: 1,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 9,
     textAlign: 'center',
-    color: '#1d4ed8',
+    color: '#b45309',
     marginBottom: 8,
   },
   body: {
@@ -64,16 +64,16 @@ const styles = StyleSheet.create({
   },
   bold: { fontFamily: 'Helvetica-Bold' },
   destinationBox: {
-    backgroundColor: '#eff6ff',
+    backgroundColor: '#fffbeb',
     borderLeft: 3,
-    borderLeftColor: '#1e3a8a',
+    borderLeftColor: '#78350f',
     padding: 8,
     marginBottom: 10,
   },
   // 06. Título Destinatário maior
   destinationLabel: {
     fontSize: 10.5,
-    color: '#1d4ed8',
+    color: '#b45309',
     fontFamily: 'Helvetica-Bold',
     marginBottom: 2,
   },
@@ -82,17 +82,17 @@ const styles = StyleSheet.create({
   // ── Caixa de identificação do membro ──
   memberBox: {
     borderWidth: 1,
-    borderColor: '#1e3a8a',
+    borderColor: '#78350f',
     borderRadius: 4,
     padding: 8,
     marginBottom: 10,
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#fefce8',
   },
   // 06. Título Identificação do Membro maior
   memberBoxTitle: {
     fontSize: 9.5,
     fontFamily: 'Helvetica-Bold',
-    color: '#1e3a8a',
+    color: '#78350f',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
     marginBottom: 3, // 05. menos espaço abaixo do título
