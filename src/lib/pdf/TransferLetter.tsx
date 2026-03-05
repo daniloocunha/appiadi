@@ -179,7 +179,6 @@ export function TransferLetterPDF({
   destination,
   destinationCity,
 }: TransferLetterProps) {
-  const city = congregation?.city ?? 'Iaçu'
   const dateStr = formatDate(issuedAt, 'long')
   const phone = congregation?.phone ?? '(71) 9.9982-9980'
 
