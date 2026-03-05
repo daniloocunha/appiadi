@@ -5,6 +5,8 @@ import { formatCPF } from '@/utils/formatters'
 // Crachá horizontal: ~92mm × 63mm (formato paisagem)
 // Página A4 retrato: frente (2 crachás) + verso (2 crachás) com separador tracejado
 
+const PASTOR_NAME = 'Pr. José Ramos Filho'
+
 const BADGE_W  = 258   // ~91mm
 const BADGE_H  = 174   // ~61mm
 const PHOTO_SZ = 76    // foto circular
@@ -270,6 +272,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
+  signatureImg: {
+    width: 70,
+    height: 38,
+    objectFit: 'contain',
+    marginBottom: 1,
+  },
   signatureLine: {
     width: 76,
     borderTopWidth: 0.5,
@@ -296,7 +304,6 @@ interface BadgeProps {
   member: Member
   congregation: Congregation | null
   badgeNumber: string
-  pastorName: string
 }
 
 // ── Frente horizontal ──────────────────────────────────────
@@ -340,7 +347,7 @@ function BadgeFront({ member, congregation }: Pick<BadgeProps, 'member' | 'congr
 }
 
 // ── Verso horizontal ──────────────────────────────────────
-function BadgeBack({ member, congregation, badgeNumber, pastorName }: BadgeProps) {
+function BadgeBack({ member, congregation, badgeNumber }: BadgeProps) {
   const memberNum = member.member_number
     ? `#${String(member.member_number).padStart(4, '0')}`
     : badgeNumber
@@ -434,8 +441,9 @@ function BadgeBack({ member, congregation, badgeNumber, pastorName }: BadgeProps
       <View style={styles.backDivider} />
       <View style={styles.signatureArea}>
         <View>
+          <Image src="/assinatura-pastor.png" style={styles.signatureImg} />
           <View style={styles.signatureLine} />
-          <Text style={styles.signatureText}>{pastorName}</Text>
+          <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
           <Text style={styles.signatureText}>Pastor Presidente</Text>
         </View>
         <Text style={styles.genDate}>{todayDisplay()}</Text>
@@ -448,7 +456,7 @@ function BadgeBack({ member, congregation, badgeNumber, pastorName }: BadgeProps
 }
 
 // ── Documento: 2 crachás horizontais por linha ────────────
-export function MemberBadgePDF({ member, congregation, badgeNumber, pastorName }: BadgeProps) {
+export function MemberBadgePDF({ member, congregation, badgeNumber }: BadgeProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -466,8 +474,8 @@ export function MemberBadgePDF({ member, congregation, badgeNumber, pastorName }
 
         <Text style={styles.instructionBold}>▼  VERSO</Text>
         <View style={styles.row}>
-          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} pastorName={pastorName} />
-          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} pastorName={pastorName} />
+          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} />
+          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} />
         </View>
 
         <Text style={styles.instruction}>

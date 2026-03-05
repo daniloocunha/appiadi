@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/store/authStore'
 import type { AppUser } from '@/types'
+import { logger } from '@/utils/logger'
 
 export function useAuthInit() {
   const { setUser, setAppUser, setLoading } = useAuthStore()
@@ -62,7 +63,7 @@ async function loadAppUser(
     .single()
 
   if (error || !data) {
-    console.error('[auth] Falha ao carregar perfil do usuário:', error)
+    logger.error('[auth] Falha ao carregar perfil do usuário:', error)
     setAppUser(null)
     return
   }

@@ -70,13 +70,15 @@ export function ResetPasswordPage() {
 
     // Sem token no hash — verifica se já há uma sessão de recovery ativa
     // (caso o usuário recarregue a página)
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        setPageState('ready')
-      } else {
-        setPageState('invalid')
-      }
-    })
+    supabase.auth.getSession()
+      .then(({ data }) => {
+        if (data?.session) {
+          setPageState('ready')
+        } else {
+          setPageState('invalid')
+        }
+      })
+      .catch(() => setPageState('invalid'))
   }, [])
 
   const {

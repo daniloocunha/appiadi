@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { MEMBER_STATUSES, MARITAL_STATUSES } from '@/types'
 
 // Constantes reutilizadas na UI
 export const CHURCH_ROLES = [
@@ -58,11 +59,11 @@ export const memberSchema = z.object({
   address_city:         z.string().nullable().optional(),
   address_state:        z.string().nullable().optional(),
   address_zip:          z.string().nullable().optional(),
-  marital_status:       z.enum(['solteiro','casado','divorciado','viuvo','separado']).nullable().optional(),
+  marital_status:       z.enum(MARITAL_STATUSES).nullable().optional(),
   spouse_name:          z.string().nullable().optional(),
   occupation:           z.string().nullable().optional(),
   congregation_id:      z.string().uuid('Selecione uma congregação'),
-  status:               z.enum(['ativo','inativo','transferido','falecido','excluido','em_experiencia']),
+  status:               z.enum(MEMBER_STATUSES),
   church_role:          z.string().nullable().optional(),
   ministry:             z.string().nullable().optional(),
   notes:                z.string().nullable().optional(),

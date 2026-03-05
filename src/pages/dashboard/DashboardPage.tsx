@@ -11,6 +11,7 @@ import type { ChurchEvent } from '@/types'
 import {
   Users, Building2, CalendarDays, ClipboardList, ChevronRight
 } from 'lucide-react'
+import { logger } from '@/utils/logger'
 
 interface Stats {
   totalMembers: number
@@ -69,7 +70,7 @@ export function DashboardPage() {
         })
         setBirthdays(weekBirthdays)
       } catch (e) {
-        console.error(e)
+        logger.error(e)
       } finally {
         setIsLoading(false)
       }

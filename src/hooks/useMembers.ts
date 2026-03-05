@@ -7,6 +7,8 @@ import type { Member } from '@/types'
 import type { MemberFormData } from '@/schemas/member.schema'
 import { v4 as uuidv4 } from 'uuid'
 import { uploadMemberPhoto } from '@/utils/photoUpload'
+import { logger } from '@/utils/logger'
+import { useDebounce } from '@/hooks/useDebounce'
 
 // ============================================================
 // Hook: useMembers
@@ -28,6 +30,9 @@ export function useMembers(filters?: MemberFilters) {
   // Recarrega sempre que o sync remoto atualizar o IndexedDB
   const lastSyncAt = useSyncStore((s) => s.lastSyncAt)
 
+  // Debounce na busca textual para não filtrar a cada keystroke
+  const debouncedSearch = useDebounce(filters?.search, 300)
+
   const loadFromLocal = useCallback(async () => {
     try {
       let query = db.members.filter((m) => !m.deleted_at)
@@ -37,8 +42,8 @@ export function useMembers(filters?: MemberFilters) {
       let filtered = all as Member[]
 
       // Filtros em memória (IndexedDB não suporta queries complexas facilmente)
-      if (filters?.search) {
-        const q = filters.search.toLowerCase()
+      if (debouncedSearch) {
+        const q = debouncedSearch.toLowerCase()
         filtered = filtered.filter(
           (m) =>
             m.full_name.toLowerCase().includes(q) ||
@@ -66,11 +71,11 @@ export function useMembers(filters?: MemberFilters) {
       setMembers(filtered)
     } catch (e) {
       setError('Erro ao carregar membros locais')
-      console.error(e)
+      logger.error(e)
     } finally {
       setIsLoading(false)
     }
-  }, [filters?.search, filters?.congregation_id, filters?.status, filters?.church_role, lastSyncAt])
+  }, [debouncedSearch, filters?.congregation_id, filters?.status, filters?.church_role, lastSyncAt])
 
   useEffect(() => {
     loadFromLocal()
@@ -100,9 +105,9 @@ export function useMembers(filters?: MemberFilters) {
       try {
         const result = await uploadMemberPhoto(photoFile, id)
         if (result.url) photo_url = result.url
-        else console.warn('Falha ao fazer upload da foto:', result.error)
+        else logger.warn('Falha ao fazer upload da foto:', result.error)
       } catch (e) {
-        console.warn('Falha ao fazer upload da foto:', e)
+        logger.warn('Falha ao fazer upload da foto:', e)
         // Não bloqueia o salvamento
       }
     }

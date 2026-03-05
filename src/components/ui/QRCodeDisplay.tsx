@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import QRCode from 'qrcode'
+import { logger } from '@/utils/logger'
 
 interface QRCodeDisplayProps {
   value: string
@@ -16,7 +17,7 @@ export function QRCodeDisplay({ value, size = 200, className = '' }: QRCodeDispl
       width: size,
       margin: 2,
       color: { dark: '#1e3a8a', light: '#ffffff' },
-    }).catch(console.error)
+    }).catch(logger.error)
   }, [value, size])
 
   return <canvas ref={canvasRef} className={className} />

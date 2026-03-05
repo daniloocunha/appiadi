@@ -2,39 +2,24 @@
 // IADI - Tipos TypeScript centrais
 // ============================================================
 
-export type UserRole =
-  | 'admin'
-  | 'secretario'
-  | 'lideranca_plena'
-  | 'presbitero'
-  | 'diacono_obreiro'
+// Arrays as const — fonte única da verdade para enums usados no Zod e na UI
+export const USER_ROLES = ['admin', 'secretario', 'lideranca_plena', 'presbitero', 'diacono_obreiro'] as const
+export type UserRole = typeof USER_ROLES[number]
 
-export type MemberStatus =
-  | 'ativo'
-  | 'inativo'
-  | 'transferido'
-  | 'falecido'
-  | 'excluido'
-  | 'em_experiencia'
+export const MEMBER_STATUSES = ['ativo', 'inativo', 'transferido', 'falecido', 'excluido', 'em_experiencia'] as const
+export type MemberStatus = typeof MEMBER_STATUSES[number]
 
-export type MaritalStatus =
-  | 'solteiro'
-  | 'casado'
-  | 'divorciado'
-  | 'viuvo'
-  | 'separado'
+export const MARITAL_STATUSES = ['solteiro', 'casado', 'divorciado', 'viuvo', 'separado'] as const
+export type MaritalStatus = typeof MARITAL_STATUSES[number]
 
-export type EventType =
-  | 'culto'
-  | 'reuniao'
-  | 'conferencia'
-  | 'retiro'
-  | 'aniversario_congregacao'
-  | 'outro'
+export const EVENT_TYPES = ['culto', 'reuniao', 'conferencia', 'retiro', 'aniversario_congregacao', 'outro'] as const
+export type EventType = typeof EVENT_TYPES[number]
 
-export type LetterType = 'recomendacao' | 'transferencia'
+export const LETTER_TYPES = ['recomendacao', 'transferencia'] as const
+export type LetterType = typeof LETTER_TYPES[number]
 
-export type SelfRegistrationStatus = 'pendente' | 'aprovado' | 'rejeitado'
+export const SELF_REGISTRATION_STATUSES = ['pendente', 'aprovado', 'rejeitado'] as const
+export type SelfRegistrationStatus = typeof SELF_REGISTRATION_STATUSES[number]
 
 // ---- Congregation ----
 export interface Congregation {
