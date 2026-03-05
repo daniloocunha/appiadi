@@ -7,7 +7,7 @@ const PASTOR_CREDENTIALS = 'CEADEB 5.898 | CGADB 37087'
 
 const styles = StyleSheet.create({
   page: {
-    padding: 50,
+    padding: 36,
     fontFamily: 'Helvetica',
     fontSize: 11,
     color: '#1e293b',
@@ -16,35 +16,35 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
     borderBottom: 2,
     borderBottomColor: '#7c3aed',
-    paddingBottom: 15,
-    gap: 15,
+    paddingBottom: 10,
+    gap: 12,
   },
-  logo: { width: 60, height: 60 },
+  logo: { width: 54, height: 54 },
   headerText: { flex: 1 },
   churchName: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: 'Helvetica-Bold',
     color: '#7c3aed',
   },
-  churchSub: { fontSize: 8, color: '#475569', marginTop: 1.5 },
-  letterNumber: { fontSize: 9, color: '#94a3b8', marginTop: 4 },
+  churchSub: { fontSize: 7.5, color: '#475569', marginTop: 1.5 },
+  letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 3 },
   verse: {
     fontSize: 7.5,
     color: '#6d28d9',
     fontStyle: 'italic',
     textAlign: 'center',
-    marginBottom: 10,
-    marginTop: 6,
+    marginBottom: 6,
+    marginTop: 4,
   },
   title: {
-    fontSize: 14,
+    fontSize: 13,
     fontFamily: 'Helvetica-Bold',
     textAlign: 'center',
     color: '#7c3aed',
-    marginBottom: 4,
+    marginBottom: 2,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -52,50 +52,50 @@ const styles = StyleSheet.create({
     fontSize: 9,
     textAlign: 'center',
     color: '#6d28d9',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   body: {
     fontSize: 11,
-    lineHeight: 2,
+    lineHeight: 1.7,
     textAlign: 'justify',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   bold: { fontFamily: 'Helvetica-Bold' },
   destinationBox: {
     backgroundColor: '#f5f3ff',
     borderLeft: 3,
     borderLeftColor: '#7c3aed',
-    padding: 10,
-    marginBottom: 16,
+    padding: 8,
+    marginBottom: 10,
   },
   destinationLabel: {
-    fontSize: 9,
+    fontSize: 8.5,
     color: '#6d28d9',
     fontFamily: 'Helvetica-Bold',
-    marginBottom: 3,
+    marginBottom: 2,
   },
-  destinationText: { fontSize: 11, color: '#1e293b' },
+  destinationText: { fontSize: 10.5, color: '#1e293b' },
 
   // ── Caixa de identificação do membro ──
   memberBox: {
     borderWidth: 1,
     borderColor: '#7c3aed',
     borderRadius: 4,
-    padding: 10,
-    marginBottom: 16,
+    padding: 8,
+    marginBottom: 10,
     backgroundColor: '#faf5ff',
   },
   memberBoxTitle: {
-    fontSize: 8,
+    fontSize: 7.5,
     fontFamily: 'Helvetica-Bold',
     color: '#7c3aed',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-    marginBottom: 6,
+    marginBottom: 5,
   },
   memberBoxRow: {
     flexDirection: 'row',
-    gap: 20,
+    gap: 16,
     marginBottom: 3,
   },
   memberBoxField: {
@@ -103,14 +103,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   memberBoxLabel: {
-    fontSize: 7,
+    fontSize: 6.5,
     color: '#64748b',
     fontFamily: 'Helvetica-Bold',
     textTransform: 'uppercase',
     letterSpacing: 0.4,
   },
   memberBoxValue: {
-    fontSize: 10,
+    fontSize: 9.5,
     color: '#1e293b',
     fontFamily: 'Helvetica-Bold',
   },
@@ -119,35 +119,35 @@ const styles = StyleSheet.create({
     backgroundColor: '#fffbeb',
     borderLeft: 3,
     borderLeftColor: '#f59e0b',
-    padding: 8,
-    marginBottom: 16,
+    padding: 6,
+    marginBottom: 10,
   },
   validityText: { fontSize: 8.5, color: '#92400e' },
 
-  signatureSection: { marginTop: 40, alignItems: 'center' },
-  signatureImg: { width: 120, height: 66, objectFit: 'contain', marginBottom: 2 },
+  signatureSection: { marginTop: 20, alignItems: 'center' },
+  signatureImg: { width: 110, height: 60, objectFit: 'contain', marginBottom: 2 },
   signatureLine: {
     borderTop: 1,
     borderTopColor: '#1e293b',
-    width: 250,
-    marginBottom: 5,
+    width: 240,
+    marginBottom: 4,
   },
-  signatureText: { fontSize: 10, textAlign: 'center', color: '#475569' },
+  signatureText: { fontSize: 9.5, textAlign: 'center', color: '#475569' },
   dateText: {
     fontSize: 10,
     textAlign: 'right',
     color: '#475569',
-    marginBottom: 16,
+    marginBottom: 10,
   },
   footer: {
     position: 'absolute',
-    bottom: 30,
-    left: 50,
-    right: 50,
+    bottom: 20,
+    left: 36,
+    right: 36,
     borderTop: 1,
     borderTopColor: '#e2e8f0',
-    paddingTop: 8,
-    fontSize: 8,
+    paddingTop: 6,
+    fontSize: 7.5,
     color: '#94a3b8',
     textAlign: 'center',
   },
@@ -222,22 +222,16 @@ export function TransferLetterPDF({
               <Text style={styles.memberBoxLabel}>Departamento / Ministério</Text>
               <Text style={styles.memberBoxValue}>{member.ministry ?? '—'}</Text>
             </View>
-          </View>
-          <View style={styles.memberBoxRow}>
             <View style={styles.memberBoxField}>
               <Text style={styles.memberBoxLabel}>Congregação / Sede</Text>
               <Text style={styles.memberBoxValue}>{congregation?.name ?? '—'}</Text>
-            </View>
-            <View style={styles.memberBoxField}>
-              <Text style={styles.memberBoxLabel}>Status</Text>
-              <Text style={styles.memberBoxValue}>Membro ativo, dentro dos princípios bíblicos e doutrinários desta Igreja</Text>
             </View>
           </View>
         </View>
 
         {/* Corpo */}
         <Text style={styles.body}>
-          {'        '}Saudações no Senhor!{'\\n\\n'}
+          {'        '}Saudações no Senhor!{'\n\n'}
           {'        '}É com muita satisfação que apresentamos à{' '}
           <Text style={styles.bold}>{destination} — {destinationCity}</Text>
           {', o(a) irmão(ã) '}
@@ -248,7 +242,7 @@ export function TransferLetterPDF({
           <Text style={styles.bold}>
             {member.baptism_date ? formatDate(member.baptism_date, 'long') : 'data não informada'}
           </Text>
-          {', o qual tem sido fiel à sua caminhada cristã e ao ministério desta Igreja.'}
+          {'. O(A) referido(a) irmão(ã) é membro ativo desta Igreja, mantendo-se dentro dos princípios bíblicos e doutrinários, e tem sido fiel à sua caminhada cristã e ao ministério que lhe foi confiado.'}
           {'\n\n'}
           {'        '}Recomendamos que seja recebido(a) como usam fazer os santos, podendo assim continuar a servir na obra do SENHOR.
         </Text>
