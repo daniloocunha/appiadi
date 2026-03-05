@@ -4,8 +4,8 @@ import {
 import type { Member, Congregation } from '@/types'
 import { formatDate, formatCPF } from '@/utils/formatters'
 
-// Nome do pastor presidente — fixo em todos os documentos
 const PASTOR_NAME = 'Pr. José Ramos Filho'
+const PASTOR_CREDENTIALS = 'CEADEB 5.898 | CGADB 37087'
 
 const styles = StyleSheet.create({
   page: {
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 8,
     borderBottom: 2,
     borderBottomColor: '#1e3a8a',
     paddingBottom: 15,
@@ -31,15 +31,22 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
     color: '#1e3a8a',
   },
-  churchSub: { fontSize: 9, color: '#475569', marginTop: 2 },
+  churchSub: { fontSize: 8, color: '#475569', marginTop: 1.5 },
   letterNumber: { fontSize: 9, color: '#94a3b8', marginTop: 4 },
+  verse: {
+    fontSize: 7.5,
+    color: '#1e3a8a',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginBottom: 10,
+    marginTop: 6,
+  },
   title: {
     fontSize: 14,
     fontFamily: 'Helvetica-Bold',
     textAlign: 'center',
     color: '#1e3a8a',
-    marginBottom: 20,
-    marginTop: 10,
+    marginBottom: 16,
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -91,6 +98,7 @@ const styles = StyleSheet.create({
   },
 
   signatureSection: { marginTop: 50, alignItems: 'center' },
+  signatureImg: { width: 120, height: 66, objectFit: 'contain', marginBottom: 2 },
   signatureLine: {
     borderTop: 1,
     borderTopColor: '#1e293b',
@@ -143,10 +151,16 @@ export function RecommendationLetterPDF({
           <View style={styles.headerText}>
             <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
             <Text style={styles.churchSub}>{congregation?.name ?? 'IADI'} — {city} — BA</Text>
-            <Text style={styles.churchSub}>{congregation?.phone ?? ''}</Text>
+            <Text style={styles.churchSub}>Rua Tiradentes, 211, Centro | CEP 46.860-000 | {congregation?.phone ?? '(71) 9.9982-9980'}</Text>
+            <Text style={styles.churchSub}>CNPJ 04.889.243/0001-83 | assembleiadedeusiacu1919@gmail.com</Text>
+            <Text style={styles.churchSub}>Pastor Presidente: José Ramos Filho | {PASTOR_CREDENTIALS}</Text>
             <Text style={styles.letterNumber}>Carta Nº {letterNumber}</Text>
           </View>
         </View>
+
+        <Text style={styles.verse}>
+          "Não esqueçais da hospitalidade, porque por ela alguns, não sabendo, hospedaram anjos" — Hebreus 13:2
+        </Text>
 
         <Text style={styles.title}>Carta de Recomendação</Text>
         <Text style={styles.dateText}>{city}, {dateStr}</Text>
@@ -196,10 +210,11 @@ export function RecommendationLetterPDF({
 
         {/* Assinatura */}
         <View style={styles.signatureSection}>
+          <Image src="/assinatura-pastor.png" style={styles.signatureImg} />
           <View style={styles.signatureLine} />
           <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
-          <Text style={styles.signatureText}>Pastor Presidente</Text>
-          <Text style={styles.signatureText}>Igreja Evangélica Assembleia de Deus — {city} — BA</Text>
+          <Text style={styles.signatureText}>Pastor Presidente | {PASTOR_CREDENTIALS}</Text>
+          <Text style={styles.signatureText}>Igreja Evangélica Assembleia de Deus — {city} — BA | CGADB</Text>
         </View>
 
         <Text style={styles.footer}>

@@ -272,6 +272,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
+  signatureImg: {
+    width: 70,
+    height: 38,
+    objectFit: 'contain',
+    marginBottom: 1,
+  },
   signatureLine: {
     width: 76,
     borderTopWidth: 0.5,
@@ -435,6 +441,7 @@ function BadgeBack({ member, congregation, badgeNumber }: BadgeProps) {
       <View style={styles.backDivider} />
       <View style={styles.signatureArea}>
         <View>
+          <Image src="/assinatura-pastor.png" style={styles.signatureImg} />
           <View style={styles.signatureLine} />
           <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
           <Text style={styles.signatureText}>Pastor Presidente</Text>

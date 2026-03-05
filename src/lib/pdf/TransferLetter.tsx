@@ -3,6 +3,7 @@ import type { Member, Congregation } from '@/types'
 import { formatDate, formatCPF } from '@/utils/formatters'
 
 const PASTOR_NAME = 'Pr. José Ramos Filho'
+const PASTOR_CREDENTIALS = 'CEADEB 5.898 | CGADB 37087'
 
 const styles = StyleSheet.create({
   page: {
@@ -15,7 +16,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 8,
     borderBottom: 2,
     borderBottomColor: '#7c3aed',
     paddingBottom: 15,
@@ -28,23 +29,36 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
     color: '#7c3aed',
   },
-  churchSub: { fontSize: 9, color: '#475569', marginTop: 2 },
+  churchSub: { fontSize: 8, color: '#475569', marginTop: 1.5 },
   letterNumber: { fontSize: 9, color: '#94a3b8', marginTop: 4 },
+  verse: {
+    fontSize: 7.5,
+    color: '#6d28d9',
+    fontStyle: 'italic',
+    textAlign: 'center',
+    marginBottom: 10,
+    marginTop: 6,
+  },
   title: {
     fontSize: 14,
     fontFamily: 'Helvetica-Bold',
     textAlign: 'center',
     color: '#7c3aed',
-    marginBottom: 20,
-    marginTop: 10,
+    marginBottom: 4,
     textTransform: 'uppercase',
     letterSpacing: 1,
+  },
+  subtitle: {
+    fontSize: 9,
+    textAlign: 'center',
+    color: '#6d28d9',
+    marginBottom: 16,
   },
   body: {
     fontSize: 11,
     lineHeight: 2,
     textAlign: 'justify',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   bold: { fontFamily: 'Helvetica-Bold' },
   destinationBox: {
@@ -52,7 +66,7 @@ const styles = StyleSheet.create({
     borderLeft: 3,
     borderLeftColor: '#7c3aed',
     padding: 10,
-    marginBottom: 20,
+    marginBottom: 16,
   },
   destinationLabel: {
     fontSize: 9,
@@ -68,7 +82,7 @@ const styles = StyleSheet.create({
     borderColor: '#7c3aed',
     borderRadius: 4,
     padding: 10,
-    marginBottom: 20,
+    marginBottom: 16,
     backgroundColor: '#faf5ff',
   },
   memberBoxTitle: {
@@ -101,7 +115,17 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
   },
 
-  signatureSection: { marginTop: 50, alignItems: 'center' },
+  validityBox: {
+    backgroundColor: '#fffbeb',
+    borderLeft: 3,
+    borderLeftColor: '#f59e0b',
+    padding: 8,
+    marginBottom: 16,
+  },
+  validityText: { fontSize: 8.5, color: '#92400e' },
+
+  signatureSection: { marginTop: 40, alignItems: 'center' },
+  signatureImg: { width: 120, height: 66, objectFit: 'contain', marginBottom: 2 },
   signatureLine: {
     borderTop: 1,
     borderTopColor: '#1e293b',
@@ -113,7 +137,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: 'right',
     color: '#475569',
-    marginBottom: 30,
+    marginBottom: 16,
   },
   footer: {
     position: 'absolute',
@@ -148,6 +172,7 @@ export function TransferLetterPDF({
 }: TransferLetterProps) {
   const city = congregation?.city ?? 'Iaçu'
   const dateStr = formatDate(issuedAt, 'long')
+  const phone = congregation?.phone ?? '(71) 9.9982-9980'
 
   return (
     <Document>
@@ -158,12 +183,19 @@ export function TransferLetterPDF({
           <View style={styles.headerText}>
             <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
             <Text style={styles.churchSub}>{congregation?.name ?? 'IADI'} — {city} — BA</Text>
-            <Text style={styles.churchSub}>{congregation?.phone ?? ''}</Text>
+            <Text style={styles.churchSub}>Rua Tiradentes, 211, Centro | CEP 46.860-000 | {phone}</Text>
+            <Text style={styles.churchSub}>CNPJ 04.889.243/0001-83 | assembleiadedeusiacu1919@gmail.com</Text>
+            <Text style={styles.churchSub}>Pastor Presidente: José Ramos Filho | {PASTOR_CREDENTIALS}</Text>
             <Text style={styles.letterNumber}>Carta Nº {letterNumber}</Text>
           </View>
         </View>
 
-        <Text style={styles.title}>Carta de Transferência</Text>
+        <Text style={styles.verse}>
+          "Não esqueçais da hospitalidade, porque por ela alguns, não sabendo, hospedaram anjos" — Hebreus 13:2
+        </Text>
+
+        <Text style={styles.title}>Carta de Mudança</Text>
+        <Text style={styles.subtitle}>Apresentação de Membro</Text>
         <Text style={styles.dateText}>{city}, {dateStr}</Text>
 
         {/* Destino */}
@@ -177,8 +209,18 @@ export function TransferLetterPDF({
           <Text style={styles.memberBoxTitle}>Identificação do Membro</Text>
           <View style={styles.memberBoxRow}>
             <View style={styles.memberBoxField}>
-              <Text style={styles.memberBoxLabel}>Nome</Text>
+              <Text style={styles.memberBoxLabel}>Nome Completo</Text>
               <Text style={styles.memberBoxValue}>{member.full_name}</Text>
+            </View>
+          </View>
+          <View style={styles.memberBoxRow}>
+            <View style={styles.memberBoxField}>
+              <Text style={styles.memberBoxLabel}>Cargo / Função</Text>
+              <Text style={styles.memberBoxValue}>{member.church_role ?? '—'}</Text>
+            </View>
+            <View style={styles.memberBoxField}>
+              <Text style={styles.memberBoxLabel}>Departamento / Ministério</Text>
+              <Text style={styles.memberBoxValue}>{member.ministry ?? '—'}</Text>
             </View>
           </View>
           <View style={styles.memberBoxRow}>
@@ -187,22 +229,18 @@ export function TransferLetterPDF({
               <Text style={styles.memberBoxValue}>{congregation?.name ?? '—'}</Text>
             </View>
             <View style={styles.memberBoxField}>
-              <Text style={styles.memberBoxLabel}>Departamento / Ministério</Text>
-              <Text style={styles.memberBoxValue}>{member.ministry ?? member.church_role ?? '—'}</Text>
+              <Text style={styles.memberBoxLabel}>Status</Text>
+              <Text style={styles.memberBoxValue}>Membro ativo, dentro dos princípios bíblicos e doutrinários desta Igreja</Text>
             </View>
           </View>
         </View>
 
         {/* Corpo */}
         <Text style={styles.body}>
-          {'        '}Ao(À) Rev.(ma) Pastor(a) e demais líderes da{' '}
-          <Text style={styles.bold}>{destination}</Text>
-          {',\n\n'}
-          {'        '}A liderança da{' '}
-          <Text style={styles.bold}>Igreja Evangélica Assembleia de Deus — {congregation?.name ?? 'IADI'}</Text>
-          {', sediada em '}
-          <Text style={styles.bold}>{city} — BA</Text>
-          {', apresenta a V. Revª. o(a) irmão(ã) '}
+          {'        '}Saudações no Senhor!{'\\n\\n'}
+          {'        '}É com muita satisfação que apresentamos à{' '}
+          <Text style={styles.bold}>{destination} — {destinationCity}</Text>
+          {', o(a) irmão(ã) '}
           <Text style={styles.bold}>{member.full_name}</Text>
           {', portador(a) do CPF '}
           <Text style={styles.bold}>{member.cpf ? formatCPF(member.cpf) : 'não informado'}</Text>
@@ -210,19 +248,23 @@ export function TransferLetterPDF({
           <Text style={styles.bold}>
             {member.baptism_date ? formatDate(member.baptism_date, 'long') : 'data não informada'}
           </Text>
-          {', que tem se mantido em boa comunhão nesta Igreja, e, a pedido próprio, está se transferindo para essa congregação.'}
+          {', o qual tem sido fiel à sua caminhada cristã e ao ministério desta Igreja.'}
           {'\n\n'}
-          {'        '}Pedimos que o(a) receba em comunhão com toda a fraternidade cristã, esperando que Deus o(a) abençoe grandemente em seu novo campo de serviço.
-          {'\n\n'}
-          {'        '}Fraternalmente em Cristo.
+          {'        '}Recomendamos que seja recebido(a) como usam fazer os santos, podendo assim continuar a servir na obra do SENHOR.
         </Text>
+
+        {/* Validade */}
+        <View style={styles.validityBox}>
+          <Text style={styles.validityText}>⚠ Validade: 30 dias a partir da data de emissão.</Text>
+        </View>
 
         {/* Assinatura */}
         <View style={styles.signatureSection}>
+          <Image src="/assinatura-pastor.png" style={styles.signatureImg} />
           <View style={styles.signatureLine} />
           <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
-          <Text style={styles.signatureText}>Pastor Presidente</Text>
-          <Text style={styles.signatureText}>Igreja Evangélica Assembleia de Deus — {city} — BA</Text>
+          <Text style={styles.signatureText}>Pastor Presidente | {PASTOR_CREDENTIALS}</Text>
+          <Text style={styles.signatureText}>Igreja Evangélica Assembleia de Deus — {city} — BA | CGADB</Text>
         </View>
 
         <Text style={styles.footer}>
