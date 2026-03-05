@@ -88,7 +88,7 @@ export const MEMBER_STATUS_LABELS: Record<string, string> = {
 export const MEMBER_STATUS_COLORS: Record<string, string> = {
   ativo: 'bg-green-100 text-green-800',
   inativo: 'bg-gray-100 text-gray-700',
-  transferido: 'bg-blue-100 text-blue-800',
+  transferido: 'bg-amber-100 text-amber-800',
   falecido: 'bg-slate-200 text-slate-700',
   excluido: 'bg-red-100 text-red-800',
   em_experiencia: 'bg-yellow-100 text-yellow-800',
