@@ -13,24 +13,27 @@ const styles = StyleSheet.create({
     color: '#1e293b',
     lineHeight: 1.6,
   },
+  // 04. Centralizado, logo maior, espaçamento reduzido
   header: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     marginBottom: 6,
     borderBottom: 2,
     borderBottomColor: '#1e3a8a',
     paddingBottom: 10,
-    gap: 12,
   },
-  logo: { width: 54, height: 54 },
-  headerText: { flex: 1 },
+  logo: { width: 68, height: 68, marginBottom: 4 }, // 04. logo maior
+  headerText: { alignItems: 'center' },
+  // 01. Nome da igreja maior
   churchName: {
-    fontSize: 13,
+    fontSize: 16,
     fontFamily: 'Helvetica-Bold',
     color: '#1e3a8a',
+    textAlign: 'center',
   },
-  churchSub: { fontSize: 7.5, color: '#475569', marginTop: 1.5 },
-  letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 3 },
+  // 04. Espaçamento reduzido entre linhas do cabeçalho
+  churchSub: { fontSize: 7.5, color: '#475569', marginTop: 0.5, textAlign: 'center' },
+  letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 2, textAlign: 'center' },
   verse: {
     fontSize: 7.5,
     color: '#1d4ed8',
@@ -68,8 +71,9 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 10,
   },
+  // 06. Título Destinatário maior
   destinationLabel: {
-    fontSize: 8.5,
+    fontSize: 10.5,
     color: '#1d4ed8',
     fontFamily: 'Helvetica-Bold',
     marginBottom: 2,
@@ -85,18 +89,20 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: '#f0f4ff',
   },
+  // 06. Título Identificação do Membro maior
   memberBoxTitle: {
-    fontSize: 7.5,
+    fontSize: 9.5,
     fontFamily: 'Helvetica-Bold',
     color: '#1e3a8a',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-    marginBottom: 5,
+    marginBottom: 3, // 05. menos espaço abaixo do título
   },
+  // 05. Espaçamento reduzido entre linhas de dados
   memberBoxRow: {
     flexDirection: 'row',
     gap: 16,
-    marginBottom: 3,
+    marginBottom: 1,
   },
   memberBoxField: {
     flex: 1,
@@ -115,14 +121,18 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica-Bold',
   },
 
+  // 07. Validade centralizada
   validityBox: {
     backgroundColor: '#fffbeb',
-    borderLeft: 3,
-    borderLeftColor: '#f59e0b',
+    borderTop: 1,
+    borderBottom: 1,
+    borderTopColor: '#f59e0b',
+    borderBottomColor: '#f59e0b',
     padding: 6,
     marginBottom: 10,
+    alignItems: 'center',
   },
-  validityText: { fontSize: 8.5, color: '#92400e' },
+  validityText: { fontSize: 8.5, color: '#92400e', textAlign: 'center' },
 
   signatureSection: { marginTop: 20, alignItems: 'center' },
   signatureImg: { width: 110, height: 60, objectFit: 'contain', marginBottom: 2 },
@@ -177,13 +187,14 @@ export function TransferLetterPDF({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Cabeçalho */}
+        {/* Cabeçalho — 04. centralizado, logo maior, espaçamento reduzido */}
         <View style={styles.header}>
           <Image src="/logo.png" style={styles.logo} />
           <View style={styles.headerText}>
+            {/* 01. Nome da igreja maior */}
             <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
-            <Text style={styles.churchSub}>{congregation?.name ?? 'IADI'} — {city} — BA</Text>
-            <Text style={styles.churchSub}>Rua Tiradentes, 211, Centro | CEP 46.860-000 | {phone}</Text>
+            {/* 02. Congregação removida daqui; 03. "SEDE - " no endereço */}
+            <Text style={styles.churchSub}>SEDE - Rua Tiradentes, 211, Centro | CEP 46.860-000 | {phone}</Text>
             <Text style={styles.churchSub}>CNPJ 04.889.243/0001-83 | assembleiadedeusiacu1919@gmail.com</Text>
             <Text style={styles.churchSub}>Pastor Presidente: José Ramos Filho | {PASTOR_CREDENTIALS}</Text>
             <Text style={styles.letterNumber}>Carta Nº {letterNumber}</Text>
@@ -247,7 +258,7 @@ export function TransferLetterPDF({
           {'        '}Recomendamos que seja recebido(a) como usam fazer os santos, podendo assim continuar a servir na obra do SENHOR.
         </Text>
 
-        {/* Validade */}
+        {/* 07. Validade centralizada */}
         <View style={styles.validityBox}>
           <Text style={styles.validityText}>⚠ Validade: 30 dias a partir da data de emissão.</Text>
         </View>
