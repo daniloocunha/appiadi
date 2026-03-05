@@ -43,10 +43,13 @@ export function LoginPage() {
           {/* Logo e título */}
           <div className="flex flex-col items-center mb-8">
             <img
-              src="/logo.png"
+              src="/logo-art.png"
               alt="IADI"
-              className="w-36 h-36 object-contain mb-3"
+              className="w-20 h-20 rounded-full object-cover mb-3 shadow-md bg-white"
             />
+            <h1 className="text-xl font-bold text-amber-900 text-center leading-tight">
+              Igreja Assembleia de Deus em Iaçu
+            </h1>
             <p className="text-sm text-slate-500 text-center">Gestão de Membros</p>
           </div>
 

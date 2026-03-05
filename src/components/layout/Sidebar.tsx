@@ -50,7 +50,7 @@ export function Sidebar({ pendingRegistrationsCount = 0 }: { pendingRegistration
     <aside className="hidden lg:flex flex-col w-56 min-h-screen bg-amber-900 text-white shrink-0">
       {/* Logo */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-amber-800">
-        <img src="/logo.png" alt="IADI" className="w-9 h-9 rounded-full object-cover bg-white" />
+        <img src="/logo-art.png" alt="IADI" className="w-9 h-9 rounded-full object-cover bg-white" />
         <div className="leading-tight">
           <p className="text-xs font-bold tracking-wide">IADI</p>
           <p className="text-xs text-amber-300 leading-tight">Gestão de Membros</p>
