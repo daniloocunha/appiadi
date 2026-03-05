@@ -13,27 +13,25 @@ const styles = StyleSheet.create({
     color: '#1e293b',
     lineHeight: 1.6,
   },
-  // 04. Centralizado, logo maior, espaçamento reduzido
   header: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 6,
     borderBottom: 2,
     borderBottomColor: '#1e3a8a',
     paddingBottom: 10,
+    gap: 14,
   },
-  logo: { width: 68, height: 68, marginBottom: 4 }, // 04. logo maior
-  headerText: { alignItems: 'center' },
-  // 01. Nome da igreja maior
+  logo: { width: 68, height: 68 },
+  headerText: { flex: 1 },
   churchName: {
     fontSize: 16,
     fontFamily: 'Helvetica-Bold',
     color: '#1e3a8a',
-    textAlign: 'center',
+    marginBottom: 5,
   },
-  // 04. Espaçamento reduzido entre linhas do cabeçalho
-  churchSub: { fontSize: 7.5, color: '#475569', marginTop: 0.5, textAlign: 'center' },
-  letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 2, textAlign: 'center' },
+  churchSub: { fontSize: 7.5, color: '#475569', marginTop: 0 },
+  letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 2 },
   verse: {
     fontSize: 7.5,
     color: '#1d4ed8',
@@ -187,13 +185,11 @@ export function TransferLetterPDF({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {/* Cabeçalho — 04. centralizado, logo maior, espaçamento reduzido */}
+        {/* Cabeçalho */}
         <View style={styles.header}>
           <Image src="/logo.png" style={styles.logo} />
           <View style={styles.headerText}>
-            {/* 01. Nome da igreja maior */}
             <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
-            {/* 02. Congregação removida daqui; 03. "SEDE - " no endereço */}
             <Text style={styles.churchSub}>SEDE - Rua Tiradentes, 211, Centro | CEP 46.860-000 | {phone}</Text>
             <Text style={styles.churchSub}>CNPJ 04.889.243/0001-83 | assembleiadedeusiacu1919@gmail.com</Text>
             <Text style={styles.churchSub}>Pastor Presidente: José Ramos Filho | {PASTOR_CREDENTIALS}</Text>
