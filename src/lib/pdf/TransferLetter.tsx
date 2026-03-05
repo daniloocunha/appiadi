@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
   churchSub: { fontSize: 7.5, color: '#475569', marginTop: 0 },
   letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 2 },
   verse: {
-    fontSize: 7.5,
+    fontSize: 8,
     color: '#1d4ed8',
     fontStyle: 'italic',
     textAlign: 'center',
@@ -191,10 +191,9 @@ export function TransferLetterPDF({
           <Image src="/logo.png" style={styles.logo} />
           <View style={styles.headerText}>
             <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
-            <Text style={styles.churchSub}>SEDE - Rua Tiradentes, 211, Centro | CEP 46.860-000 | {phone}</Text>
+            <Text style={styles.churchSub}>SEDE - Rua Tiradentes, 211, Centro, Iaçu-BA | CEP 46.860-000 | {phone}</Text>
             <Text style={styles.churchSub}>CNPJ 04.889.243/0001-83 | assembleiadedeusiacu1919@gmail.com</Text>
             <Text style={styles.churchSub}>Pastor Presidente: José Ramos Filho | {PASTOR_CREDENTIALS}</Text>
-            <Text style={styles.letterNumber}>Carta Nº {letterNumber}</Text>
           </View>
         </View>
 
@@ -204,7 +203,6 @@ export function TransferLetterPDF({
 
         <Text style={styles.title}>Carta de Mudança</Text>
         <Text style={styles.subtitle}>Apresentação de Membro</Text>
-        <Text style={styles.dateText}>{city}, {dateStr}</Text>
 
         {/* Destino */}
         <View style={styles.destinationBox}>
@@ -266,7 +264,7 @@ export function TransferLetterPDF({
           <View style={styles.signatureLine} />
           <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
           <Text style={styles.signatureText}>Pastor Presidente | {PASTOR_CREDENTIALS}</Text>
-          <Text style={styles.signatureText}>Igreja Evangélica Assembleia de Deus — {city} — BA | CGADB</Text>
+          <Text style={styles.signatureText}>Igreja Evangélica Assembleia de Deus — Iaçu-BA | CGADB</Text>
         </View>
 
         <Text style={styles.footer}>
