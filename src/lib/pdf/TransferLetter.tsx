@@ -2,6 +2,8 @@ import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/render
 import type { Member, Congregation } from '@/types'
 import { formatDate, formatCPF } from '@/utils/formatters'
 
+const PASTOR_NAME = 'Pr. José Ramos Filho'
+
 const styles = StyleSheet.create({
   page: {
     padding: 50,
@@ -59,6 +61,46 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   destinationText: { fontSize: 11, color: '#1e293b' },
+
+  // ── Caixa de identificação do membro ──
+  memberBox: {
+    borderWidth: 1,
+    borderColor: '#7c3aed',
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 20,
+    backgroundColor: '#faf5ff',
+  },
+  memberBoxTitle: {
+    fontSize: 8,
+    fontFamily: 'Helvetica-Bold',
+    color: '#7c3aed',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 6,
+  },
+  memberBoxRow: {
+    flexDirection: 'row',
+    gap: 20,
+    marginBottom: 3,
+  },
+  memberBoxField: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  memberBoxLabel: {
+    fontSize: 7,
+    color: '#64748b',
+    fontFamily: 'Helvetica-Bold',
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+  },
+  memberBoxValue: {
+    fontSize: 10,
+    color: '#1e293b',
+    fontFamily: 'Helvetica-Bold',
+  },
+
   signatureSection: { marginTop: 50, alignItems: 'center' },
   signatureLine: {
     borderTop: 1,
@@ -91,7 +133,6 @@ interface TransferLetterProps {
   member: Member
   congregation: Congregation | null
   letterNumber: string
-  pastorName: string
   issuedAt: string
   destination: string
   destinationCity: string
@@ -101,7 +142,6 @@ export function TransferLetterPDF({
   member,
   congregation,
   letterNumber,
-  pastorName,
   issuedAt,
   destination,
   destinationCity,
@@ -116,27 +156,41 @@ export function TransferLetterPDF({
         <View style={styles.header}>
           <Image src="/logo.png" style={styles.logo} />
           <View style={styles.headerText}>
-            <Text style={styles.churchName}>
-              Igreja Evangélica Assembleia de Deus
-            </Text>
-            <Text style={styles.churchSub}>
-              {congregation?.name ?? 'IADI'} — {city} — BA
-            </Text>
+            <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
+            <Text style={styles.churchSub}>{congregation?.name ?? 'IADI'} — {city} — BA</Text>
             <Text style={styles.churchSub}>{congregation?.phone ?? ''}</Text>
             <Text style={styles.letterNumber}>Carta Nº {letterNumber}</Text>
           </View>
         </View>
 
         <Text style={styles.title}>Carta de Transferência</Text>
-
         <Text style={styles.dateText}>{city}, {dateStr}</Text>
 
         {/* Destino */}
         <View style={styles.destinationBox}>
           <Text style={styles.destinationLabel}>DESTINATÁRIO</Text>
-          <Text style={styles.destinationText}>
-            {destination} — {destinationCity}
-          </Text>
+          <Text style={styles.destinationText}>{destination} — {destinationCity}</Text>
+        </View>
+
+        {/* Caixa de identificação do membro */}
+        <View style={styles.memberBox}>
+          <Text style={styles.memberBoxTitle}>Identificação do Membro</Text>
+          <View style={styles.memberBoxRow}>
+            <View style={styles.memberBoxField}>
+              <Text style={styles.memberBoxLabel}>Nome</Text>
+              <Text style={styles.memberBoxValue}>{member.full_name}</Text>
+            </View>
+          </View>
+          <View style={styles.memberBoxRow}>
+            <View style={styles.memberBoxField}>
+              <Text style={styles.memberBoxLabel}>Congregação / Sede</Text>
+              <Text style={styles.memberBoxValue}>{congregation?.name ?? '—'}</Text>
+            </View>
+            <View style={styles.memberBoxField}>
+              <Text style={styles.memberBoxLabel}>Departamento / Ministério</Text>
+              <Text style={styles.memberBoxValue}>{member.ministry ?? member.church_role ?? '—'}</Text>
+            </View>
+          </View>
         </View>
 
         {/* Corpo */}
@@ -145,9 +199,7 @@ export function TransferLetterPDF({
           <Text style={styles.bold}>{destination}</Text>
           {',\n\n'}
           {'        '}A liderança da{' '}
-          <Text style={styles.bold}>
-            Igreja Evangélica Assembleia de Deus — {congregation?.name ?? 'IADI'}
-          </Text>
+          <Text style={styles.bold}>Igreja Evangélica Assembleia de Deus — {congregation?.name ?? 'IADI'}</Text>
           {', sediada em '}
           <Text style={styles.bold}>{city} — BA</Text>
           {', apresenta a V. Revª. o(a) irmão(ã) '}
@@ -168,11 +220,9 @@ export function TransferLetterPDF({
         {/* Assinatura */}
         <View style={styles.signatureSection}>
           <View style={styles.signatureLine} />
-          <Text style={styles.signatureText}>{pastorName}</Text>
+          <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
           <Text style={styles.signatureText}>Pastor Presidente</Text>
-          <Text style={styles.signatureText}>
-            Igreja Evangélica Assembleia de Deus — {city} — BA
-          </Text>
+          <Text style={styles.signatureText}>Igreja Evangélica Assembleia de Deus — {city} — BA</Text>
         </View>
 
         <Text style={styles.footer}>

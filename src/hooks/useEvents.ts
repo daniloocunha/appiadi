@@ -127,6 +127,7 @@ export async function getBirthdaysInMonth(month: number): Promise<Array<{
   church_role: string | null
   congregation_id: string
   photo_url: string | null
+  phone: string | null
 }>> {
   const pad = (n: number) => String(n).padStart(2, '0')
   const monthStr = `-${pad(month)}-`
@@ -143,6 +144,7 @@ export async function getBirthdaysInMonth(month: number): Promise<Array<{
       church_role: m.church_role ?? null,
       congregation_id: m.congregation_id,
       photo_url: m.photo_url ?? null,
+      phone: m.phone ?? null,
     }))
     .sort((a, b) => {
       // Ordenar pelo dia do mês

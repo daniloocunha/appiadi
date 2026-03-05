@@ -39,10 +39,10 @@ export function LettersPage() {
 
   const [destination, setDestination] = useState('')
   const [destinationCity, setDestinationCity] = useState('')
-  const [pastorName, setPastorName] = useState('')
 
   const [history, setHistory] = useState<Array<Letter | (Badge & { updated_at?: string })>>([])
   const [showHistory, setShowHistory] = useState(false)
+  const [userNames, setUserNames] = useState<Record<string, string>>({})
 
   const { members: allMembers, isLoading } = useMembers()
   const members = useMemo(() => {
@@ -67,14 +67,26 @@ export function LettersPage() {
       const all = [...(letters as Letter[]), ...(badges as Badge[])].sort(
         (a, b) => new Date(b.issued_at).getTime() - new Date(a.issued_at).getTime()
       )
-      setHistory(all.slice(0, 20))
+      const items = all.slice(0, 20)
+      setHistory(items)
+
+      // Busca nomes dos usuários que emitiram os documentos
+      const ids = [...new Set(items.map((i) => i.issued_by).filter(Boolean))] as string[]
+      if (ids.length > 0) {
+        const { data } = await supabase
+          .from('app_users')
+          .select('id, full_name')
+          .in('id', ids)
+        if (data) {
+          setUserNames(Object.fromEntries(data.map((u) => [u.id, u.full_name])))
+        }
+      }
     }
     load()
   }, [generateOpen])
 
   async function handleGenerate() {
     if (!selectedMember) return
-    if (!pastorName.trim()) { alert('Informe o nome do Pastor Presidente'); return }
 
     setIsGenerating(true)
     const now = new Date().toISOString()
@@ -88,7 +100,6 @@ export function LettersPage() {
             member={selectedMember}
             congregation={congregation}
             letterNumber={letterNumber}
-            pastorName={pastorName}
             issuedAt={now}
           />
         )
@@ -113,7 +124,6 @@ export function LettersPage() {
             member={selectedMember}
             congregation={congregation}
             letterNumber={letterNumber}
-            pastorName={pastorName}
             issuedAt={now}
             destination={destination}
             destinationCity={destinationCity}
@@ -187,7 +197,6 @@ export function LettersPage() {
             member={{ ...selectedMember, photo_url: resolvedPhotoUrl }}
             congregation={congregation}
             badgeNumber={badgeNumber}
-            pastorName={pastorName}
           />
         )
         const blob = await pdf(doc).toBlob()
@@ -294,13 +303,19 @@ export function LettersPage() {
                       ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'
                     : 'bg-amber-100 text-amber-700'
 
+                  const issuerName = item.issued_by ? (userNames[item.issued_by] ?? 'Usuário') : null
                   return (
                     <div key={item.id} className="px-4 py-2.5 flex items-center gap-3">
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${colorClass}`}>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${colorClass}`}>
                         {type}
                       </span>
-                      <span className="text-sm text-slate-700 font-mono flex-1">{number}</span>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-sm text-slate-700 font-mono flex-1 truncate">{number}</span>
+                      {issuerName && (
+                        <span className="text-xs text-slate-500 truncate max-w-[120px]" title={issuerName}>
+                          {issuerName}
+                        </span>
+                      )}
+                      <span className="text-xs text-slate-400 shrink-0">
                         {formatDate(item.issued_at, 'short')}
                       </span>
                     </div>
@@ -432,19 +447,6 @@ export function LettersPage() {
               </div>
             </>
           )}
-
-          {/* Pastor */}
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-slate-600">
-              Nome do Pastor Presidente <span className="text-red-500">*</span>
-            </label>
-            <input
-              className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Pastor João da Silva"
-              value={pastorName}
-              onChange={(e) => setPastorName(e.target.value)}
-            />
-          </div>
 
           {!canGenerate && (
             <p className="text-xs text-amber-600 bg-amber-50 rounded-lg p-2">

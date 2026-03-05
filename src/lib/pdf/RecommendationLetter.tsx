@@ -4,6 +4,9 @@ import {
 import type { Member, Congregation } from '@/types'
 import { formatDate, formatCPF } from '@/utils/formatters'
 
+// Nome do pastor presidente — fixo em todos os documentos
+const PASTOR_NAME = 'Pr. José Ramos Filho'
+
 const styles = StyleSheet.create({
   page: {
     padding: 50,
@@ -21,28 +24,15 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     gap: 15,
   },
-  logo: {
-    width: 60,
-    height: 60,
-  },
-  headerText: {
-    flex: 1,
-  },
+  logo: { width: 60, height: 60 },
+  headerText: { flex: 1 },
   churchName: {
     fontSize: 14,
     fontFamily: 'Helvetica-Bold',
     color: '#1e3a8a',
   },
-  churchSub: {
-    fontSize: 9,
-    color: '#475569',
-    marginTop: 2,
-  },
-  letterNumber: {
-    fontSize: 9,
-    color: '#94a3b8',
-    marginTop: 4,
-  },
+  churchSub: { fontSize: 9, color: '#475569', marginTop: 2 },
+  letterNumber: { fontSize: 9, color: '#94a3b8', marginTop: 4 },
   title: {
     fontSize: 14,
     fontFamily: 'Helvetica-Bold',
@@ -59,24 +49,55 @@ const styles = StyleSheet.create({
     textAlign: 'justify',
     marginBottom: 20,
   },
-  bold: {
+  bold: { fontFamily: 'Helvetica-Bold' },
+
+  // ── Caixa de identificação do membro ──
+  memberBox: {
+    borderWidth: 1,
+    borderColor: '#1e3a8a',
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 20,
+    backgroundColor: '#f0f4ff',
+  },
+  memberBoxTitle: {
+    fontSize: 8,
+    fontFamily: 'Helvetica-Bold',
+    color: '#1e3a8a',
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: 6,
+  },
+  memberBoxRow: {
+    flexDirection: 'row',
+    gap: 20,
+    marginBottom: 3,
+  },
+  memberBoxField: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  memberBoxLabel: {
+    fontSize: 7,
+    color: '#64748b',
+    fontFamily: 'Helvetica-Bold',
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+  },
+  memberBoxValue: {
+    fontSize: 10,
+    color: '#1e293b',
     fontFamily: 'Helvetica-Bold',
   },
-  signatureSection: {
-    marginTop: 50,
-    alignItems: 'center',
-  },
+
+  signatureSection: { marginTop: 50, alignItems: 'center' },
   signatureLine: {
     borderTop: 1,
     borderTopColor: '#1e293b',
     width: 250,
     marginBottom: 5,
   },
-  signatureText: {
-    fontSize: 10,
-    textAlign: 'center',
-    color: '#475569',
-  },
+  signatureText: { fontSize: 10, textAlign: 'center', color: '#475569' },
   dateText: {
     fontSize: 10,
     textAlign: 'right',
@@ -101,7 +122,6 @@ interface RecommendationLetterProps {
   member: Member
   congregation: Congregation | null
   letterNumber: string
-  pastorName: string
   issuedAt: string
 }
 
@@ -109,7 +129,6 @@ export function RecommendationLetterPDF({
   member,
   congregation,
   letterNumber,
-  pastorName,
   issuedAt,
 }: RecommendationLetterProps) {
   const city = congregation?.city ?? 'Iaçu'
@@ -122,34 +141,42 @@ export function RecommendationLetterPDF({
         <View style={styles.header}>
           <Image src="/logo.png" style={styles.logo} />
           <View style={styles.headerText}>
-            <Text style={styles.churchName}>
-              Igreja Evangélica Assembleia de Deus
-            </Text>
-            <Text style={styles.churchSub}>
-              {congregation?.name ?? 'IADI'} — {city} — BA
-            </Text>
-            <Text style={styles.churchSub}>
-              {congregation?.phone ?? ''}
-            </Text>
+            <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
+            <Text style={styles.churchSub}>{congregation?.name ?? 'IADI'} — {city} — BA</Text>
+            <Text style={styles.churchSub}>{congregation?.phone ?? ''}</Text>
             <Text style={styles.letterNumber}>Carta Nº {letterNumber}</Text>
           </View>
         </View>
 
-        {/* Título */}
         <Text style={styles.title}>Carta de Recomendação</Text>
+        <Text style={styles.dateText}>{city}, {dateStr}</Text>
 
-        {/* Data */}
-        <Text style={styles.dateText}>
-          {city}, {dateStr}
-        </Text>
+        {/* Caixa de identificação do membro */}
+        <View style={styles.memberBox}>
+          <Text style={styles.memberBoxTitle}>Identificação do Membro</Text>
+          <View style={styles.memberBoxRow}>
+            <View style={styles.memberBoxField}>
+              <Text style={styles.memberBoxLabel}>Nome</Text>
+              <Text style={styles.memberBoxValue}>{member.full_name}</Text>
+            </View>
+          </View>
+          <View style={styles.memberBoxRow}>
+            <View style={styles.memberBoxField}>
+              <Text style={styles.memberBoxLabel}>Congregação / Sede</Text>
+              <Text style={styles.memberBoxValue}>{congregation?.name ?? '—'}</Text>
+            </View>
+            <View style={styles.memberBoxField}>
+              <Text style={styles.memberBoxLabel}>Departamento / Ministério</Text>
+              <Text style={styles.memberBoxValue}>{member.ministry ?? member.church_role ?? '—'}</Text>
+            </View>
+          </View>
+        </View>
 
         {/* Corpo */}
         <Text style={styles.body}>
           {'        '}A quem possa interessar:{'\n\n'}
           {'        '}A liderança da{' '}
-          <Text style={styles.bold}>
-            Igreja Evangélica Assembleia de Deus — {congregation?.name ?? 'IADI'}
-          </Text>
+          <Text style={styles.bold}>Igreja Evangélica Assembleia de Deus — {congregation?.name ?? 'IADI'}</Text>
           {', sediada em '}
           <Text style={styles.bold}>{city} — BA</Text>
           {', vem por meio desta, recomendar o(a) irmão(ã) '}
@@ -170,14 +197,11 @@ export function RecommendationLetterPDF({
         {/* Assinatura */}
         <View style={styles.signatureSection}>
           <View style={styles.signatureLine} />
-          <Text style={styles.signatureText}>{pastorName}</Text>
+          <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
           <Text style={styles.signatureText}>Pastor Presidente</Text>
-          <Text style={styles.signatureText}>
-            Igreja Evangélica Assembleia de Deus — {city} — BA
-          </Text>
+          <Text style={styles.signatureText}>Igreja Evangélica Assembleia de Deus — {city} — BA</Text>
         </View>
 
-        {/* Rodapé */}
         <Text style={styles.footer}>
           Documento emitido em {dateStr} — {letterNumber} — Sistema de Gestão IADI
         </Text>

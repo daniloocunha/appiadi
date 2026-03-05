@@ -13,8 +13,16 @@ import type { ChurchEvent } from '@/types'
 import { getMonthName } from '@/utils/formatters'
 import {
   ChevronLeft, ChevronRight, Plus, Cake, CalendarDays,
-  MapPin, Clock, Trash2, Pencil, Building2, X
+  MapPin, Clock, Trash2, Pencil, Building2, X, MessageCircle
 } from 'lucide-react'
+
+/** Gera o link do WhatsApp com mensagem de parabéns */
+function whatsappBirthdayUrl(phone: string, name: string): string {
+  const digits = phone.replace(/\D/g, '')
+  const fullNumber = digits.startsWith('55') ? digits : `55${digits}`
+  const msg = encodeURIComponent(`Feliz aniversário, ${name}! 🎂 Que Deus te abençoe muito neste dia especial!`)
+  return `https://wa.me/${fullNumber}?text=${msg}`
+}
 
 type Tab = 'eventos' | 'aniversariantes'
 
@@ -385,6 +393,17 @@ export function CalendarPage() {
                         {congregationMap[b.congregation_id] ? ` · ${congregationMap[b.congregation_id].name}` : ''}
                       </p>
                     </div>
+                    {b.phone && (
+                      <a
+                        href={whatsappBirthdayUrl(b.phone, b.full_name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Enviar parabéns pelo WhatsApp"
+                        className="flex items-center justify-center w-9 h-9 rounded-xl bg-green-50 text-green-600 hover:bg-green-100 transition-colors shrink-0"
+                      >
+                        <MessageCircle size={16} />
+                      </a>
+                    )}
                   </div>
                 )
               })}
