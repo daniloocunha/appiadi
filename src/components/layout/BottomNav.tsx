@@ -8,13 +8,15 @@ import {
 } from 'lucide-react'
 import { useUiStore } from '@/store/uiStore'
 import { useSyncStore } from '@/store/syncStore'
+import { usePendingRegistrationsCount } from '@/hooks/usePendingRegistrationsCount'
 
 // Bottom navigation — apenas mobile (lg:hidden)
 // Os 4 itens mais usados + botão de menu para o restante
 
 export function BottomNav() {
   const toggleSidebar = useUiStore((s) => s.toggleSidebar)
-  const pendingCount = useSyncStore((s) => s.pendingCount)
+  const syncPending = useSyncStore((s) => s.pendingCount)
+  const pendingRegistrations = usePendingRegistrationsCount()
 
   const items = [
     { to: '/dashboard', label: 'Início', icon: <LayoutDashboard size={20} /> },
@@ -50,8 +52,18 @@ export function BottomNav() {
       >
         <span className="relative">
           <Menu size={20} />
-          {pendingCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full" />
+          {/* Cadastros pendentes de aprovação — badge vermelho top-right */}
+          {pendingRegistrations > 0 && (
+            <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] px-0.5 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center leading-none">
+              {pendingRegistrations > 9 ? '9+' : pendingRegistrations}
+            </span>
+          )}
+          {/* Alterações offline pendentes — ponto laranja bottom-right (sempre visível) */}
+          {syncPending > 0 && (
+            <span className={[
+              'absolute w-2.5 h-2.5 bg-orange-400 rounded-full',
+              pendingRegistrations > 0 ? '-bottom-1 -right-1' : '-top-1 -right-1',
+            ].join(' ')} />
           )}
         </span>
         <span>Menu</span>

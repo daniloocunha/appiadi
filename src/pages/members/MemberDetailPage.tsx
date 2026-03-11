@@ -301,11 +301,12 @@ export function MemberDetailPage() {
           initialData={member}
           congregations={congregations}
           onSave={async (data, photoFile) => {
-            await saveMember(data, photoFile, member.id)
+            const result = await saveMember(data, photoFile, member.id)
             await reload()
             const updated = await fetchMemberById(member.id)
             if (updated) setMember(updated)
             setEditOpen(false)
+            if (result.photoError) alert(result.photoError)
           }}
           onCancel={() => setEditOpen(false)}
         />

@@ -35,7 +35,7 @@ export function useMembers(filters?: MemberFilters) {
 
   const loadFromLocal = useCallback(async () => {
     try {
-      let query = db.members.filter((m) => !m.deleted_at)
+      const query = db.members.filter((m) => !m.deleted_at)
 
       const all = await query.toArray()
 
@@ -85,12 +85,13 @@ export function useMembers(filters?: MemberFilters) {
     data: MemberFormData,
     photoFile: File | null,
     existingId?: string
-  ): Promise<{ id: string; error: string | null }> {
+  ): Promise<{ id: string; error: string | null; photoError: string | null }> {
     const now = new Date().toISOString()
     const id = existingId ?? uuidv4()
 
     let created_at = now
     let photo_url: string | null = null
+    let photoError: string | null = null
 
     if (existingId) {
       const existing = await db.members.get(existingId)
@@ -105,10 +106,13 @@ export function useMembers(filters?: MemberFilters) {
       try {
         const result = await uploadMemberPhoto(photoFile, id)
         if (result.url) photo_url = result.url
-        else logger.warn('Falha ao fazer upload da foto:', result.error)
+        else {
+          photoError = 'Foto não foi salva. Verifique sua conexão e tente novamente.'
+          logger.warn('Falha ao fazer upload da foto:', result.error)
+        }
       } catch (e) {
+        photoError = 'Foto não foi salva. Verifique sua conexão e tente novamente.'
         logger.warn('Falha ao fazer upload da foto:', e)
-        // Não bloqueia o salvamento
       }
     }
 
@@ -168,9 +172,9 @@ export function useMembers(filters?: MemberFilters) {
     try {
       await syncWrite('members', record, existingId ? 'UPDATE' : 'INSERT')
       await loadFromLocal()
-      return { id, error: null }
+      return { id, error: null, photoError }
     } catch (e) {
-      return { id, error: String(e) }
+      return { id, error: String(e), photoError }
     }
   }
 

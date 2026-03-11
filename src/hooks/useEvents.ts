@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { db } from '@/lib/db'
 import { syncWrite } from '@/lib/sync'
 import type { ChurchEvent, EventType } from '@/types'
@@ -34,11 +34,7 @@ export function useEvents(month?: number, year?: number) {
   const [events, setEvents] = useState<ChurchEvent[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  useEffect(() => {
-    loadFromLocal()
-  }, [month, year])
-
-  async function loadFromLocal() {
+  const loadFromLocal = useCallback(async () => {
     try {
       let all = await db.events
         .filter((e) => !e.deleted_at)
@@ -57,7 +53,11 @@ export function useEvents(month?: number, year?: number) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [month, year])
+
+  useEffect(() => {
+    loadFromLocal()
+  }, [loadFromLocal])
 
   async function saveEvent(
     data: EventFormData,

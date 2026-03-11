@@ -318,9 +318,10 @@ export function MembersPage() {
         <MemberForm
           congregations={congregations}
           onSave={async (data, photoFile) => {
-            await saveMember(data, photoFile)
+            const result = await saveMember(data, photoFile)
             await reload()
             setFormOpen(false)
+            if (result.photoError) alert(result.photoError)
           }}
           onCancel={() => setFormOpen(false)}
         />

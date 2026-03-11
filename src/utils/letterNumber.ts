@@ -11,6 +11,7 @@ export async function generateLetterNumber(type: 'recomendacao' | 'transferencia
     .select('*', { count: 'exact', head: true })
     .eq('letter_type', type)
     .gte('issued_at', `${year}-01-01`)
+    .lt('issued_at', `${year + 1}-01-01`)
 
   const seq = ((count ?? 0) + 1).toString().padStart(3, '0')
   return `${prefix}-${year}-${seq}`
@@ -24,6 +25,7 @@ export async function generateBadgeNumber(): Promise<string> {
     .from('badges')
     .select('*', { count: 'exact', head: true })
     .gte('issued_at', `${year}-01-01`)
+    .lt('issued_at', `${year + 1}-01-01`)
 
   const seq = ((count ?? 0) + 1).toString().padStart(3, '0')
   return `CRA-${year}-${seq}`

@@ -136,13 +136,26 @@ export async function pushToSupabase(): Promise<void> {
 
   for (const item of queue) {
     try {
-      const rawPayload = JSON.parse(item.payload)
+      let rawPayload: unknown
+      try {
+        rawPayload = JSON.parse(item.payload)
+      } catch {
+        console.warn(`[sync] Payload corrompido para ${item.table_name}/${item.record_id} — descartando da fila`)
+        await db.sync_queue.delete(item.id!)
+        skippedCount++
+        continue
+      }
       const payload = sanitizePayload(item.table_name, rawPayload)
 
       if (item.operation === 'DELETE') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const p = payload as any
         const { error, status } = await supabase
           .from(item.table_name)
-          .update({ deleted_at: new Date().toISOString() })
+          .update({
+            deleted_at: p.deleted_at ?? new Date().toISOString(),
+            updated_at: p.updated_at ?? new Date().toISOString(),
+          })
           .eq('id', item.record_id)
 
         if (error) throw { ...error, httpStatus: status }

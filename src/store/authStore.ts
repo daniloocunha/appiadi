@@ -6,22 +6,21 @@ interface AuthState {
   user: User | null
   appUser: AppUser | null
   isLoading: boolean
+  role: UserRole | null
+  isAuthenticated: boolean
   setUser: (user: User | null) => void
   setAppUser: (appUser: AppUser | null) => void
   setLoading: (v: boolean) => void
-  role: UserRole | null
-  isAuthenticated: boolean
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
+export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   appUser: null,
   isLoading: true,
+  role: null,
+  isAuthenticated: false,
 
   setUser: (user) => set({ user, isAuthenticated: !!user }),
   setAppUser: (appUser) => set({ appUser, role: appUser?.role ?? null }),
   setLoading: (v) => set({ isLoading: v }),
-
-  get role() { return get().appUser?.role ?? null },
-  get isAuthenticated() { return !!get().user },
 }))

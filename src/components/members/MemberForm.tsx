@@ -180,7 +180,7 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
           naturalidade: raw.naturalidade || null,
           naturalidade_uf: raw.naturalidade_uf ? raw.naturalidade_uf.toUpperCase() : null,
           cpf: raw.cpf ? raw.cpf.replace(/\D/g, '') : null,
-          rg: raw.rg || null,
+          rg: raw.rg ? raw.rg.replace(/\D/g, '') : null,
           phone: raw.phone ? raw.phone.replace(/\D/g, '') : null,
           phone_secondary: raw.phone_secondary ? raw.phone_secondary.replace(/\D/g, '') : null,
           email: raw.email || null,
