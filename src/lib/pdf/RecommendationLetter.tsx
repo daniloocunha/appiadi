@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     gap: 12,
   },
-  logo: { width: 64, height: 64 },
+  logo: { width: 46, height: 64 },
   headerText: { flex: 1 },
   churchName: {
     fontSize: 13,

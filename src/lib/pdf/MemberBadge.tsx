@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   headerLogo: {
-    width: 28,
+    width: 20,
     height: 28,
   },
   headerTexts: {
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   backLogo: {
-    width: 24,
+    width: 17,
     height: 24,
   },
   backChurchName: {
