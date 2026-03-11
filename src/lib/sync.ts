@@ -266,17 +266,17 @@ export async function syncWrite<T extends { id: string; updated_at: string }>(
     try {
       // 2. Tenta gravar direto no Supabase
       if (operation === 'DELETE') {
-        const { error } = await supabase
+        const { error, status } = await supabase
           .from(tableName)
           .update({ deleted_at: new Date().toISOString() })
           .eq('id', record.id)
-        if (error) throw error
+        if (error) throw { ...error, httpStatus: status }
       } else {
         const cleanRecord = sanitizePayload(tableName, record)
-        const { error } = await supabase
+        const { error, status } = await supabase
           .from(tableName)
           .upsert(cleanRecord, { onConflict: 'id' })
-        if (error) throw error
+        if (error) throw { ...error, httpStatus: status }
       }
       // 3. Marca como sincronizado
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

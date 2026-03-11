@@ -69,10 +69,12 @@ export function MemberDetailPage() {
   useEffect(() => {
     if (!id) return
     setIsLoading(true)
-    fetchMemberById(id).then((m) => {
-      setMember(m)
-      setIsLoading(false)
-    })
+    fetchMemberById(id)
+      .then((m) => {
+        setMember(m)
+        setIsLoading(false)
+      })
+      .catch(() => setIsLoading(false))
   }, [id])
 
   const MARITAL_LABELS: Record<string, string> = {

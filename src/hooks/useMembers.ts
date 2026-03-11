@@ -183,6 +183,11 @@ export function useMembers(filters?: MemberFilters) {
     const existing = await db.members.get(id)
     if (!existing) return { error: 'Membro não encontrado' }
 
+    // Remove foto do Storage de forma assíncrona (falha silenciosa — não bloqueia o delete)
+    if (existing.photo_url) {
+      supabase.storage.from('member-photos').remove([`members/${id}.jpg`]).catch(() => {})
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _synced, ...rest } = existing
     const record: Member = {

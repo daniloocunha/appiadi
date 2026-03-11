@@ -135,12 +135,21 @@ export function useSelfRegistrations() {
 
     try {
       await syncWrite('members', member, 'INSERT')
-      await syncWrite('self_registrations', updatedReg, 'UPDATE')
-      await loadFromLocal()
-      return { error: null }
     } catch (e) {
-      return { error: String(e) }
+      return { error: `Erro ao criar membro: ${String(e)}` }
     }
+
+    try {
+      await syncWrite('self_registrations', updatedReg, 'UPDATE')
+    } catch (e) {
+      // Rollback: desfaz a criação do membro para evitar duplicata na próxima aprovação
+      const rollback: Member = { ...member, deleted_at: now, updated_at: now }
+      await syncWrite('members', rollback, 'DELETE').catch(() => {})
+      return { error: `Erro ao aprovar cadastro: ${String(e)}` }
+    }
+
+    await loadFromLocal()
+    return { error: null }
   }
 
   /** Rejeita um auto-cadastro */
