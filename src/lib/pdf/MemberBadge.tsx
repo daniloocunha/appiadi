@@ -442,19 +442,27 @@ function BadgeBack({ member, congregation, badgeNumber, qrDataUrl }: BadgeProps)
         </View>
       </View>
 
-      {/* Assinatura + data de geração */}
+      {/* Assinatura + QR + data de geração */}
       <View style={styles.backDivider} />
       <View style={styles.signatureArea}>
+        {/* Esquerda: assinatura do pastor */}
         <View>
           <Image src="/assinatura-pastor.png" style={styles.signatureImg} />
           <View style={styles.signatureLine} />
           <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
           <Text style={styles.signatureText}>Pastor Presidente</Text>
         </View>
+
+        {/* Centro: QR Code (entre assinatura e endereço) */}
+        {qrDataUrl && (
+          <Image
+            src={qrDataUrl}
+            style={{ width: 38, height: 38, alignSelf: 'flex-end', marginBottom: 1 }}
+          />
+        )}
+
+        {/* Direita: endereço e data */}
         <View style={{ alignItems: 'flex-end', gap: 2 }}>
-          {qrDataUrl && (
-            <Image src={qrDataUrl} style={{ width: 40, height: 40, marginBottom: 2 }} />
-          )}
           <Text style={styles.genDate}>Rua Tiradentes, 211, Centro</Text>
           <Text style={styles.genDate}>Iaçu-BA — CEP 46.860-000</Text>
           <Text style={[styles.genDate, { marginTop: 1 }]}>{todayDisplay()}</Text>
