@@ -7,11 +7,13 @@ import { getBirthdaysInMonth } from '@/hooks/useEvents'
 import { useCongregations } from '@/hooks/useCongregations'
 import { useAuthStore } from '@/store/authStore'
 import { formatDate } from '@/utils/formatters'
-import type { ChurchEvent } from '@/types'
+import type { ChurchEvent, MemberStatus } from '@/types'
 import {
-  Users, Building2, CalendarDays, ClipboardList, ChevronRight
+  Users, Building2, CalendarDays, ClipboardList, ChevronRight, TrendingUp
 } from 'lucide-react'
 import { logger } from '@/utils/logger'
+
+interface StatusCount { status: MemberStatus; count: number }
 
 interface Stats {
   totalMembers: number
@@ -19,6 +21,9 @@ interface Stats {
   totalCongregations: number
   pendingRegistrations: number
   upcomingEvents: ChurchEvent[]
+  newThisMonth: number
+  byStatus: StatusCount[]
+  byCongregation: { name: string; count: number }[]
 }
 
 export function DashboardPage() {
@@ -33,6 +38,9 @@ export function DashboardPage() {
     totalCongregations: 0,
     pendingRegistrations: 0,
     upcomingEvents: [],
+    newThisMonth: 0,
+    byStatus: [],
+    byCongregation: [],
   })
 
   const [birthdays, setBirthdays] = useState<Awaited<ReturnType<typeof getBirthdaysInMonth>>>([])
@@ -53,12 +61,41 @@ export function DashboardPage() {
           .sort((a, b) => a.event_date.localeCompare(b.event_date))
           .slice(0, 3)
 
+        // Novos este mês
+        const monthStart = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-01`
+        const newThisMonth = members.filter((m) => m.created_at >= monthStart).length
+
+        // Por status
+        const statusCounts: Partial<Record<MemberStatus, number>> = {}
+        for (const m of members) {
+          statusCounts[m.status as MemberStatus] = (statusCounts[m.status as MemberStatus] ?? 0) + 1
+        }
+        const byStatus: StatusCount[] = (Object.entries(statusCounts) as [MemberStatus, number][])
+          .sort((a, b) => b[1] - a[1])
+          .map(([status, count]) => ({ status, count }))
+
+        // Por congregação (top 5)
+        const congCounts: Record<string, number> = {}
+        for (const m of members.filter((x) => x.status === 'ativo')) {
+          congCounts[m.congregation_id] = (congCounts[m.congregation_id] ?? 0) + 1
+        }
+        const byCongregation = Object.entries(congCounts)
+          .map(([cid, count]) => ({
+            name: congregations.find((c) => c.id === cid)?.name ?? 'Desconhecida',
+            count,
+          }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 5)
+
         setStats({
           totalMembers: members.length,
           activeMembers: members.filter((m) => m.status === 'ativo').length,
           totalCongregations: congregations.length,
           pendingRegistrations: pending,
           upcomingEvents: upcoming,
+          newThisMonth,
+          byStatus,
+          byCongregation,
         })
 
         // Aniversariantes da semana (próximos 7 dias)
@@ -140,6 +177,61 @@ export function DashboardPage() {
               onClick={() => navigate('/registrations')}
             />
           </div>
+        )}
+
+        {/* Novos este mês + breakdown por status */}
+        {!isLoading && (stats.newThisMonth > 0 || stats.byStatus.length > 0) && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            {/* Novos este mês */}
+            {stats.newThisMonth > 0 && (
+              <div className="bg-white rounded-xl border border-slate-100 p-4 flex items-center gap-3">
+                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center shrink-0">
+                  <TrendingUp size={18} className="text-green-600" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold text-green-700">{stats.newThisMonth}</p>
+                  <p className="text-xs text-slate-500">novo{stats.newThisMonth !== 1 ? 's' : ''} este mês</p>
+                </div>
+              </div>
+            )}
+
+            {/* Por status */}
+            {stats.byStatus.length > 0 && (
+              <div className="bg-white rounded-xl border border-slate-100 p-4">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">Por status</p>
+                <div className="flex flex-col gap-1.5">
+                  {stats.byStatus.map(({ status, count }) => (
+                    <StatusBar key={status} status={status} count={count} total={stats.totalMembers} />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Por congregação */}
+        {!isLoading && stats.byCongregation.length > 1 && (
+          <Section title="🏛️ Membros ativos por congregação">
+            <div className="bg-white rounded-xl border border-slate-100 p-4 flex flex-col gap-2">
+              {stats.byCongregation.map(({ name, count }) => {
+                const pct = Math.round((count / stats.activeMembers) * 100)
+                return (
+                  <div key={name}>
+                    <div className="flex items-center justify-between mb-0.5">
+                      <span className="text-xs text-slate-700 truncate max-w-[70%]">{name}</span>
+                      <span className="text-xs font-medium text-slate-500">{count} ({pct}%)</span>
+                    </div>
+                    <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-amber-400 rounded-full"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </Section>
         )}
 
         {/* Aniversariantes da semana */}
@@ -233,6 +325,29 @@ export function DashboardPage() {
         )}
       </div>
     </AppShell>
+  )
+}
+
+// ---- StatusBar ----
+const STATUS_STYLE: Record<string, { label: string; bar: string; text: string }> = {
+  ativo:          { label: 'Ativo',          bar: 'bg-green-500',  text: 'text-green-700' },
+  inativo:        { label: 'Inativo',        bar: 'bg-slate-400',  text: 'text-slate-500' },
+  em_experiencia: { label: 'Em Experiência', bar: 'bg-blue-400',   text: 'text-blue-600'  },
+  transferido:    { label: 'Transferido',    bar: 'bg-purple-400', text: 'text-purple-600'},
+  falecido:       { label: 'Falecido',       bar: 'bg-slate-300',  text: 'text-slate-400' },
+  excluido:       { label: 'Excluído',       bar: 'bg-red-400',    text: 'text-red-500'   },
+}
+function StatusBar({ status, count, total }: { status: string; count: number; total: number }) {
+  const s = STATUS_STYLE[status] ?? { label: status, bar: 'bg-slate-300', text: 'text-slate-500' }
+  const pct = total > 0 ? Math.round((count / total) * 100) : 0
+  return (
+    <div className="flex items-center gap-2">
+      <span className={`text-xs w-28 shrink-0 ${s.text}`}>{s.label}</span>
+      <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+        <div className={`h-full rounded-full ${s.bar}`} style={{ width: `${pct}%` }} />
+      </div>
+      <span className="text-xs text-slate-400 w-8 text-right">{count}</span>
+    </div>
   )
 }
 

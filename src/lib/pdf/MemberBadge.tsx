@@ -302,6 +302,7 @@ interface BadgeProps {
   member: Member
   congregation: Congregation | null
   badgeNumber: string
+  qrDataUrl?: string
 }
 
 // ── Frente horizontal ──────────────────────────────────────
@@ -349,7 +350,7 @@ function BadgeFront({ member, congregation }: Pick<BadgeProps, 'member' | 'congr
 }
 
 // ── Verso horizontal ──────────────────────────────────────
-function BadgeBack({ member, congregation, badgeNumber }: BadgeProps) {
+function BadgeBack({ member, congregation, badgeNumber, qrDataUrl }: BadgeProps) {
   const memberNum = member.member_number
     ? `#${String(member.member_number).padStart(4, '0')}`
     : badgeNumber
@@ -450,10 +451,13 @@ function BadgeBack({ member, congregation, badgeNumber }: BadgeProps) {
           <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
           <Text style={styles.signatureText}>Pastor Presidente</Text>
         </View>
-        <View style={{ alignItems: 'flex-end' }}>
+        <View style={{ alignItems: 'flex-end', gap: 2 }}>
+          {qrDataUrl && (
+            <Image src={qrDataUrl} style={{ width: 40, height: 40, marginBottom: 2 }} />
+          )}
           <Text style={styles.genDate}>Rua Tiradentes, 211, Centro</Text>
           <Text style={styles.genDate}>Iaçu-BA — CEP 46.860-000</Text>
-          <Text style={[styles.genDate, { marginTop: 3 }]}>{todayDisplay()}</Text>
+          <Text style={[styles.genDate, { marginTop: 1 }]}>{todayDisplay()}</Text>
         </View>
       </View>
 
@@ -464,7 +468,7 @@ function BadgeBack({ member, congregation, badgeNumber }: BadgeProps) {
 }
 
 // ── Documento: 2 crachás horizontais por linha ────────────
-export function MemberBadgePDF({ member, congregation, badgeNumber }: BadgeProps) {
+export function MemberBadgePDF({ member, congregation, badgeNumber, qrDataUrl }: BadgeProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -482,8 +486,8 @@ export function MemberBadgePDF({ member, congregation, badgeNumber }: BadgeProps
 
         <Text style={styles.instructionBold}>▼  VERSO</Text>
         <View style={styles.row}>
-          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} />
-          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} />
+          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} qrDataUrl={qrDataUrl} />
+          <BadgeBack member={member} congregation={congregation} badgeNumber={badgeNumber} qrDataUrl={qrDataUrl} />
         </View>
 
         <Text style={styles.instruction}>

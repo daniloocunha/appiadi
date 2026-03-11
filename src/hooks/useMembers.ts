@@ -20,6 +20,7 @@ export interface MemberFilters {
   congregation_id?: string
   status?: string
   church_role?: string
+  ministry?: string
 }
 
 export function useMembers(filters?: MemberFilters) {
@@ -43,14 +44,22 @@ export function useMembers(filters?: MemberFilters) {
 
       // Filtros em memória (IndexedDB não suporta queries complexas facilmente)
       if (debouncedSearch) {
-        const q = debouncedSearch.toLowerCase()
-        filtered = filtered.filter(
-          (m) =>
-            m.full_name.toLowerCase().includes(q) ||
-            m.phone?.includes(q) ||
-            m.cpf?.replace(/\D/g, '').includes(q.replace(/\D/g, '')) ||
-            m.email?.toLowerCase().includes(q)
-        )
+        const q = debouncedSearch.trim().toLowerCase()
+        if (q.length >= 2) {
+          // Só faz match por telefone/CPF quando a query é puramente numérica
+          const digits = q.replace(/\D/g, '')
+          const isNumeric = digits.length > 0 && /^\d+$/.test(digits)
+          filtered = filtered.filter(
+            (m) =>
+              m.full_name.toLowerCase().includes(q) ||
+              m.email?.toLowerCase().includes(q) ||
+              (isNumeric && m.phone?.replace(/\D/g, '').includes(digits)) ||
+              (isNumeric && m.cpf?.replace(/\D/g, '').includes(digits))
+          )
+        } else {
+          // Menos de 2 chars → sem resultados (evita match universal)
+          filtered = []
+        }
       }
 
       if (filters?.congregation_id) {
@@ -65,6 +74,13 @@ export function useMembers(filters?: MemberFilters) {
         filtered = filtered.filter((m) => m.church_role === filters.church_role)
       }
 
+      if (filters?.ministry) {
+        const min = filters.ministry
+        filtered = filtered.filter(
+          (m) => m.ministries?.includes(min) || m.ministry === min
+        )
+      }
+
       // Ordenar por nome
       filtered.sort((a, b) => a.full_name.localeCompare(b.full_name, 'pt-BR'))
 
@@ -75,7 +91,7 @@ export function useMembers(filters?: MemberFilters) {
     } finally {
       setIsLoading(false)
     }
-  }, [debouncedSearch, filters?.congregation_id, filters?.status, filters?.church_role, lastSyncAt])
+  }, [debouncedSearch, filters?.congregation_id, filters?.status, filters?.church_role, filters?.ministry, lastSyncAt])
 
   useEffect(() => {
     loadFromLocal()

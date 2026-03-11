@@ -1,4 +1,4 @@
-import { useState, useDeferredValue, useMemo } from 'react'
+import { useState, useDeferredValue, useMemo, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppShell } from '@/components/layout/AppShell'
 import { Button } from '@/components/ui/Button'
@@ -45,24 +45,48 @@ export function MembersPage() {
   const navigate = useNavigate()
   const { canEditMembers } = usePermission()
 
+  const PAGE_SIZE = 40
+
   const [tab, setTab] = useState<PageTab>('lista')
   const [rawSearch, setRawSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<MemberStatus | ''>('')
   const [congregationFilter, setCongregationFilter] = useState('')
+  const [ministryFilter, setMinistryFilter] = useState('')
   const [showFilters, setShowFilters] = useState(false)
   const [formOpen, setFormOpen] = useState(false)
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
+  const sentinelRef = useRef<HTMLDivElement>(null)
 
   const search = useDeferredValue(rawSearch)
+
+  // Scroll infinito — carrega mais ao chegar no fim da lista
+  useEffect(() => {
+    const el = sentinelRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisibleCount((v) => v + PAGE_SIZE) },
+      { threshold: 0.1 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  // Reseta paginação quando filtros mudam
+  useEffect(() => { setVisibleCount(PAGE_SIZE) }, [search, statusFilter, congregationFilter, ministryFilter])
 
   // Aba lista — aplica filtros normais
   const { members, isLoading, saveMember, reload } = useMembers({
     search,
     status: statusFilter || undefined,
     congregation_id: congregationFilter || undefined,
+    ministry: ministryFilter || undefined,
   })
 
   // Aba incompletos — busca todos os ativos sem filtros adicionais
   const { members: allActiveMembers, isLoading: isLoadingAll } = useMembers({ status: 'ativo' })
+
+  // Membros visíveis (scroll infinito)
+  const visibleMembers = useMemo(() => members.slice(0, visibleCount), [members, visibleCount])
 
   const incompleteMembers = useMemo(() => {
     return allActiveMembers
@@ -74,6 +98,16 @@ export function MembersPage() {
   const { congregations } = useCongregations()
   const congregationMap = Object.fromEntries(congregations.map((c) => [c.id, c]))
   const activeCount = members.filter((m) => m.status === 'ativo').length
+
+  // Lista de ministérios únicos de todos os membros ativos
+  const allMinistries = useMemo(() => {
+    const set = new Set<string>()
+    allActiveMembers.forEach((m) => {
+      m.ministries?.forEach((min) => set.add(min))
+      if (m.ministry) set.add(m.ministry)
+    })
+    return Array.from(set).sort()
+  }, [allActiveMembers])
 
   return (
     <AppShell title="Membros">
@@ -147,16 +181,16 @@ export function MembersPage() {
                   onClick={() => setShowFilters(!showFilters)}
                   className={[
                     'h-9 px-3 rounded-lg border text-sm flex items-center gap-1.5 transition-colors',
-                    showFilters || statusFilter || congregationFilter
+                    showFilters || statusFilter || congregationFilter || ministryFilter
                       ? 'border-blue-500 bg-blue-50 text-blue-700'
                       : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300',
                   ].join(' ')}
                 >
                   <Filter size={14} />
                   Filtros
-                  {(statusFilter || congregationFilter) && (
+                  {(statusFilter || congregationFilter || ministryFilter) && (
                     <span className="w-4 h-4 bg-blue-600 text-white text-xs rounded-full flex items-center justify-center">
-                      {(statusFilter ? 1 : 0) + (congregationFilter ? 1 : 0)}
+                      {(statusFilter ? 1 : 0) + (congregationFilter ? 1 : 0) + (ministryFilter ? 1 : 0)}
                     </span>
                   )}
                 </button>
@@ -213,9 +247,39 @@ export function MembersPage() {
                     </div>
                   )}
 
-                  {(statusFilter || congregationFilter) && (
+                  {/* Filtro por Ministério */}
+                  {allMinistries.length > 0 && (
+                    <div>
+                      <p className="text-xs font-medium text-slate-500 mb-1.5">Ministério</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        <button
+                          onClick={() => setMinistryFilter('')}
+                          className={[
+                            'px-2.5 py-1 rounded-full text-xs font-medium transition-colors',
+                            !ministryFilter ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                          ].join(' ')}
+                        >
+                          Todos
+                        </button>
+                        {allMinistries.map((min) => (
+                          <button
+                            key={min}
+                            onClick={() => setMinistryFilter(min)}
+                            className={[
+                              'px-2.5 py-1 rounded-full text-xs font-medium transition-colors',
+                              ministryFilter === min ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200',
+                            ].join(' ')}
+                          >
+                            {min}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {(statusFilter || congregationFilter || ministryFilter) && (
                     <button
-                      onClick={() => { setStatusFilter(''); setCongregationFilter('') }}
+                      onClick={() => { setStatusFilter(''); setCongregationFilter(''); setMinistryFilter('') }}
                       className="text-xs text-red-500 hover:text-red-600 self-start"
                     >
                       Limpar filtros
@@ -251,7 +315,7 @@ export function MembersPage() {
               />
             ) : (
               <div className="flex flex-col gap-2">
-                {members.map((m) => (
+                {visibleMembers.map((m) => (
                   <MemberCard
                     key={m.id}
                     member={m}
@@ -259,6 +323,12 @@ export function MembersPage() {
                     onClick={() => navigate(`/members/${m.id}`)}
                   />
                 ))}
+                {/* Sentinel de scroll infinito */}
+                {visibleCount < members.length && (
+                  <div ref={sentinelRef} className="py-4 text-center text-xs text-slate-400">
+                    Carregando mais…
+                  </div>
+                )}
               </div>
             )}
           </>

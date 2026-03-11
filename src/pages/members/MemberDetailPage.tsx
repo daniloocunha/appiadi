@@ -10,10 +10,11 @@ import { useMembers, fetchMemberById } from '@/hooks/useMembers'
 import { useCongregations } from '@/hooks/useCongregations'
 import { usePermission } from '@/hooks/usePermission'
 import { formatDate, formatPhone, formatCPF } from '@/utils/formatters'
-import type { Member } from '@/types'
+import { db } from '@/lib/db'
+import type { Member, Letter, Badge } from '@/types'
 import {
   ArrowLeft, Pencil, Trash2, Phone, Mail, MapPin,
-  Calendar, User, Building2, BookOpen, Heart
+  Calendar, User, Building2, BookOpen, Heart, FileText, CreditCard
 } from 'lucide-react'
 
 // ---- Linha de info ----
@@ -60,6 +61,8 @@ export function MemberDetailPage() {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [letters, setLetters] = useState<Letter[]>([])
+  const [badges, setBadges] = useState<Badge[]>([])
 
   const { congregations } = useCongregations()
   const { saveMember, deleteMember, reload } = useMembers()
@@ -75,6 +78,14 @@ export function MemberDetailPage() {
         setIsLoading(false)
       })
       .catch(() => setIsLoading(false))
+
+    // Carrega histórico local de cartas e crachás
+    db.letters.where('member_id').equals(id).reverse().sortBy('issued_at')
+      .then((rows) => setLetters(rows as Letter[]))
+      .catch(() => {})
+    db.badges.where('member_id').equals(id).reverse().sortBy('issued_at')
+      .then((rows) => setBadges(rows as Badge[]))
+      .catch(() => {})
   }, [id])
 
   const MARITAL_LABELS: Record<string, string> = {
@@ -263,10 +274,32 @@ export function MemberDetailPage() {
           <InfoRow
             icon={<Building2 size={15} />}
             label="Congregação"
-            value={congregation?.name ?? 'Não informada'}
+            value={
+              member.is_congregation_leader && congregation
+                ? `Dirigente de: ${congregation.name}`
+                : congregation?.name ?? 'Não informada'
+            }
           />
           <InfoRow icon={<User size={15} />} label="Cargo" value={member.church_role} />
-          <InfoRow icon={<BookOpen size={15} />} label="Ministério" value={member.ministry} />
+          {/* Ministérios */}
+          {(member.ministries?.length > 0 || member.ministry) && (
+            <div className="flex items-start gap-2.5">
+              <span className="text-slate-400 mt-0.5 shrink-0"><BookOpen size={15} /></span>
+              <div className="min-w-0">
+                <p className="text-xs text-slate-400">Ministério{member.ministries?.length > 1 ? 's' : ''}</p>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {(member.ministries?.length > 0
+                    ? member.ministries
+                    : member.ministry ? [member.ministry] : []
+                  ).map((min) => (
+                    <span key={min} className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">
+                      {min}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
           <InfoRow
             icon={<Calendar size={15} />}
             label="Data de Batismo em Águas"
@@ -283,6 +316,38 @@ export function MemberDetailPage() {
             value={member.joined_at ? formatDate(member.joined_at, 'long') : null}
           />
         </DetailSection>
+
+        {/* Histórico de Documentos */}
+        {(letters.length > 0 || badges.length > 0) && (
+          <DetailSection title="Histórico de Documentos">
+            {letters.map((l) => (
+              <div key={l.id} className="flex items-center gap-2.5">
+                <FileText size={15} className="text-slate-400 shrink-0" />
+                <div>
+                  <p className="text-sm text-slate-800">
+                    {l.letter_type === 'recomendacao' ? 'Carta de Recomendação' : 'Carta de Transferência'}
+                    {l.letter_number ? ` · Nº ${l.letter_number}` : ''}
+                  </p>
+                  <p className="text-xs text-slate-400">
+                    {formatDate(l.issued_at, 'long')}
+                    {l.destination ? ` · Para: ${l.destination}` : ''}
+                  </p>
+                </div>
+              </div>
+            ))}
+            {badges.map((b) => (
+              <div key={b.id} className="flex items-center gap-2.5">
+                <CreditCard size={15} className="text-amber-500 shrink-0" />
+                <div>
+                  <p className="text-sm text-slate-800">
+                    Crachá{b.badge_number ? ` · Nº ${b.badge_number}` : ''}
+                  </p>
+                  <p className="text-xs text-slate-400">{formatDate(b.issued_at, 'long')}</p>
+                </div>
+              </div>
+            ))}
+          </DetailSection>
+        )}
 
         {/* Notas */}
         {member.notes && (

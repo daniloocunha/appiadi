@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { pdf } from '@react-pdf/renderer'
+import QRCode from 'qrcode'
 import { AppShell } from '@/components/layout/AppShell'
 import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
@@ -195,11 +196,21 @@ export function LettersPage() {
           }
         }
 
+        // Gera QR Code com URL do perfil do membro
+        let qrDataUrl: string | undefined
+        try {
+          const profileUrl = `${window.location.origin}/members/${selectedMember.id}`
+          qrDataUrl = await QRCode.toDataURL(profileUrl, { width: 120, margin: 1, color: { dark: '#1e293b', light: '#ffffff' } })
+        } catch {
+          // QR code opcional — falha silenciosa
+        }
+
         const doc = (
           <MemberBadgePDF
             member={{ ...selectedMember, photo_url: resolvedPhotoUrl }}
             congregation={congregation}
             badgeNumber={badgeNumber}
+            qrDataUrl={qrDataUrl}
           />
         )
         const blob = await pdf(doc).toBlob()
