@@ -72,9 +72,9 @@ function Field({
 }
 
 const inputClass =
-  'h-9 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+  'h-9 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-500'
 const selectClass =
-  'h-9 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+  'h-9 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-amber-500'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -151,10 +151,10 @@ export function PublicRegistrationPage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-blue-900 text-white px-4 py-5 text-center">
-        <img src="/logo.png" alt="IADI" className="w-14 h-14 rounded-full mx-auto mb-2 object-cover" />
+      <div className="bg-slate-900 text-white px-4 py-5 text-center">
+        <img src="/novologo.png" alt="IADI" className="w-14 h-14 rounded-full mx-auto mb-2 object-cover" />
         <h1 className="text-base font-bold">Igreja Assembleia de Deus em Iaçu</h1>
-        <p className="text-xs text-blue-200">Gestão de Membros</p>
+        <p className="text-xs text-slate-400">Gestão de Membros</p>
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-6">
@@ -254,7 +254,7 @@ export function PublicRegistrationPage() {
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="text-sm text-blue-600 font-medium"
+              className="text-sm text-amber-700 font-medium"
             >
               {photoPreview ? 'Trocar foto' : 'Adicionar foto (opcional)'}
             </button>
@@ -455,14 +455,14 @@ export function PublicRegistrationPage() {
               <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-700">
                 <input
                   type="checkbox"
-                  className="rounded border-slate-300 text-blue-700 focus:ring-blue-500"
+                  className="rounded border-slate-300 text-amber-700 focus:ring-amber-500"
                   {...register('batizado_aguas')}
                 />
                 Sou batizado(a) nas águas
               </label>
 
               {batizadoAguas && (
-                <div className="pl-1 flex flex-col gap-3 border-l-2 border-blue-100 ml-1">
+                <div className="pl-1 flex flex-col gap-3 border-l-2 border-amber-100 ml-1">
                   <Field label="Data do batismo em águas">
                     <Controller
                       name="baptism_date"
@@ -491,14 +491,14 @@ export function PublicRegistrationPage() {
               <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-700 mt-1">
                 <input
                   type="checkbox"
-                  className="rounded border-slate-300 text-blue-700 focus:ring-blue-500"
+                  className="rounded border-slate-300 text-amber-700 focus:ring-amber-500"
                   {...register('batizado_espirito')}
                 />
                 Recebi o batismo no Espírito Santo
               </label>
 
               {batizadoEspirito && (
-                <div className="pl-1 border-l-2 border-blue-100 ml-1">
+                <div className="pl-1 border-l-2 border-amber-100 ml-1">
                   <Field label="Data do batismo no Espírito Santo">
                     <Controller
                       name="holy_spirit_date"
@@ -553,8 +553,8 @@ export function PublicRegistrationPage() {
             className={[
               'h-12 w-full rounded-xl text-white font-semibold text-sm transition-colors',
               isSubmitting
-                ? 'bg-blue-400 cursor-not-allowed'
-                : 'bg-blue-900 hover:bg-blue-800 active:bg-blue-950',
+                ? 'bg-amber-400 cursor-not-allowed'
+                : 'bg-amber-700 hover:bg-amber-800 active:bg-amber-900',
             ].join(' ')}
           >
             {isSubmitting ? 'Enviando...' : 'Enviar Cadastro'}

@@ -36,18 +36,18 @@ export function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 p-4">
       <div className="w-full max-w-sm">
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           {/* Logo e título */}
           <div className="flex flex-col items-center mb-8">
             <img
-              src="/logo.png"
+              src="/novologo.png"
               alt="IADI"
               className="w-20 h-20 rounded-full object-cover mb-3 shadow-md"
             />
-            <h1 className="text-xl font-bold text-blue-900 text-center leading-tight">
+            <h1 className="text-xl font-bold text-amber-800 text-center leading-tight">
               Igreja Assembleia de Deus em Iaçu
             </h1>
             <p className="text-sm text-slate-500 text-center">Gestão de Membros</p>
@@ -98,14 +98,14 @@ export function LoginPage() {
           <div className="mt-4 text-center">
             <Link
               to="/forgot-password"
-              className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+              className="text-sm text-amber-700 hover:text-amber-900 hover:underline"
             >
               Esqueci minha senha
             </Link>
           </div>
         </div>
 
-        <p className="text-center text-xs text-blue-300 mt-4">
+        <p className="text-center text-xs text-slate-400 mt-4">
           IADI © {new Date().getFullYear()} — Sistema restrito à liderança
         </p>
       </div>

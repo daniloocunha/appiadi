@@ -187,7 +187,7 @@ export function TransferLetterPDF({
       <Page size="A4" style={styles.page}>
         {/* Cabeçalho */}
         <View style={styles.header}>
-          <Image src="/logo.png" style={styles.logo} />
+          <Image src="/novologo.png" style={styles.logo} />
           <View style={styles.headerText}>
             <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
             <Text style={styles.churchSub}>SEDE - Rua Tiradentes, 211, Centro, Iaçu-BA | CEP 46.860-000 | {phone}</Text>

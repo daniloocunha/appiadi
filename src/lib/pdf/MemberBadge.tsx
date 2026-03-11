@@ -313,7 +313,7 @@ function BadgeFront({ member, congregation }: Pick<BadgeProps, 'member' | 'congr
     <View style={styles.front}>
       {/* Cabeçalho */}
       <View style={styles.frontHeader}>
-        <Image src="/logo.png" style={styles.headerLogo} />
+        <Image src="/novologo.png" style={styles.headerLogo} />
         <View style={styles.headerTexts}>
           <Text style={styles.headerTitle}>IADI</Text>
           <Text style={styles.headerSub}>IAÇU — BAHIA</Text>
@@ -358,7 +358,7 @@ function BadgeBack({ member, congregation, badgeNumber }: BadgeProps) {
     <View style={styles.back}>
       {/* Cabeçalho azul */}
       <View style={styles.backHeader}>
-        <Image src="/logo.png" style={styles.backLogo} />
+        <Image src="/novologo.png" style={styles.backLogo} />
         <Text style={styles.backChurchName}>
           Igreja Assembleia de Deus{'\n'}Iaçu — BA
         </Text>

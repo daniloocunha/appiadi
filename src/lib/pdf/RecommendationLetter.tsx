@@ -147,7 +147,7 @@ export function RecommendationLetterPDF({
       <Page size="A4" style={styles.page}>
         {/* Cabeçalho */}
         <View style={styles.header}>
-          <Image src="/logo.png" style={styles.logo} />
+          <Image src="/novologo.png" style={styles.logo} />
           <View style={styles.headerText}>
             <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
             <Text style={styles.churchSub}>{congregation?.name ?? 'IADI'} — {city} — BA</Text>
