@@ -115,9 +115,19 @@ function sanitizePayload(tableName: string, payload: any): any {
   const cleaned = { ...payload }
   // Remove campos locais do IndexedDB
   delete cleaned._synced
-  // member_number é SERIAL no banco — não enviar null, deixar o banco gerar
-  if (tableName === 'members' && (cleaned.member_number === null || cleaned.member_number === undefined)) {
-    delete cleaned.member_number
+  if (tableName === 'members') {
+    // member_number é SERIAL no banco — não enviar null, deixar o banco gerar
+    if (cleaned.member_number === null || cleaned.member_number === undefined) {
+      delete cleaned.member_number
+    }
+    // Garantir que ministries seja sempre um array (payloads antigos podem não ter o campo)
+    if (!Array.isArray(cleaned.ministries)) {
+      cleaned.ministries = []
+    }
+    // Garantir que is_congregation_leader seja boolean (payloads antigos podem não ter o campo)
+    if (typeof cleaned.is_congregation_leader !== 'boolean') {
+      cleaned.is_congregation_leader = false
+    }
   }
   return cleaned
 }
@@ -183,9 +193,10 @@ export async function pushToSupabase(): Promise<void> {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const err = error as any
       lastError = err?.message ?? `HTTP ${err?.httpStatus ?? 'unknown'}`
-      logger.error(
+      // Sempre logar erros de sync para diagnóstico (mesmo em produção)
+      console.error(
         `[sync] Erro ao sincronizar ${item.table_name}/${item.record_id} (tentativa ${newRetryCount}):`,
-        error
+        { code: err?.code, message: err?.message, details: err?.details, hint: err?.hint, httpStatus: err?.httpStatus }
       )
 
       // Limite absoluto: descarta independente do tipo de erro
