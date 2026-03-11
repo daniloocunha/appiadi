@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   instructionBold: {
     textAlign: 'center',
     fontSize: 7,
-    color: '#1e3a8a',
+    color: '#92400e',
     fontFamily: 'Helvetica-Bold',
     letterSpacing: 0.5,
   },
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   front: {
     width: BADGE_W,
     height: BADGE_H,
-    backgroundColor: '#1e3a8a',
+    backgroundColor: '#1e293b',
     borderRadius: 8,
     overflow: 'hidden',
     flexDirection: 'column',
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingVertical: 7,
     paddingHorizontal: 10,
-    backgroundColor: '#172554',
+    backgroundColor: '#0f172a',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -98,15 +98,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   headerTitle: {
-    fontSize: 9,
+    fontSize: 6.5,
     fontFamily: 'Helvetica-Bold',
     color: '#ffffff',
-    letterSpacing: 1.5,
+    letterSpacing: 0.3,
   },
   headerSub: {
-    fontSize: 5.5,
-    color: '#93c5fd',
-    letterSpacing: 0.8,
+    fontSize: 5,
+    color: '#fbbf24',
+    letterSpacing: 0.6,
   },
 
   // Corpo horizontal: foto à esquerda + info à direita
@@ -138,14 +138,14 @@ const styles = StyleSheet.create({
     width: PHOTO_SZ,
     height: PHOTO_SZ,
     borderRadius: PHOTO_SZ / 2,
-    backgroundColor: '#1e40af',
+    backgroundColor: '#1e293b',
     alignItems: 'center',
     justifyContent: 'center',
   },
   photoInitials: {
     fontSize: 26,
     fontFamily: 'Helvetica-Bold',
-    color: '#93c5fd',
+    color: '#fbbf24',
   },
 
   memberInfo: {
@@ -162,11 +162,11 @@ const styles = StyleSheet.create({
   },
   memberRole: {
     fontSize: 7.5,
-    color: '#bfdbfe',
+    color: '#fde68a',
   },
   memberCong: {
     fontSize: 6.5,
-    color: '#93c5fd',
+    color: '#fcd34d',
   },
 
   amberStripe: {
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
 
   backHeader: {
-    backgroundColor: '#1e3a8a',
+    backgroundColor: '#1e293b',
     paddingHorizontal: 8,
     paddingVertical: 6,
     flexDirection: 'row',
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     lineHeight: 1.4,
   },
   idBox: {
-    backgroundColor: '#172554',
+    backgroundColor: '#0f172a',
     borderRadius: 3,
     paddingHorizontal: 4,
     paddingVertical: 2,
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   idLabel: {
     fontSize: 4.5,
-    color: '#93c5fd',
+    color: '#fbbf24',
     letterSpacing: 0.4,
   },
   idValue: {
@@ -315,8 +315,8 @@ function BadgeFront({ member, congregation }: Pick<BadgeProps, 'member' | 'congr
       <View style={styles.frontHeader}>
         <Image src="/novologo.png" style={styles.headerLogo} />
         <View style={styles.headerTexts}>
-          <Text style={styles.headerTitle}>IADI</Text>
-          <Text style={styles.headerSub}>IAÇU — BAHIA</Text>
+          <Text style={styles.headerTitle}>Igreja Assembleia de Deus</Text>
+          <Text style={styles.headerSub}>em Iaçu — Bahia</Text>
         </View>
       </View>
 
@@ -446,7 +446,11 @@ function BadgeBack({ member, congregation, badgeNumber }: BadgeProps) {
           <Text style={styles.signatureText}>{PASTOR_NAME}</Text>
           <Text style={styles.signatureText}>Pastor Presidente</Text>
         </View>
-        <Text style={styles.genDate}>{todayDisplay()}</Text>
+        <View style={{ alignItems: 'flex-end' }}>
+          <Text style={styles.genDate}>Rua Tiradentes, 211, Centro</Text>
+          <Text style={styles.genDate}>Iaçu-BA — CEP 46.860-000</Text>
+          <Text style={[styles.genDate, { marginTop: 3 }]}>{todayDisplay()}</Text>
+        </View>
       </View>
 
       {/* Faixa âmbar */}
