@@ -171,7 +171,7 @@ export function CalendarPage() {
 
   const { events, isLoading, saveEvent, deleteEvent, reload } = useEvents(month, year)
   const { congregations } = useCongregations()
-  const { canManageEvents } = usePermission()
+  const { canManageEvents, canCreateEvents, canEditEvents } = usePermission()
 
   const [birthdays, setBirthdays] = useState<Awaited<ReturnType<typeof getBirthdaysInMonth>>>([])
   useEffect(() => {
@@ -221,7 +221,7 @@ export function CalendarPage() {
               <ChevronRight size={18} />
             </button>
           </div>
-          {canManageEvents && (
+          {canCreateEvents && (
             <Button size="sm" leftIcon={<Plus size={15} />} onClick={() => { setEditingEvent(null); setFormOpen(true) }}>
               Novo Evento
             </Button>
@@ -295,7 +295,7 @@ export function CalendarPage() {
                   ? `Nenhum evento em ${selectedDay} de ${getMonthName(month)}`
                   : `Nenhum evento em ${getMonthName(month)}`}
               </p>
-              {canManageEvents && !selectedDay && (
+              {canCreateEvents && !selectedDay && (
                 <button
                   onClick={() => { setEditingEvent(null); setFormOpen(true) }}
                   className="mt-2 text-xs text-blue-600 hover:underline"
@@ -324,11 +324,13 @@ export function CalendarPage() {
                         </span>
                         <p className="text-sm font-semibold text-slate-800">{event.title}</p>
                       </div>
-                      {canManageEvents && (
+                      {(canEditEvents || canManageEvents) && (
                         <div className="flex gap-1 shrink-0">
+                          {canEditEvents && (
                           <button onClick={() => { setEditingEvent(event); setFormOpen(true) }} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50">
                             <Pencil size={13} />
                           </button>
+                          )}
                           <button onClick={() => setDeleteTarget(event)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50">
                             <Trash2 size={13} />
                           </button>

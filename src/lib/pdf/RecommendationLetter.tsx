@@ -181,11 +181,15 @@ export function RecommendationLetterPDF({
             </View>
             <View style={styles.memberBoxField}>
               <Text style={styles.memberBoxLabel}>Congregação / Sede</Text>
-              <Text style={styles.memberBoxValue}>{congregation?.name ?? '—'}</Text>
+              <Text style={styles.memberBoxValue}>
+                {member.is_congregation_leader && congregation ? `Dirigente de: ${congregation.name}` : (congregation?.name ?? '—')}
+              </Text>
             </View>
             <View style={styles.memberBoxField}>
               <Text style={styles.memberBoxLabel}>Departamento / Ministério</Text>
-              <Text style={styles.memberBoxValue}>{member.ministry ?? member.church_role ?? '—'}</Text>
+              <Text style={styles.memberBoxValue}>
+                {(member.ministries?.length > 0 ? member.ministries : member.ministry ? [member.ministry] : []).join(' / ') || '—'}
+              </Text>
             </View>
           </View>
         </View>

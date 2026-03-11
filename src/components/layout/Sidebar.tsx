@@ -9,6 +9,7 @@ import {
   Settings,
   LogOut,
   ChevronRight,
+  UserCircle,
 } from 'lucide-react'
 import { signOut } from '@/hooks/useAuth'
 import { useAuthStore } from '@/store/authStore'
@@ -92,6 +93,15 @@ export function Sidebar({ pendingRegistrationsCount = 0 }: { pendingRegistration
             <p className="text-xs font-medium text-white truncate">{appUser?.full_name}</p>
           </div>
         </div>
+        {appUser?.member_id && (
+          <NavLink
+            to={`/members/${appUser.member_id}`}
+            className="flex items-center gap-2 w-full px-2 py-1.5 text-xs text-amber-400 hover:text-white hover:bg-white/10 rounded-md transition-colors mb-1"
+          >
+            <UserCircle size={13} />
+            Meu Perfil
+          </NavLink>
+        )}
         <button
           onClick={handleLogout}
           className="flex items-center gap-2 w-full px-2 py-1.5 text-xs text-slate-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"

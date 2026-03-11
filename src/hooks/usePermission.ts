@@ -9,9 +9,16 @@ const ROLE_HIERARCHY: Record<UserRole, number> = {
   admin: 5,
   secretario: 4,
   lideranca_plena: 3,
+  pastor: 3,        // mesmo nível que liderança plena
   presbitero: 2,
   diacono_obreiro: 1,
+  midia: 1,
 }
+
+// Todos os papéis podem criar e editar eventos
+const EVENT_EDITOR_ROLES: UserRole[] = [
+  'admin', 'secretario', 'lideranca_plena', 'pastor', 'presbitero', 'diacono_obreiro', 'midia',
+]
 
 function hasRole(userRole: UserRole | null, requiredLevel: number): boolean {
   if (!userRole) return false
@@ -20,6 +27,8 @@ function hasRole(userRole: UserRole | null, requiredLevel: number): boolean {
 
 export function usePermission() {
   const role = useAuthStore((s) => s.appUser?.role ?? null)
+
+  const canCreateOrEditEvents = role ? EVENT_EDITOR_ROLES.includes(role) : false
 
   return {
     role,
@@ -30,14 +39,18 @@ export function usePermission() {
 
     // Edição de membros
     canEditMembers: hasRole(role, 2),      // presbítero+
-    canDeleteMembers: hasRole(role, 3),    // liderança plena+
+    canDeleteMembers: hasRole(role, 3),    // liderança plena / pastor+
 
-    // Congregações e eventos
+    // Congregações
     canManageCongregations: hasRole(role, 3),
-    canManageEvents: hasRole(role, 3),
+
+    // Eventos: criar/editar = todos; excluir/gerir = liderança+
+    canManageEvents: hasRole(role, 3),     // liderança plena / pastor+ (delete, etc.)
+    canCreateEvents: canCreateOrEditEvents,
+    canEditEvents: canCreateOrEditEvents,
 
     // Documentos
-    canGenerateLetters: hasRole(role, 3),  // liderança plena+
+    canGenerateLetters: hasRole(role, 3),  // liderança plena / pastor+
     canGenerateBadges: hasRole(role, 2),   // presbítero+
 
     // Auto-cadastros
@@ -46,11 +59,13 @@ export function usePermission() {
     // Usuários do sistema
     canManageUsers: hasRole(role, 4),      // secretário + admin
 
-    // Admin
+    // Helpers de papel
     isAdmin: role === 'admin',
     isSecretario: role === 'secretario',
     isLiderancaPlena: role === 'lideranca_plena',
+    isPastor: role === 'pastor',
     isPresbitero: role === 'presbitero',
     isDiaconoObreiro: role === 'diacono_obreiro',
+    isMidia: role === 'midia',
   }
 }

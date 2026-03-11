@@ -106,22 +106,28 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   admin: 'Administrador',
   secretario: 'Secretário',
   lideranca_plena: 'Liderança Plena',
+  pastor: 'Pastor',
   presbitero: 'Presbítero',
   diacono_obreiro: 'Diácono / Obreiro',
+  midia: 'Mídia',
 }
 
 export const ROLE_DESCRIPTIONS: Record<UserRole, string> = {
   admin: 'Acesso total ao sistema, incluindo gestão de usuários',
-  secretario: 'Acesso total exceto gestão de usuários do sistema',
+  secretario: 'Acesso total, incluindo convidar usuários e alterar papéis',
   lideranca_plena: 'Gerencia membros, congregações, eventos e documentos',
-  presbitero: 'Visualiza e edita membros; acesso de leitura nas demais áreas',
-  diacono_obreiro: 'Somente visualização — sem edição ou geração de documentos',
+  pastor: 'Acesso completo à gestão da igreja (membros, eventos, cartas, congregações)',
+  presbitero: 'Visualiza e edita membros; cria e edita eventos',
+  diacono_obreiro: 'Visualiza membros; cria e edita eventos',
+  midia: 'Visualiza membros; cria e edita eventos — sem edição de cadastros',
 }
 
 export const ROLE_ORDER: UserRole[] = [
   'admin',
   'secretario',
   'lideranca_plena',
+  'pastor',
   'presbitero',
   'diacono_obreiro',
+  'midia',
 ]

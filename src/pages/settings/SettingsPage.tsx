@@ -26,8 +26,10 @@ const ROLE_COLORS: Record<UserRole, string> = {
   admin: 'bg-red-100 text-red-700',
   secretario: 'bg-purple-100 text-purple-700',
   lideranca_plena: 'bg-blue-100 text-blue-700',
+  pastor: 'bg-indigo-100 text-indigo-700',
   presbitero: 'bg-green-100 text-green-700',
   diacono_obreiro: 'bg-slate-100 text-slate-600',
+  midia: 'bg-teal-100 text-teal-700',
 }
 
 // ---- Modal de convite ----
@@ -271,18 +273,18 @@ function PermissionsReference() {
   const [open, setOpen] = useState(false)
 
   const perms = [
-    { label: 'Ver todos os membros', roles: ['admin', 'secretario', 'lideranca_plena', 'presbitero', 'diacono_obreiro'] },
-    { label: 'Criar / editar membro', roles: ['admin', 'secretario', 'lideranca_plena', 'presbitero'] },
-    { label: 'Excluir membro', roles: ['admin', 'secretario', 'lideranca_plena'] },
-    { label: 'Gerar cartas PDF', roles: ['admin', 'secretario', 'lideranca_plena'] },
-    { label: 'Gerar crachá PDF', roles: ['admin', 'secretario', 'lideranca_plena', 'presbitero'] },
-    { label: 'Criar / editar eventos', roles: ['admin', 'secretario', 'lideranca_plena'] },
-    { label: 'Gerenciar congregações', roles: ['admin', 'secretario', 'lideranca_plena'] },
-    { label: 'Aprovar auto-cadastros', roles: ['admin', 'secretario', 'lideranca_plena'] },
-    { label: 'Gerenciar usuários', roles: ['admin', 'secretario'] },
+    { label: 'Ver todos os membros',   roles: ['admin', 'secretario', 'lideranca_plena', 'pastor', 'presbitero', 'diacono_obreiro', 'midia'] },
+    { label: 'Criar / editar membro',  roles: ['admin', 'secretario', 'lideranca_plena', 'pastor', 'presbitero'] },
+    { label: 'Excluir membro',         roles: ['admin', 'secretario', 'lideranca_plena', 'pastor'] },
+    { label: 'Gerar cartas PDF',       roles: ['admin', 'secretario', 'lideranca_plena', 'pastor'] },
+    { label: 'Gerar crachá PDF',       roles: ['admin', 'secretario', 'lideranca_plena', 'pastor', 'presbitero'] },
+    { label: 'Criar / editar eventos', roles: ['admin', 'secretario', 'lideranca_plena', 'pastor', 'presbitero', 'diacono_obreiro', 'midia'] },
+    { label: 'Gerenciar congregações', roles: ['admin', 'secretario', 'lideranca_plena', 'pastor'] },
+    { label: 'Aprovar auto-cadastros', roles: ['admin', 'secretario', 'lideranca_plena', 'pastor'] },
+    { label: 'Gerenciar usuários',     roles: ['admin', 'secretario'] },
   ]
 
-  const allRoles: UserRole[] = ['admin', 'secretario', 'lideranca_plena', 'presbitero', 'diacono_obreiro']
+  const allRoles: UserRole[] = ['admin', 'secretario', 'lideranca_plena', 'pastor', 'presbitero', 'diacono_obreiro', 'midia']
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">

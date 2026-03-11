@@ -47,12 +47,15 @@ export function LettersPage() {
   const { members: allMembers, isLoading } = useMembers()
   const members = useMemo(() => {
     const q = searchRaw.trim().toLowerCase()
-    if (!q) return []
+    // Mínimo 2 caracteres para evitar que dígitos comuns retornem todos os membros
+    if (q.length < 2) return []
+    // Busca por telefone/CPF apenas quando a query é puramente numérica
+    const isNumeric = /^\d+$/.test(q.replace(/\D/g, '')) && q.replace(/\D/g, '').length > 0
     return allMembers.filter((m) =>
       m.full_name.toLowerCase().includes(q) ||
-      m.phone?.includes(q) ||
       m.email?.toLowerCase().includes(q) ||
-      m.cpf?.replace(/\D/g, '').includes(q.replace(/\D/g, ''))
+      (isNumeric && m.phone?.replace(/\D/g, '').includes(q.replace(/\D/g, ''))) ||
+      (isNumeric && m.cpf?.replace(/\D/g, '').includes(q.replace(/\D/g, '')))
     )
   }, [allMembers, searchRaw])
   const { congregations } = useCongregations()
@@ -392,7 +395,10 @@ export function LettersPage() {
                     className="w-full h-9 pl-9 pr-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                   />
                 </div>
-                {searchRaw && (
+                {searchRaw && searchRaw.trim().length === 1 && (
+                  <p className="text-xs text-slate-400 px-1 mt-1">Continue digitando para pesquisar…</p>
+                )}
+                {searchRaw && searchRaw.trim().length >= 2 && (
                   <div className="max-h-48 overflow-y-auto rounded-xl border border-slate-200 bg-white">
                     {isLoading ? (
                       <p className="text-xs text-slate-400 p-3 text-center">Buscando...</p>

@@ -1,4 +1,5 @@
 import { useEffect, Component, lazy, Suspense } from 'react'
+import { PWAUpdateBanner } from '@/components/pwa/PWAUpdateBanner'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
@@ -204,6 +205,7 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
           <AppContent />
+          <PWAUpdateBanner />
         </BrowserRouter>
       </QueryClientProvider>
     </ErrorBoundary>

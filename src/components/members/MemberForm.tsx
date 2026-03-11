@@ -7,8 +7,9 @@ import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
 import { Avatar } from '@/components/ui/Avatar'
 import type { Member, Congregation } from '@/types'
-import { Camera, X } from 'lucide-react'
+import { Camera, X, Check } from 'lucide-react'
 import { maskCPF, maskPhone, maskCEP, maskDate, dateDisplayToISO, dateISOToDisplay } from '@/utils/inputMasks'
+import { usePermission } from '@/hooks/usePermission'
 
 interface MemberFormProps {
   initialData?: Member
@@ -95,6 +96,7 @@ function TextArea({
 }
 
 export function MemberForm({ initialData, congregations, onSave, onCancel }: MemberFormProps) {
+  const { canDeleteMembers } = usePermission()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [photoFile, setPhotoFile] = useState<File | null>(null)
   const [photoPreview, setPhotoPreview] = useState<string | null>(initialData?.photo_url ?? null)
@@ -135,6 +137,8 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
       status: initialData?.status ?? 'ativo',
       church_role: initialData?.church_role ?? '',
       ministry: initialData?.ministry ?? '',
+      ministries: initialData?.ministries ?? [],
+      is_congregation_leader: initialData?.is_congregation_leader ?? false,
       notes: initialData?.notes ?? '',
       joined_at: initialData?.joined_at ? dateISOToDisplay(initialData.joined_at) : '',
       escolaridade: initialData?.escolaridade ?? '',
@@ -198,6 +202,8 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
           status: raw.status,
           church_role: raw.church_role || null,
           ministry: raw.ministry || null,
+          ministries: raw.ministries ?? [],
+          is_congregation_leader: raw.is_congregation_leader ?? false,
           notes: raw.notes || null,
           joined_at: raw.joined_at ? (dateDisplayToISO(raw.joined_at) ?? null) : null,
           escolaridade: raw.escolaridade || null,
@@ -214,6 +220,11 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
       })}
       className="flex flex-col gap-5"
     >
+      {/* Nota de obrigatórios */}
+      <p className="text-xs text-slate-500">
+        Campos marcados com <span className="text-red-500 font-semibold">*</span> são obrigatórios.
+      </p>
+
       {/* Foto */}
       <div className="flex flex-col items-center gap-2">
         <div className="relative">
@@ -554,16 +565,61 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
           </SelectField>
         </div>
 
-        <SelectField
-          label="Ministério"
-          error={errors.ministry?.message}
-          {...register('ministry')}
-        >
-          <option value="">Nenhum / Não informado</option>
-          {MINISTRIES.map((m) => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-        </SelectField>
+        {/* Multi-select de Ministérios */}
+        <Controller
+          name="ministries"
+          control={control}
+          render={({ field }) => {
+            const selected: string[] = field.value ?? []
+            const toggle = (m: string) => {
+              const next = selected.includes(m)
+                ? selected.filter((s) => s !== m)
+                : [...selected, m]
+              field.onChange(next)
+            }
+            return (
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-slate-600">Ministérios</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {MINISTRIES.map((m) => {
+                    const active = selected.includes(m)
+                    return (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => toggle(m)}
+                        className={[
+                          'inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border transition-colors',
+                          active
+                            ? 'bg-amber-600 text-white border-amber-600'
+                            : 'bg-white text-slate-600 border-slate-200 hover:border-amber-400',
+                        ].join(' ')}
+                      >
+                        {active && <Check size={10} />}
+                        {m}
+                      </button>
+                    )
+                  })}
+                </div>
+                {selected.length === 0 && (
+                  <p className="text-xs text-slate-400">Nenhum ministério selecionado</p>
+                )}
+              </div>
+            )
+          }}
+        />
+
+        {/* Dirigente de congregação — visível apenas para liderança/admin */}
+        {canDeleteMembers && (
+          <label className="flex items-center gap-2 cursor-pointer text-sm text-slate-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            <input
+              type="checkbox"
+              className="rounded border-slate-300 text-amber-700 focus:ring-amber-500"
+              {...register('is_congregation_leader')}
+            />
+            <span>Este membro é <strong>dirigente de congregação</strong></span>
+          </label>
+        )}
 
         <div className="grid grid-cols-2 gap-3">
           <Controller

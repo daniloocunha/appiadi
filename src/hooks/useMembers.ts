@@ -167,6 +167,8 @@ export function useMembers(filters?: MemberFilters) {
       denominacao_origem: data.denominacao_origem ?? null,
       naturalidade: data.naturalidade ?? null,
       naturalidade_uf: data.naturalidade_uf ?? null,
+      ministries: data.ministries ?? [],
+      is_congregation_leader: data.is_congregation_leader ?? false,
     }
 
     try {

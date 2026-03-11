@@ -3,7 +3,7 @@
 // ============================================================
 
 // Arrays as const — fonte única da verdade para enums usados no Zod e na UI
-export const USER_ROLES = ['admin', 'secretario', 'lideranca_plena', 'presbitero', 'diacono_obreiro'] as const
+export const USER_ROLES = ['admin', 'secretario', 'lideranca_plena', 'pastor', 'presbitero', 'diacono_obreiro', 'midia'] as const
 export type UserRole = typeof USER_ROLES[number]
 
 export const MEMBER_STATUSES = ['ativo', 'inativo', 'transferido', 'falecido', 'excluido', 'em_experiencia'] as const
@@ -64,6 +64,8 @@ export interface Member {
   status: MemberStatus
   church_role: string | null
   ministry: string | null
+  ministries: string[]
+  is_congregation_leader: boolean
   photo_url: string | null
   notes: string | null
   member_number: number | null
@@ -163,6 +165,8 @@ export interface SelfRegistration {
   occupation: string | null
   church_role: string | null
   ministry: string | null
+  ministries: string[]
+  is_congregation_leader: boolean
   congregation_id: string | null
   photo_url: string | null
   status: SelfRegistrationStatus

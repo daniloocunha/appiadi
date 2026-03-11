@@ -122,6 +122,8 @@ export function useSelfRegistrations() {
       denominacao_origem: null,
       naturalidade: registration.naturalidade ?? null,
       naturalidade_uf: registration.naturalidade_uf ?? null,
+      ministries: registration.ministries ?? [],
+      is_congregation_leader: false,
     }
 
     // Registro de auto-cadastro atualizado como aprovado

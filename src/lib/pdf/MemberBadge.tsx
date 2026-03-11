@@ -331,9 +331,13 @@ function BadgeFront({ member, congregation }: Pick<BadgeProps, 'member' | 'congr
         </View>
         <View style={styles.memberInfo}>
           <Text style={styles.memberName}>{member.full_name}</Text>
-          <Text style={styles.memberRole}>{member.church_role ?? 'Membro'}</Text>
+          <Text style={styles.memberRole}>
+            {member.is_congregation_leader ? 'Dirigente' : (member.church_role ?? 'Membro')}
+          </Text>
           {congregation && (
-            <Text style={styles.memberCong}>{congregation.name}</Text>
+            <Text style={styles.memberCong}>
+              {member.is_congregation_leader ? `Dirigente de: ${congregation.name}` : congregation.name}
+            </Text>
           )}
         </View>
       </View>
@@ -419,7 +423,9 @@ function BadgeBack({ member, congregation, badgeNumber }: BadgeProps) {
             </View>
             <View style={[styles.field, { flex: 1 }]}>
               <Text style={styles.fieldLabel}>Ministério</Text>
-              <Text style={styles.fieldValue}>{member.ministry ?? '—'}</Text>
+              <Text style={styles.fieldValue}>
+                {(member.ministries?.length > 0 ? member.ministries : member.ministry ? [member.ministry] : []).join(' / ') || '—'}
+              </Text>
             </View>
           </View>
           <View style={styles.fieldRow}>

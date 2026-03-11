@@ -9,13 +9,13 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'logo.png'],
+      registerType: 'prompt',
+      includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'logo.png', 'novologo.png', 'logosimbolo.png'],
       manifest: {
         name: 'IADI - Gestão de Membros',
         short_name: 'IADI',
         description: 'Sistema de Gestão de Membros - Igreja Assembleia de Deus em Iaçu',
-        theme_color: '#1e3a8a',
+        theme_color: '#b45309',
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait-primary',

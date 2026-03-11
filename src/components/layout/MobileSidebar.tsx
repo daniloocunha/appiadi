@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard, Users, Building2, CalendarDays,
-  FileText, ClipboardList, Settings, LogOut, X,
+  FileText, ClipboardList, Settings, LogOut, X, UserCircle,
 } from 'lucide-react'
 import { useUiStore } from '@/store/uiStore'
 import { useAuthStore } from '@/store/authStore'
@@ -92,6 +92,16 @@ export function MobileSidebar() {
             <Avatar name={appUser?.full_name} size="sm" className="bg-slate-700 text-white" />
             <p className="text-xs font-medium text-white truncate">{appUser?.full_name}</p>
           </div>
+          {appUser?.member_id && (
+            <NavLink
+              to={`/members/${appUser.member_id}`}
+              onClick={close}
+              className="flex items-center gap-2 w-full px-2 py-2 text-sm text-amber-400 hover:text-white hover:bg-white/10 rounded-md transition-colors mb-1"
+            >
+              <UserCircle size={15} />
+              Meu Perfil
+            </NavLink>
+          )}
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 w-full px-2 py-2 text-sm text-slate-400 hover:text-white hover:bg-white/10 rounded-md transition-colors"
