@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { AppShell } from '@/components/layout/AppShell'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -6,6 +6,7 @@ import { Avatar } from '@/components/ui/Avatar'
 import { usePermission } from '@/hooks/usePermission'
 import { useAuthStore } from '@/store/authStore'
 import { useAppUsers, ROLE_LABELS, ROLE_DESCRIPTIONS, ROLE_ORDER } from '@/hooks/useAppUsers'
+import { useMembers } from '@/hooks/useMembers'
 import type { UserRole } from '@/types'
 import {
   UserPlus,
@@ -16,6 +17,8 @@ import {
   CheckCircle,
   ChevronDown,
   Info,
+  UserCircle,
+  X,
 } from 'lucide-react'
 
 // ============================================================
@@ -153,18 +156,40 @@ function UserCard({
   user,
   currentUserId,
   canManage,
+  members,
   onChangeRole,
   onToggleActive,
+  onLinkMember,
 }: {
-  user: { id: string; full_name: string; role: UserRole; is_active: boolean }
+  user: { id: string; full_name: string; role: UserRole; is_active: boolean; member_id: string | null }
   currentUserId: string | undefined
   canManage: boolean
+  members: { id: string; full_name: string }[]
   onChangeRole: (userId: string, role: UserRole) => Promise<void>
   onToggleActive: (userId: string, active: boolean) => Promise<void>
+  onLinkMember: (userId: string, memberId: string | null) => Promise<void>
 }) {
   const [showRoleDropdown, setShowRoleDropdown] = useState(false)
+  const [showMemberSearch, setShowMemberSearch] = useState(false)
+  const [memberQuery, setMemberQuery] = useState('')
   const [isUpdating, setIsUpdating] = useState(false)
   const isSelf = user.id === currentUserId
+
+  const linkedMember = members.find((m) => m.id === user.member_id) ?? null
+
+  const filteredMembers = useMemo(() => {
+    const q = memberQuery.trim().toLowerCase()
+    if (q.length < 2) return []
+    return members.filter((m) => m.full_name.toLowerCase().includes(q)).slice(0, 8)
+  }, [members, memberQuery])
+
+  const handleLinkMember = async (memberId: string | null) => {
+    setIsUpdating(true)
+    await onLinkMember(user.id, memberId)
+    setIsUpdating(false)
+    setShowMemberSearch(false)
+    setMemberQuery('')
+  }
 
   const handleRoleChange = async (newRole: UserRole) => {
     if (newRole === user.role) { setShowRoleDropdown(false); return }
@@ -205,8 +230,72 @@ function UserCard({
           </span>
         </div>
 
+        {/* Membro vinculado */}
         {canManage && !isSelf && (
-          <div className="flex items-center gap-2 mt-3 flex-wrap">
+          <div className="mt-2">
+            {showMemberSearch ? (
+              <div className="relative">
+                <div className="flex items-center gap-1">
+                  <input
+                    autoFocus
+                    value={memberQuery}
+                    onChange={(e) => setMemberQuery(e.target.value)}
+                    placeholder="Buscar membro pelo nome…"
+                    className="flex-1 h-7 text-xs border border-amber-300 rounded-md px-2 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                  />
+                  <button
+                    onClick={() => { setShowMemberSearch(false); setMemberQuery('') }}
+                    className="p-1 text-slate-400 hover:text-slate-600"
+                  >
+                    <X size={13} />
+                  </button>
+                </div>
+                {filteredMembers.length > 0 && (
+                  <div className="absolute left-0 top-full mt-1 z-30 bg-white border border-slate-200 rounded-lg shadow-lg py-1 w-full max-h-44 overflow-y-auto">
+                    {filteredMembers.map((m) => (
+                      <button
+                        key={m.id}
+                        onClick={() => handleLinkMember(m.id)}
+                        className="w-full text-left px-3 py-1.5 text-xs hover:bg-amber-50 text-slate-700"
+                      >
+                        {m.full_name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {memberQuery.length >= 2 && filteredMembers.length === 0 && (
+                  <p className="text-xs text-slate-400 mt-1">Nenhum membro encontrado.</p>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <UserCircle size={12} className={linkedMember ? 'text-amber-500' : 'text-slate-300'} />
+                <span className="text-xs text-slate-500">
+                  {linkedMember ? linkedMember.full_name : 'Sem membro vinculado'}
+                </span>
+                <button
+                  onClick={() => setShowMemberSearch(true)}
+                  disabled={isUpdating}
+                  className="text-xs text-amber-600 hover:text-amber-800 underline-offset-2 hover:underline disabled:opacity-40"
+                >
+                  {linkedMember ? 'Alterar' : 'Vincular'}
+                </button>
+                {linkedMember && (
+                  <button
+                    onClick={() => handleLinkMember(null)}
+                    disabled={isUpdating}
+                    className="text-xs text-slate-400 hover:text-red-500 disabled:opacity-40"
+                  >
+                    Desvincular
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {canManage && !isSelf && (
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
             {/* Alterar papel */}
             <div className="relative">
               <button
@@ -344,9 +433,15 @@ function PermissionsReference() {
 export function SettingsPage() {
   const { canManageUsers } = usePermission()
   const { user: currentUser } = useAuthStore()
-  const { users, isLoading, error, inviteUser, changeRole, toggleActive } = useAppUsers()
+  const { users, isLoading, error, inviteUser, changeRole, toggleActive, linkMember } = useAppUsers()
+  const { members: allMembers } = useMembers()
   const [showInviteModal, setShowInviteModal] = useState(false)
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; msg: string } | null>(null)
+
+  const memberOptions = useMemo(
+    () => allMembers.map((m) => ({ id: m.id, full_name: m.full_name })),
+    [allMembers]
+  )
 
   const showFeedback = (type: 'success' | 'error', msg: string) => {
     setFeedback({ type, msg })
@@ -363,6 +458,12 @@ export function SettingsPage() {
     const { error: err } = await toggleActive(userId, active)
     if (err) showFeedback('error', 'Erro ao alterar status: ' + err)
     else showFeedback('success', active ? 'Usuário ativado.' : 'Usuário desativado.')
+  }
+
+  const handleLinkMember = async (userId: string, memberId: string | null) => {
+    const { error: err } = await linkMember(userId, memberId)
+    if (err) showFeedback('error', 'Erro ao vincular membro: ' + err)
+    else showFeedback('success', memberId ? 'Membro vinculado.' : 'Vínculo removido.')
   }
 
   if (!canManageUsers) {
@@ -447,11 +548,13 @@ export function SettingsPage() {
               {activeUsers.map((u) => (
                 <UserCard
                   key={u.id}
-                  user={u}
+                  user={{ ...u, member_id: u.member_id ?? null }}
                   currentUserId={currentUser?.id}
                   canManage={canManageUsers}
+                  members={memberOptions}
                   onChangeRole={handleChangeRole}
                   onToggleActive={handleToggleActive}
+                  onLinkMember={handleLinkMember}
                 />
               ))}
             </div>
@@ -465,11 +568,13 @@ export function SettingsPage() {
                 {inactiveUsers.map((u) => (
                   <UserCard
                     key={u.id}
-                    user={u}
+                    user={{ ...u, member_id: u.member_id ?? null }}
                     currentUserId={currentUser?.id}
                     canManage={canManageUsers}
+                    members={memberOptions}
                     onChangeRole={handleChangeRole}
                     onToggleActive={handleToggleActive}
+                    onLinkMember={handleLinkMember}
                   />
                 ))}
               </div>

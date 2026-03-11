@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { RefreshCw } from 'lucide-react'
 
@@ -19,6 +20,14 @@ export function PWAUpdateBanner() {
     },
   })
 
+  // Recarrega a página quando o novo SW assume o controle
+  // (mais confiável que depender do reloadPage interno do updateServiceWorker)
+  useEffect(() => {
+    const handler = () => window.location.reload()
+    navigator.serviceWorker?.addEventListener('controllerchange', handler)
+    return () => navigator.serviceWorker?.removeEventListener('controllerchange', handler)
+  }, [])
+
   if (!needRefresh) return null
 
   return (
@@ -27,7 +36,7 @@ export function PWAUpdateBanner() {
         <RefreshCw size={16} className="text-amber-400 shrink-0" />
         <span className="text-sm">Nova versão disponível!</span>
         <button
-          onClick={() => updateServiceWorker(true)}
+          onClick={() => updateServiceWorker(false)}
           className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors shrink-0"
         >
           Atualizar

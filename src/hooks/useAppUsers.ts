@@ -90,6 +90,21 @@ export function useAppUsers() {
     return { error: null }
   }
 
+  /** Vincula (ou desvincula) um membro ao usuário do sistema */
+  async function linkMember(userId: string, memberId: string | null): Promise<{ error: string | null }> {
+    const { error: err } = await supabase
+      .from('app_users')
+      .update({ member_id: memberId, updated_at: new Date().toISOString() })
+      .eq('id', userId)
+
+    if (err) return { error: err.message }
+
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, member_id: memberId } : u))
+    )
+    return { error: null }
+  }
+
   return {
     users,
     isLoading,
@@ -97,6 +112,7 @@ export function useAppUsers() {
     inviteUser,
     changeRole,
     toggleActive,
+    linkMember,
     reload: loadUsers,
   }
 }
