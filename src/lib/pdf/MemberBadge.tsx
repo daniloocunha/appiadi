@@ -90,9 +90,8 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   headerLogo: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 28,
+    height: 28,
   },
   headerTexts: {
     flexDirection: 'column',
@@ -198,9 +197,8 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   backLogo: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: 24,
+    height: 24,
   },
   backChurchName: {
     flex: 1,
@@ -313,7 +311,7 @@ function BadgeFront({ member, congregation }: Pick<BadgeProps, 'member' | 'congr
     <View style={styles.front}>
       {/* Cabeçalho */}
       <View style={styles.frontHeader}>
-        <Image src="/novologo.png" style={styles.headerLogo} />
+        <Image src="/logosimbolo.png" style={styles.headerLogo} />
         <View style={styles.headerTexts}>
           <Text style={styles.headerTitle}>Igreja Assembleia de Deus</Text>
           <Text style={styles.headerSub}>em Iaçu — Bahia</Text>
@@ -358,7 +356,7 @@ function BadgeBack({ member, congregation, badgeNumber }: BadgeProps) {
     <View style={styles.back}>
       {/* Cabeçalho azul */}
       <View style={styles.backHeader}>
-        <Image src="/novologo.png" style={styles.backLogo} />
+        <Image src="/logosimbolo.png" style={styles.backLogo} />
         <Text style={styles.backChurchName}>
           Igreja Assembleia de Deus{'\n'}Iaçu — BA
         </Text>

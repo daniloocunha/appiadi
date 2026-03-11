@@ -50,7 +50,7 @@ export function MobileSidebar() {
       <aside className="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-white flex flex-col lg:hidden">
         <div className="flex items-center justify-between px-4 py-4 border-b border-slate-700">
           <div className="flex items-center gap-3">
-            <img src="/novologo.png" alt="IADI" className="w-9 h-9 rounded-full bg-white object-cover" />
+            <img src="/logosimbolo.png" alt="IADI" className="w-11 h-11 object-contain" />
             <div>
               <p className="text-sm font-bold text-amber-400">IADI</p>
               <p className="text-xs text-slate-400">Gestão de Membros</p>

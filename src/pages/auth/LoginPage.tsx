@@ -43,9 +43,9 @@ export function LoginPage() {
           {/* Logo e título */}
           <div className="flex flex-col items-center mb-8">
             <img
-              src="/novologo.png"
+              src="/logosimbolo.png"
               alt="IADI"
-              className="w-20 h-20 rounded-full object-cover mb-3 shadow-md"
+              className="w-28 h-28 object-contain mb-3"
             />
             <h1 className="text-xl font-bold text-amber-800 text-center leading-tight">
               Igreja Assembleia de Deus em Iaçu

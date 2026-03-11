@@ -105,7 +105,7 @@ export function ResetPasswordPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950">
         <div className="flex flex-col items-center gap-3">
-          <img src="/novologo.png" alt="IADI" className="w-16 h-16 rounded-full animate-pulse" />
+          <img src="/logosimbolo.png" alt="IADI" className="w-20 h-20 object-contain animate-pulse" />
           <p className="text-white text-sm">Verificando link…</p>
         </div>
       </div>
@@ -137,9 +137,9 @@ export function ResetPasswordPage() {
           {/* Logo */}
           <div className="flex flex-col items-center mb-6">
             <img
-              src="/novologo.png"
+              src="/logosimbolo.png"
               alt="IADI"
-              className="w-16 h-16 rounded-full object-cover mb-3 shadow-md"
+              className="w-24 h-24 object-contain mb-3"
             />
             <h1 className="text-xl font-bold text-amber-800 text-center">Definir sua senha</h1>
             <p className="text-sm text-slate-500 text-center mt-1">Igreja Assembleia de Deus em Iaçu — Gestão de Membros</p>

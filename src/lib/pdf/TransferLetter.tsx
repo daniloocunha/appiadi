@@ -19,23 +19,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 6,
     borderBottom: 2,
-    borderBottomColor: '#1e3a8a',
+    borderBottomColor: '#b45309',
     paddingBottom: 10,
     gap: 14,
   },
-  logo: { width: 68, height: 68 },
+  logo: { width: 80, height: 80 },
   headerText: {},
   churchName: {
     fontSize: 16,
     fontFamily: 'Helvetica-Bold',
-    color: '#1e3a8a',
+    color: '#92400e',
     marginBottom: 5,
   },
   churchSub: { fontSize: 7.5, color: '#475569', marginTop: 0 },
   letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 2 },
   verse: {
     fontSize: 8,
-    color: '#1d4ed8',
+    color: '#b45309',
     fontStyle: 'italic',
     textAlign: 'center',
     marginBottom: 6,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'Helvetica-Bold',
     textAlign: 'center',
-    color: '#1e3a8a',
+    color: '#92400e',
     marginBottom: 2,
     textTransform: 'uppercase',
     letterSpacing: 1,
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 9,
     textAlign: 'center',
-    color: '#1d4ed8',
+    color: '#b45309',
     marginBottom: 8,
   },
   body: {
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   // 06. Título Destinatário maior
   destinationLabel: {
     fontSize: 10.5,
-    color: '#1d4ed8',
+    color: '#b45309',
     fontFamily: 'Helvetica-Bold',
     marginBottom: 2,
   },
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   memberBoxTitle: {
     fontSize: 9.5,
     fontFamily: 'Helvetica-Bold',
-    color: '#1e3a8a',
+    color: '#92400e',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
     marginBottom: 3, // 05. menos espaço abaixo do título
@@ -187,7 +187,7 @@ export function TransferLetterPDF({
       <Page size="A4" style={styles.page}>
         {/* Cabeçalho */}
         <View style={styles.header}>
-          <Image src="/novologo.png" style={styles.logo} />
+          <Image src="/logosimbolo.png" style={styles.logo} />
           <View style={styles.headerText}>
             <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
             <Text style={styles.churchSub}>SEDE - Rua Tiradentes, 211, Centro, Iaçu-BA | CEP 46.860-000 | {phone}</Text>

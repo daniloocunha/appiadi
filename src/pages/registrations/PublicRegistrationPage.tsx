@@ -152,7 +152,7 @@ export function PublicRegistrationPage() {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <div className="bg-slate-900 text-white px-4 py-5 text-center">
-        <img src="/novologo.png" alt="IADI" className="w-14 h-14 rounded-full mx-auto mb-2 object-cover" />
+        <img src="/logosimbolo.png" alt="IADI" className="w-20 h-20 object-contain mx-auto mb-2" />
         <h1 className="text-base font-bold">Igreja Assembleia de Deus em Iaçu</h1>
         <p className="text-xs text-slate-400">Gestão de Membros</p>
       </div>

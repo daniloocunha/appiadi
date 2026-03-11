@@ -20,22 +20,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 6,
     borderBottom: 2,
-    borderBottomColor: '#1e3a8a',
+    borderBottomColor: '#b45309',
     paddingBottom: 10,
     gap: 12,
   },
-  logo: { width: 54, height: 54 },
+  logo: { width: 64, height: 64 },
   headerText: { flex: 1 },
   churchName: {
     fontSize: 13,
     fontFamily: 'Helvetica-Bold',
-    color: '#1e3a8a',
+    color: '#92400e',
   },
   churchSub: { fontSize: 7.5, color: '#475569', marginTop: 1.5 },
   letterNumber: { fontSize: 8.5, color: '#94a3b8', marginTop: 3 },
   verse: {
     fontSize: 7.5,
-    color: '#1e3a8a',
+    color: '#92400e',
     fontStyle: 'italic',
     textAlign: 'center',
     marginBottom: 6,
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'Helvetica-Bold',
     textAlign: 'center',
-    color: '#1e3a8a',
+    color: '#92400e',
     marginBottom: 8,
     textTransform: 'uppercase',
     letterSpacing: 1,
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   memberBoxTitle: {
     fontSize: 7.5,
     fontFamily: 'Helvetica-Bold',
-    color: '#1e3a8a',
+    color: '#92400e',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
     marginBottom: 5,
@@ -147,7 +147,7 @@ export function RecommendationLetterPDF({
       <Page size="A4" style={styles.page}>
         {/* Cabeçalho */}
         <View style={styles.header}>
-          <Image src="/novologo.png" style={styles.logo} />
+          <Image src="/logosimbolo.png" style={styles.logo} />
           <View style={styles.headerText}>
             <Text style={styles.churchName}>Igreja Evangélica Assembleia de Deus</Text>
             <Text style={styles.churchSub}>{congregation?.name ?? 'IADI'} — {city} — BA</Text>
