@@ -64,6 +64,7 @@ export function useCongregations() {
 
     try {
       await syncWrite('congregations', record, existingId ? 'UPDATE' : 'INSERT')
+      await reconcileDirigenteMembers(record.id, record.dirigente_id, now)
       await loadFromLocal()
       return { id, error: null }
     } catch (e) {
@@ -100,6 +101,48 @@ export function useCongregations() {
     reload: loadFromLocal,
     saveCongregation,
     deleteCongregation,
+  }
+}
+
+/**
+ * Mantém o flag `is_congregation_leader` dos membros em sincronia com o dirigente
+ * escolhido para a congregação. O dirigente selecionado recebe o flag (e passa a
+ * pertencer a esta congregação); ex-dirigentes da mesma congregação perdem o flag.
+ */
+async function reconcileDirigenteMembers(
+  congId: string,
+  dirigenteId: string | null,
+  now: string
+): Promise<void> {
+  try {
+    if (dirigenteId) {
+      const m = await db.members.get(dirigenteId)
+      if (m && !(m.is_congregation_leader && m.congregation_id === congId)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { _synced, ...rest } = m
+        await syncWrite(
+          'members',
+          { ...rest, is_congregation_leader: true, congregation_id: congId, updated_at: now },
+          'UPDATE'
+        )
+      }
+    }
+    const formers = await db.members
+      .filter(
+        (m) =>
+          !m.deleted_at &&
+          m.is_congregation_leader &&
+          m.congregation_id === congId &&
+          m.id !== dirigenteId
+      )
+      .toArray()
+    for (const m of formers) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { _synced, ...rest } = m
+      await syncWrite('members', { ...rest, is_congregation_leader: false, updated_at: now }, 'UPDATE')
+    }
+  } catch (e) {
+    logger.warn('[congregações] Falha ao sincronizar flag de dirigente dos membros:', e)
   }
 }
 

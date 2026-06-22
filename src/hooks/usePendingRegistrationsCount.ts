@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { liveQuery } from 'dexie'
 import { db } from '@/lib/db'
+import { logger } from '@/utils/logger'
 
 /** Contagem reativa de auto-cadastros aguardando aprovação (status = 'pendente').
  *  Usa liveQuery do Dexie — atualiza automaticamente sempre que o IndexedDB muda. */
@@ -12,7 +13,7 @@ export function usePendingRegistrationsCount(): number {
       db.self_registrations.filter((r) => r.status === 'pendente').count()
     ).subscribe({
       next: setCount,
-      error: (e) => console.error('[usePendingRegistrationsCount]', e),
+      error: (e) => logger.error('[usePendingRegistrationsCount]', e),
     })
 
     return () => subscription.unsubscribe()

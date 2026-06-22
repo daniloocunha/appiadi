@@ -9,6 +9,7 @@ import { CHURCH_ROLES, MINISTRIES, ESCOLARIDADES } from '@/schemas/member.schema
 import { MARITAL_STATUSES } from '@/types'
 import { maskCPF, maskPhone, maskCEP, maskDate, dateDisplayToISO } from '@/utils/inputMasks'
 import { Camera, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { v4 as uuidv4 } from 'uuid'
 
 // Schema simplificado para o formulário público
 const publicSchema = z.object({
@@ -61,11 +62,14 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-slate-600">
-        {label}
-        {required && <span className="text-red-500 ml-0.5">*</span>}
+      {/* O controle é aninhado no <label> para associação implícita (acessibilidade) */}
+      <label className="flex flex-col gap-1">
+        <span className="text-xs font-medium text-slate-600">
+          {label}
+          {required && <span className="text-red-500 ml-0.5">*</span>}
+        </span>
+        {children}
       </label>
-      {children}
       {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   )
@@ -176,8 +180,7 @@ export function PublicRegistrationPage() {
               let photo_url: string | null = null
 
               if (photoFile) {
-                const tempId = Date.now().toString()
-                const result = await uploadRegistrationPhoto(photoFile, tempId)
+                const result = await uploadRegistrationPhoto(photoFile, uuidv4())
                 if (result.url) photo_url = result.url
               }
 

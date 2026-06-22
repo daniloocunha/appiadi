@@ -327,13 +327,15 @@ export function CalendarPage() {
                       {(canEditEvents || canManageEvents) && (
                         <div className="flex gap-1 shrink-0">
                           {canEditEvents && (
-                          <button onClick={() => { setEditingEvent(event); setFormOpen(true) }} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50">
+                          <button onClick={() => { setEditingEvent(event); setFormOpen(true) }} className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50" title="Editar" aria-label="Editar evento">
                             <Pencil size={13} />
                           </button>
                           )}
-                          <button onClick={() => setDeleteTarget(event)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50">
+                          {canManageEvents && (
+                          <button onClick={() => setDeleteTarget(event)} className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50" title="Excluir" aria-label="Excluir evento">
                             <Trash2 size={13} />
                           </button>
+                          )}
                         </div>
                       )}
                     </div>
@@ -490,14 +492,14 @@ function EventForm({
   return (
     <form onSubmit={handleSubmit(onSave)} className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-slate-600">Título <span className="text-red-500">*</span></label>
-        <input className={inputClass} placeholder="Ex: Culto de Domingo" {...register('title')} />
+        <label htmlFor="ev-title" className="text-xs font-medium text-slate-600">Título <span className="text-red-500">*</span></label>
+        <input id="ev-title" className={inputClass} placeholder="Ex: Culto de Domingo" {...register('title')} />
         {errors.title && <p className="text-xs text-red-500">{errors.title.message}</p>}
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600">Tipo <span className="text-red-500">*</span></label>
-          <select className={inputClass} {...register('event_type')}>
+          <label htmlFor="ev-type" className="text-xs font-medium text-slate-600">Tipo <span className="text-red-500">*</span></label>
+          <select id="ev-type" className={inputClass} {...register('event_type')}>
             <option value="culto">Culto</option>
             <option value="reuniao">Reunião</option>
             <option value="conferencia">Conferência</option>
@@ -507,8 +509,8 @@ function EventForm({
           </select>
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600">Congregação</label>
-          <select className={inputClass} {...register('congregation_id')}>
+          <label htmlFor="ev-cong" className="text-xs font-medium text-slate-600">Congregação</label>
+          <select id="ev-cong" className={inputClass} {...register('congregation_id')}>
             <option value="">Todas</option>
             {congregations.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
@@ -516,22 +518,22 @@ function EventForm({
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600">Data <span className="text-red-500">*</span></label>
-          <input type="date" className={inputClass} {...register('event_date')} />
+          <label htmlFor="ev-date" className="text-xs font-medium text-slate-600">Data <span className="text-red-500">*</span></label>
+          <input id="ev-date" type="date" className={inputClass} {...register('event_date')} />
           {errors.event_date && <p className="text-xs text-red-500">{errors.event_date.message}</p>}
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs font-medium text-slate-600">Horário</label>
-          <input type="time" className={inputClass} {...register('event_time')} />
+          <label htmlFor="ev-time" className="text-xs font-medium text-slate-600">Horário</label>
+          <input id="ev-time" type="time" className={inputClass} {...register('event_time')} />
         </div>
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-slate-600">Local</label>
-        <input className={inputClass} placeholder="Ex: Templo Central" {...register('location')} />
+        <label htmlFor="ev-location" className="text-xs font-medium text-slate-600">Local</label>
+        <input id="ev-location" className={inputClass} placeholder="Ex: Templo Central" {...register('location')} />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-slate-600">Descrição</label>
-        <textarea rows={2} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Detalhes do evento..." {...register('description')} />
+        <label htmlFor="ev-desc" className="text-xs font-medium text-slate-600">Descrição</label>
+        <textarea id="ev-desc" rows={2} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Detalhes do evento..." {...register('description')} />
       </div>
       <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>Cancelar</Button>

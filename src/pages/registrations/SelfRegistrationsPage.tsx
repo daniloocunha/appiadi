@@ -224,10 +224,11 @@ export function SelfRegistrationsPage() {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-slate-600">
+              <label htmlFor="approve-cong" className="text-xs font-medium text-slate-600">
                 Atribuir à Congregação <span className="text-red-500">*</span>
               </label>
               <select
+                id="approve-cong"
                 className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={selectedCongregation}
                 onChange={(e) => setSelectedCongregation(e.target.value)}

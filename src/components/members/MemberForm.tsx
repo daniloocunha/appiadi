@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useId } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { memberSchema, CHURCH_ROLES, MINISTRIES, ESCOLARIDADES } from '@/schemas/member.schema'
@@ -36,19 +36,23 @@ function SelectField({
   error,
   children,
   required,
+  id,
   ...props
 }: React.SelectHTMLAttributes<HTMLSelectElement> & {
   label: string
   error?: string
   required?: boolean
 }) {
+  const reactId = useId()
+  const fieldId = id ?? reactId
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-slate-600">
+      <label htmlFor={fieldId} className="text-xs font-medium text-slate-600">
         {label}
         {required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
       <select
+        id={fieldId}
         className={[
           'h-9 w-full rounded-lg border px-3 py-2 text-sm bg-white',
           'focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
@@ -70,15 +74,19 @@ function SelectField({
 function TextArea({
   label,
   error,
+  id,
   ...props
 }: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   label: string
   error?: string
 }) {
+  const reactId = useId()
+  const fieldId = id ?? reactId
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-xs font-medium text-slate-600">{label}</label>
+      <label htmlFor={fieldId} className="text-xs font-medium text-slate-600">{label}</label>
       <textarea
+        id={fieldId}
         rows={3}
         className={[
           'w-full rounded-lg border px-3 py-2 text-sm bg-white resize-none',
@@ -196,7 +204,7 @@ export function MemberForm({ initialData, congregations, onSave, onCancel }: Mem
           address_state: raw.address_state || null,
           address_zip: raw.address_zip ? raw.address_zip.replace(/\D/g, '') : null,
           marital_status: raw.marital_status ?? null,
-          spouse_name: raw.spouse_name || null,
+          spouse_name: raw.marital_status === 'casado' ? (raw.spouse_name || null) : null,
           occupation: raw.occupation || null,
           congregation_id: raw.congregation_id,
           status: raw.status,

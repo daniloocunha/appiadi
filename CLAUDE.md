@@ -87,9 +87,13 @@ Usar `getDbTable(tableName)` em vez de `(db as any)[tableName]`.
 |-------|------|-----------|
 | 5 | `admin` | Administrador do sistema |
 | 4 | `secretario` | Secretário |
-| 3 | `lideranca_plena` | Liderança plena / Pastor |
+| 3 | `lideranca_plena` | Liderança plena |
+| 3 | `pastor` | Pastor (mesmo nível que liderança plena) |
 | 2 | `presbitero` | Presbítero |
 | 1 | `diacono_obreiro` | Diácono / Obreiro |
+| 1 | `midia` | Mídia (visualiza membros; cria/edita eventos) |
+
+> Fonte única da verdade: `USER_ROLES` em `src/types/index.ts`; a hierarquia numérica está em `ROLE_HIERARCHY` (`src/hooks/usePermission.ts`).
 
 ---
 
@@ -133,4 +137,5 @@ VITE_SUPABASE_ANON_KEY=[chave anon]
 - [ ] Rate limiting no endpoint de cadastro público
 - [ ] Content Security Policy (CSP) headers
 - [ ] Serviço de monitoramento em produção (Sentry ou similar)
-- [ ] Paginação na listagem de membros
+- [x] Paginação na listagem de membros (scroll infinito em `MembersPage`)
+- [ ] Numeração de documentos 100% atômica (sequence/RPC no banco — hoje usa MAX + 1 no cliente)

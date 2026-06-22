@@ -106,13 +106,14 @@ export function CongregationForm({ initialData, onSave, onCancel }: Congregation
 
       {/* Dirigente */}
       <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-slate-600">Dirigente</label>
+        <label htmlFor="cong-dirigente" className="text-xs font-medium text-slate-600">Dirigente</label>
         {obreiros.length === 0 ? (
           <div className="bg-blue-50 rounded-lg p-3 text-xs text-blue-700">
             <strong>Dirigente:</strong> Poderá ser atribuído após o cadastro dos membros obreiros.
           </div>
         ) : (
           <select
+            id="cong-dirigente"
             className="h-9 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
             {...register('dirigente_id')}
           >

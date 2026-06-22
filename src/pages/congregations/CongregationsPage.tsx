@@ -54,7 +54,7 @@ export function CongregationsPage() {
           ) : (
             <div className="flex items-center gap-1.5 text-xs text-slate-400 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5">
               <Info size={13} className="shrink-0" />
-              <span>Somente administradores podem gerenciar congregações</span>
+              <span>Somente a liderança pode gerenciar congregações</span>
             </div>
           )}
         </div>
@@ -207,6 +207,7 @@ function CongregationCard({
               onClick={() => onEdit(congregation)}
               className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
               title="Editar"
+              aria-label="Editar congregação"
             >
               <Pencil size={14} />
             </button>
@@ -215,6 +216,7 @@ function CongregationCard({
                 onClick={() => onDelete(congregation)}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                 title="Excluir"
+                aria-label="Excluir congregação"
               >
                 <Trash2 size={14} />
               </button>

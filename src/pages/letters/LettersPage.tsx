@@ -441,10 +441,11 @@ export function LettersPage() {
           {docType === 'transferencia' && (
             <>
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-slate-600">
+                <label htmlFor="letter-destination" className="text-xs font-medium text-slate-600">
                   Igreja de destino <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="letter-destination"
                   className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Ex: Assembleia de Deus Central"
                   value={destination}
@@ -452,10 +453,11 @@ export function LettersPage() {
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-slate-600">
+                <label htmlFor="letter-destination-city" className="text-xs font-medium text-slate-600">
                   Cidade de destino <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="letter-destination-city"
                   className="h-9 w-full rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Ex: Salvador — BA"
                   value={destinationCity}

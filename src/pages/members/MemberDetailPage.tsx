@@ -65,7 +65,7 @@ export function MemberDetailPage() {
   const [badges, setBadges] = useState<Badge[]>([])
 
   const { congregations } = useCongregations()
-  const { saveMember, deleteMember, reload } = useMembers()
+  const { saveMember, deleteMember } = useMembers()
 
   const congregation = congregations.find((c) => c.id === member?.congregation_id)
 
@@ -177,6 +177,7 @@ export function MemberDetailPage() {
                     onClick={() => setEditOpen(true)}
                     className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
                     title="Editar"
+                    aria-label="Editar membro"
                   >
                     <Pencil size={15} />
                   </button>
@@ -185,6 +186,7 @@ export function MemberDetailPage() {
                       onClick={() => setDeleteOpen(true)}
                       className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors"
                       title="Excluir"
+                      aria-label="Excluir membro"
                     >
                       <Trash2 size={15} />
                     </button>
@@ -369,7 +371,7 @@ export function MemberDetailPage() {
           congregations={congregations}
           onSave={async (data, photoFile) => {
             const result = await saveMember(data, photoFile, member.id)
-            await reload()
+            if (result.error) { alert('Erro ao salvar o membro: ' + result.error); return }
             const updated = await fetchMemberById(member.id)
             if (updated) setMember(updated)
             setEditOpen(false)

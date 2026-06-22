@@ -7,7 +7,7 @@ const STATUS_CONFIG: Record<
   ativo:         { label: 'Ativo',         className: 'bg-green-100 text-green-700' },
   inativo:       { label: 'Inativo',       className: 'bg-slate-100 text-slate-600' },
   transferido:   { label: 'Transferido',   className: 'bg-blue-100 text-blue-700' },
-  falecido:      { label: 'Falecido',      className: 'bg-gray-200 text-gray-600' },
+  falecido:      { label: 'Falecido',      className: 'bg-slate-200 text-slate-600' },
   excluido:      { label: 'Excluído',      className: 'bg-red-100 text-red-700' },
   em_experiencia:{ label: 'Em Experiência',className: 'bg-amber-100 text-amber-700' },
 }

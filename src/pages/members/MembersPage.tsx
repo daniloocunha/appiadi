@@ -75,7 +75,7 @@ export function MembersPage() {
   useEffect(() => { setVisibleCount(PAGE_SIZE) }, [search, statusFilter, congregationFilter, ministryFilter])
 
   // Aba lista — aplica filtros normais
-  const { members, isLoading, saveMember, reload } = useMembers({
+  const { members, isLoading, saveMember } = useMembers({
     search,
     status: statusFilter || undefined,
     congregation_id: congregationFilter || undefined,
@@ -172,6 +172,7 @@ export function MembersPage() {
                     <button
                       onClick={() => setRawSearch('')}
                       className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      aria-label="Limpar busca"
                     >
                       <X size={14} />
                     </button>
@@ -389,7 +390,7 @@ export function MembersPage() {
           congregations={congregations}
           onSave={async (data, photoFile) => {
             const result = await saveMember(data, photoFile)
-            await reload()
+            if (result.error) { alert('Erro ao salvar o membro: ' + result.error); return }
             setFormOpen(false)
             if (result.photoError) alert(result.photoError)
           }}

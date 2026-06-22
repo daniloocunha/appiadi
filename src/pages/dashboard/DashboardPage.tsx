@@ -98,13 +98,33 @@ export function DashboardPage() {
           byCongregation,
         })
 
-        // Aniversariantes da semana (próximos 7 dias)
-        const monthBirthdays = await getBirthdaysInMonth(today.getMonth() + 1)
-        const todayDay = today.getDate()
-        const weekBirthdays = monthBirthdays.filter((b) => {
-          const day = parseInt(b.birth_date.split('-')[2])
-          return day >= todayDay && day <= todayDay + 7
-        })
+        // Aniversariantes dos próximos 7 dias — cruza a virada de mês/ano
+        const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+        const endWindow = new Date(startOfToday)
+        endWindow.setDate(endWindow.getDate() + 7)
+        const monthsToFetch = Array.from(new Set([
+          startOfToday.getMonth() + 1,
+          endWindow.getMonth() + 1,
+        ]))
+        const lists = await Promise.all(monthsToFetch.map((m) => getBirthdaysInMonth(m)))
+        const seen = new Set<string>()
+        const weekBirthdays = lists
+          .flat()
+          .map((b) => {
+            const [, mm, dd] = b.birth_date.split('-').map(Number)
+            let occ = new Date(startOfToday.getFullYear(), mm - 1, dd)
+            // se a data deste ano já passou (ex.: hoje 30/dez, aniversário 02/jan), usa o próximo ano
+            if (occ < startOfToday) occ = new Date(startOfToday.getFullYear() + 1, mm - 1, dd)
+            return { b, occ }
+          })
+          .filter(({ b, occ }) => {
+            if (occ < startOfToday || occ > endWindow) return false
+            if (seen.has(b.id)) return false
+            seen.add(b.id)
+            return true
+          })
+          .sort((a, b) => a.occ.getTime() - b.occ.getTime())
+          .map(({ b }) => b)
         setBirthdays(weekBirthdays)
       } catch (e) {
         logger.error(e)
@@ -332,10 +352,10 @@ export function DashboardPage() {
 const STATUS_STYLE: Record<string, { label: string; bar: string; text: string }> = {
   ativo:          { label: 'Ativo',          bar: 'bg-green-500',  text: 'text-green-700' },
   inativo:        { label: 'Inativo',        bar: 'bg-slate-400',  text: 'text-slate-500' },
-  em_experiencia: { label: 'Em Experiência', bar: 'bg-blue-400',   text: 'text-blue-600'  },
-  transferido:    { label: 'Transferido',    bar: 'bg-purple-400', text: 'text-purple-600'},
-  falecido:       { label: 'Falecido',       bar: 'bg-slate-300',  text: 'text-slate-400' },
-  excluido:       { label: 'Excluído',       bar: 'bg-red-400',    text: 'text-red-500'   },
+  em_experiencia: { label: 'Em Experiência', bar: 'bg-amber-400',  text: 'text-amber-600' },
+  transferido:    { label: 'Transferido',    bar: 'bg-blue-400',   text: 'text-blue-600'  },
+  falecido:       { label: 'Falecido',       bar: 'bg-slate-300',  text: 'text-slate-500' },
+  excluido:       { label: 'Excluído',       bar: 'bg-red-400',    text: 'text-red-600'   },
 }
 function StatusBar({ status, count, total }: { status: string; count: number; total: number }) {
   const s = STATUS_STYLE[status] ?? { label: status, bar: 'bg-slate-300', text: 'text-slate-500' }

@@ -189,6 +189,7 @@ export function useMembers(filters?: MemberFilters) {
 
     try {
       await syncWrite('members', record, existingId ? 'UPDATE' : 'INSERT')
+      await reconcileLeadership(record, now)
       await loadFromLocal()
       return { id, error: null, photoError }
     } catch (e) {
@@ -230,6 +231,31 @@ export function useMembers(filters?: MemberFilters) {
     reload: loadFromLocal,
     saveMember,
     deleteMember,
+  }
+}
+
+/**
+ * Mantém `congregation.dirigente_id` em sincronia com o flag `is_congregation_leader`
+ * do membro. O flag do membro (dentro da sua própria congregação) é a fonte da verdade.
+ * Não bloqueia o salvamento do membro em caso de falha.
+ */
+async function reconcileLeadership(member: Member, now: string): Promise<void> {
+  try {
+    const congs = await db.congregations.filter((c) => !c.deleted_at).toArray()
+    for (const cong of congs) {
+      const shouldBeLeader = member.is_congregation_leader && cong.id === member.congregation_id
+      const currentlyLeader = cong.dirigente_id === member.id
+      if (shouldBeLeader === currentlyLeader) continue
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { _synced, ...rest } = cong
+      await syncWrite(
+        'congregations',
+        { ...rest, dirigente_id: shouldBeLeader ? member.id : null, updated_at: now },
+        'UPDATE'
+      )
+    }
+  } catch (e) {
+    logger.warn('[membros] Falha ao sincronizar dirigente da congregação:', e)
   }
 }
 
