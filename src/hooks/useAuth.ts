@@ -41,7 +41,13 @@ export function useAuthInit() {
 
         setUser(session?.user ?? null)
         if (session?.user) {
-          loadAppUser(session.user.id, setAppUser)
+          // IMPORTANTE: o callback do onAuthStateChange roda segurando o lock de auth
+          // (Navigator LockManager). Chamar o Supabase aqui (loadAppUser faz um SELECT)
+          // tenta readquirir o mesmo lock e causa deadlock ("...auth-token timed out
+          // waiting 10000ms"), travando inclusive operações em outras telas (ex.: o
+          // insert do cadastro público). Por isso adiamos para fora do callback.
+          const uid = session.user.id
+          setTimeout(() => loadAppUser(uid, setAppUser), 0)
         } else {
           setAppUser(null)
         }
